@@ -22,12 +22,38 @@ public class PlayerNetworkRotation : NetworkBehaviour
 
     public void RotatePlayerIsometric()
     {
-        // Rotate the player based on mouse cursor position
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 lookDir = mousePos - transform.position;
-        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+        // Get the mouse position in screen space
+        Vector3 mouseScreenPos = Input.mousePosition;
+
+        // Convert the screen space mouse position to world space
+        Ray ray = Camera.main.ScreenPointToRay(mouseScreenPos);
+        Plane groundPlane = new Plane(Vector3.up, 0f);  // Ground plane at y = 0
+        float rayDistance;
+
+        if (groundPlane.Raycast(ray, out rayDistance))
+        {
+            // Get the world position where the mouse ray intersects with the ground plane
+            Vector3 worldMousePos = ray.GetPoint(rayDistance);
+
+            // Calculate the direction to look at (player to mouse position)
+            Vector3 directionToLook = worldMousePos - transform.position;
+
+            // Make sure we are only rotating on the horizontal plane (no vertical rotation)
+            directionToLook.y = 0f;
+
+            // Check if the direction is valid (non-zero) to avoid errors
+            if (directionToLook.sqrMagnitude > 0.01f) // Using square magnitude for performance
+            {
+                // Calculate the target rotation for the player
+                Quaternion targetRotation = Quaternion.LookRotation(directionToLook);
+
+                // Smoothly rotate the player towards the target rotation
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            }
+        }
     }
+
+
 
     public void RotatePlayerFirstPerson()
     {

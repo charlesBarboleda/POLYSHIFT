@@ -46,9 +46,30 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     public void MovePlayerIsometric()
     {
-        Vector2 direction = moveAction.ReadValue<Vector2>();
-        transform.position += new Vector3(direction.x, 0, direction.y) * Time.deltaTime * MoveSpeed.Value;
+        // Get the input from the player (WASD or arrow keys)
+        Vector2 inputDirection = moveAction.ReadValue<Vector2>();
+
+        // Get the main camera's forward and right vectors
+        // These vectors are relative to the world, but aligned with the camera's perspective
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
+
+        // Since we want movement on the horizontal plane only (ignore Y-axis),
+        // we need to zero out the Y component of both the forward and right vectors
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+
+        // Normalize the vectors to ensure consistent movement speed
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        // Calculate the desired movement direction based on the camera's orientation
+        Vector3 moveDirection = (cameraForward * inputDirection.y) + (cameraRight * inputDirection.x);
+
+        // Move the player
+        transform.position += moveDirection * Time.deltaTime * MoveSpeed.Value;
     }
+
 
     public void MovePlayerFirstPerson()
     {
