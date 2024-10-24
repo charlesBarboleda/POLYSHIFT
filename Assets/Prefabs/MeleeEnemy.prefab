@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 5055367318798674458}
   - component: {fileID: 3126185331819892659}
   - component: {fileID: 8731146836077832972}
-  - component: {fileID: 1615837566426094109}
   m_Layer: 0
   m_Name: MeleeEnemy
   m_TagString: Enemy
@@ -129,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2740546905
+  GlobalObjectIdHash: 3463963669
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -259,16 +258,3 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   MoveSpeed:
     m_InternalValue: 10
---- !u!114 &1615837566426094109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1714088802826837701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95972c3e2528ee14db2ebc36cf27a6d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1

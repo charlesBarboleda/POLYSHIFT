@@ -10,15 +10,10 @@ public enum EnemyType
     Boss,
 }
 
-[RequireComponent(typeof(AIKinematics))]
-public class Enemy : NetworkBehaviour
+public abstract class Enemy : NetworkBehaviour
 {
-    [Header("Script References")]
-    AIKinematics AIkinematics;
-
-    void Start()
-    {
-        AIkinematics = GetComponent<AIKinematics>();
-    }
+    public EnemyType enemyType;
+    public EnemyHealth enemyHealth;
+    public AIKinematics enemyMovement;
 
 }

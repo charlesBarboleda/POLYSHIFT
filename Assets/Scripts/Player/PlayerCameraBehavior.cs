@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
     [SerializeField] Transform targetTransform;
     [SerializeField] CinemachineCamera firstPersonCamera;
     [SerializeField] CinemachineCamera isometricCamera;
+
 
 
     PlayerNetworkRotation playerNetworkRotation;
@@ -30,7 +32,11 @@ public class PlayerCameraBehavior : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
-        playerNetworkRotation.IsIsometric.Value = Input.GetKeyDown(KeyCode.Space) ? !playerNetworkRotation.IsIsometric.Value : playerNetworkRotation.IsIsometric.Value;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            playerNetworkRotation.IsIsometric.Value = !playerNetworkRotation.IsIsometric.Value;
+            EventManager.Instance.OnPerspectiveChange?.Invoke(playerNetworkRotation.IsIsometric.Value);
+        }
         if (playerNetworkRotation.IsIsometric.Value)
         {
             EnableIsometricCamera();
@@ -60,5 +66,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
         firstPersonCamera.Priority = 0;
         isometricCamera.Priority = 1;
     }
+
+
 
 }

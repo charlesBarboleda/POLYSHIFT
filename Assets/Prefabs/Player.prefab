@@ -328,6 +328,7 @@ GameObject:
   - component: {fileID: 160653546466302489}
   - component: {fileID: 7923766061160519678}
   - component: {fileID: 9182661801330313306}
+  - component: {fileID: 7321868169838826265}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -612,3 +613,22 @@ MonoBehaviour:
     m_InternalValue: 0
   FirstPersonTurnSpeed:
     m_InternalValue: 10
+--- !u!114 &7321868169838826265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401702113207284416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912aa0df8eaaca24c8f24758b47d4ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  CurrentHealth:
+    m_InternalValue: 100
+  MaxHealth:
+    m_InternalValue: 100
+  HealthRegenRate:
+    m_InternalValue: 1

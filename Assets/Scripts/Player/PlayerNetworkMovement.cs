@@ -14,22 +14,20 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
 
     PlayerNetworkRotation playerNetworkRotation;
-
-    public override void OnNetworkSpawn()
-    {
-        MoveSpeed.OnValueChanged += OnMoveSpeedChanged;
-    }
-
+    PlayerNetworkHealth playerNetworkHealth;
     void Start()
     {
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
+        playerNetworkHealth = GetComponent<PlayerNetworkHealth>();
         moveInput = GetComponent<PlayerInput>();
         moveAction = moveInput.actions["Move"];
     }
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) return;
+        if (!IsOwner) return; // Only the owner of the object should be able to move it
+
+        if (playerNetworkHealth.CurrentHealth.Value <= 0) return; // If the player is dead, they should not be able to move
 
         if (!playerNetworkRotation.IsIsometric.Value)
         {
@@ -94,8 +92,5 @@ public class PlayerNetworkMovement : NetworkBehaviour
     }
 
 
-    void OnMoveSpeedChanged(float previousValue, float newValue)
-    {
-        MoveSpeed.Value = newValue;
-    }
+
 }
