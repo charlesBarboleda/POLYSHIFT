@@ -591,6 +591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2baf958062c079945af3b0cabe0d71a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   targetTransform: {fileID: 3651842665328893977}
   firstPersonCamera: {fileID: 7935171115491977292}
   isometricCamera: {fileID: 1168252853152927014}

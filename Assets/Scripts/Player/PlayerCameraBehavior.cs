@@ -1,27 +1,35 @@
 using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerCameraBehavior : MonoBehaviour
+public class PlayerCameraBehavior : NetworkBehaviour
 {
     [SerializeField] Transform targetTransform;
     [SerializeField] CinemachineCamera firstPersonCamera;
     [SerializeField] CinemachineCamera isometricCamera;
+
 
     PlayerNetworkRotation playerNetworkRotation;
 
     void Start()
     {
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
-    }
-
-    void OnEnable()
-    {
+        if (!IsOwner)
+        {
+            // If this is not the local player, disable cameras
+            firstPersonCamera.gameObject.SetActive(false);
+            isometricCamera.gameObject.SetActive(false);
+            return;
+        }
         isometricCamera.transform.SetParent(null);
         firstPersonCamera.transform.SetParent(null);
+        EnableFirstPersonCamera();
     }
+
 
     void Update()
     {
+        if (!IsOwner) return;
         playerNetworkRotation.IsIsometric.Value = Input.GetKeyDown(KeyCode.Space) ? !playerNetworkRotation.IsIsometric.Value : playerNetworkRotation.IsIsometric.Value;
         if (playerNetworkRotation.IsIsometric.Value)
         {
@@ -37,7 +45,7 @@ public class PlayerCameraBehavior : MonoBehaviour
 
     void FollowPlayerHead()
     {
-        firstPersonCamera.transform.position = targetTransform.transform.position + new Vector3(0, 0f, 0);
+        firstPersonCamera.transform.position = targetTransform.transform.position;
         firstPersonCamera.transform.rotation = targetTransform.transform.rotation;
     }
 
