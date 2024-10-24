@@ -11,13 +11,12 @@ public class AIKinematics : NetworkBehaviour
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
-        Debug.Log("IsServer OnStart: " + IsServer);
 
     }
 
     void OnEnable()
     {
-        Debug.Log("IsServer OnEnable: " + IsServer);
+
     }
     public override void OnNetworkSpawn()
     {
@@ -31,13 +30,6 @@ public class AIKinematics : NetworkBehaviour
 
     void Update()
     {
-        Debug.Log("IsServer OnUpdate: " + IsServer);
-        NetworkObject netObj = GetComponent<NetworkObject>();
-        if (netObj != null)
-        {
-            Debug.Log("IsOwnedByServer: " + netObj.IsOwnedByServer);
-        }
-
 
         if (IsServer)
         {
@@ -67,7 +59,6 @@ public class AIKinematics : NetworkBehaviour
                 Debug.LogError("Invalid Path!");
             }
         }
-
 
         _agent.speed = MoveSpeed.Value;
     }
