@@ -16,11 +16,9 @@ public class IsometricPlayerHealthbar : MonoBehaviour
 
     void OnEnable()
     {
-        if (playerNetworkHealth != null)
-        {
-            playerNetworkHealth.currentHealth.OnValueChanged += OnHealthChanged;
-            playerNetworkHealth.maxHealth.OnValueChanged += OnHealthChanged;
-        }
+
+
+
 
         playerCameraBehavior.MainCamera = Camera.main; // Set the main camera reference
     }
@@ -73,6 +71,8 @@ public class IsometricPlayerHealthbar : MonoBehaviour
     {
         player = playerTransform;
         this.playerNetworkHealth = playerNetworkHealth;
+        playerNetworkHealth.currentHealth.OnValueChanged += OnHealthChanged;
+        playerNetworkHealth.maxHealth.OnValueChanged += OnHealthChanged;
     }
 
 }

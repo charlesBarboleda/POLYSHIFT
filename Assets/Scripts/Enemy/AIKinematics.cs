@@ -5,19 +5,9 @@ using UnityEngine.AI;
 public class AIKinematics : NetworkBehaviour
 {
     public NetworkVariable<float> MoveSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    NavMeshAgent _agent;
-    Transform _closestPlayer;
+    public NavMeshAgent Agent;
+    public Transform ClosestPlayer;
 
-    void Start()
-    {
-        _agent = GetComponent<NavMeshAgent>();
-
-    }
-
-    void OnEnable()
-    {
-
-    }
     public override void OnNetworkSpawn()
     {
         Debug.Log("IsServer OnNetworkSpawn: " + IsServer);
@@ -26,6 +16,7 @@ public class AIKinematics : NetworkBehaviour
             // Disable AI logic on clients since only the server should run this
             enabled = false;
         }
+        Agent = GetComponent<NavMeshAgent>();
     }
 
     void Update()
@@ -35,13 +26,13 @@ public class AIKinematics : NetworkBehaviour
         {
             FindClosestPlayer();
 
-            if (_closestPlayer != null)
+            if (ClosestPlayer != null)
             {
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(_closestPlayer.position, out hit, 1.0f, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(ClosestPlayer.position, out hit, 1.0f, NavMesh.AllAreas))
                 {
 
-                    _agent.SetDestination(hit.position);
+                    Agent.SetDestination(hit.position);
                 }
                 else
                 {
@@ -49,18 +40,18 @@ public class AIKinematics : NetworkBehaviour
                 }
             }
 
-            if (!_agent.hasPath)
+            if (!Agent.hasPath)
             {
                 Debug.LogWarning("Agent has no path!");
             }
 
-            if (_agent.pathStatus == NavMeshPathStatus.PathInvalid)
+            if (Agent.pathStatus == NavMeshPathStatus.PathInvalid)
             {
                 Debug.LogError("Invalid Path!");
             }
         }
 
-        _agent.speed = MoveSpeed.Value;
+        Agent.speed = MoveSpeed.Value;
     }
 
     void FindClosestPlayer()
@@ -81,6 +72,6 @@ public class AIKinematics : NetworkBehaviour
             }
         }
 
-        _closestPlayer = closestPlayer;
+        ClosestPlayer = closestPlayer;
     }
 }

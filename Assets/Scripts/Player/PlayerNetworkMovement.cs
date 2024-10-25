@@ -11,7 +11,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     [Header("Player Movement")]
     public NetworkVariable<float> MoveSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
+    public NetworkVariable<bool> IsIsometric = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     PlayerNetworkRotation playerNetworkRotation;
     PlayerNetworkHealth playerNetworkHealth;
@@ -29,7 +29,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         if (playerNetworkHealth.currentHealth.Value <= 0) return; // If the player is dead, they should not be able to move
 
-        if (!PlayerManagerUI.Instance.IsIsometric)
+        if (!IsIsometric.Value)
         {
             MovePlayerFirstPerson();
         }

@@ -16,12 +16,6 @@ public class IsometricEnemyHealthbar : MonoBehaviour
 
     void OnEnable()
     {
-        if (enemyHealth != null)
-        {
-            enemyHealth.CurrentHealth.OnValueChanged += OnHealthChanged;
-            enemyHealth.MaxHealth.OnValueChanged += OnHealthChanged;
-        }
-
         playerCameraBehavior.MainCamera = Camera.main; // Set the main camera reference
     }
 
@@ -78,6 +72,8 @@ public class IsometricEnemyHealthbar : MonoBehaviour
     {
         enemy = targetTransform;
         this.enemyHealth = enemyHealth;
+        enemyHealth.CurrentHealth.OnValueChanged += OnHealthChanged;
+        enemyHealth.MaxHealth.OnValueChanged += OnHealthChanged;
     }
 
 }

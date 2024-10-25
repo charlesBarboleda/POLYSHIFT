@@ -15,5 +15,36 @@ public abstract class Enemy : NetworkBehaviour
     public EnemyType enemyType;
     public EnemyHealth enemyHealth;
     public AIKinematics enemyMovement;
+    public Rigidbody rb;
+    public NetworkObject networkObject;
+    public Transform ClosestTarget;
+
+    protected abstract void Attack();
+
+    public override void OnNetworkSpawn()
+    {
+        TryGetComponent(out rb);
+        TryGetComponent(out enemyHealth);
+        TryGetComponent(out enemyMovement);
+        TryGetComponent(out networkObject);
+        if (enemyMovement != null)
+        {
+            ClosestTarget = enemyMovement.ClosestPlayer;
+        }
+        else
+        {
+            Debug.LogError("Enemy Movement is null");
+        }
+
+    }
+
+    public virtual void Update()
+    {
+        if (IsServer)
+        {
+            ClosestTarget = enemyMovement.ClosestPlayer;
+        }
+    }
+
 
 }

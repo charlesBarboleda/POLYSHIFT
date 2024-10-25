@@ -4,13 +4,18 @@ using Unity.Cinemachine;
 
 public class PlayerNetworkRotation : NetworkBehaviour
 {
-
     public NetworkVariable<float> FirstPersonTurnSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+    PlayerNetworkMovement playerNetworkMovement;
+    public override void OnNetworkSpawn()
+    {
+        playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if (!PlayerManagerUI.Instance.IsIsometric)
+        if (!playerNetworkMovement.IsIsometric.Value)
         {
             RotatePlayerFirstPerson();
         }

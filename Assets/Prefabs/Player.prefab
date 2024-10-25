@@ -546,7 +546,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 2
 --- !u!114 &6151726003547445331
 MonoBehaviour:
@@ -580,6 +580,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   MoveSpeed:
     m_InternalValue: 10
+  IsIsometric:
+    m_InternalValue: 0
 --- !u!114 &7923766061160519678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,8 +612,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  IsIsometric:
-    m_InternalValue: 0
   FirstPersonTurnSpeed:
     m_InternalValue: 10
 --- !u!114 &7321868169838826265
@@ -627,6 +627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  playerUIPrefab: {fileID: 6028217585436344769, guid: 859a4968f5f5c654ebeba573d8936853, type: 3}
   currentHealth:
     m_InternalValue: 100
   maxHealth:

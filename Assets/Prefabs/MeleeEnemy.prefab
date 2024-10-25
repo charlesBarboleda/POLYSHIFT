@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 3126185331819892659}
   - component: {fileID: 8731146836077832972}
   - component: {fileID: 8897300401015763097}
+  - component: {fileID: 6471698036231523750}
   m_Layer: 0
   m_Name: MeleeEnemy
   m_TagString: Enemy
@@ -259,6 +260,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   MoveSpeed:
     m_InternalValue: 10
+  Agent: {fileID: 0}
+  ClosestPlayer: {fileID: 0}
 --- !u!114 &8897300401015763097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,3 +282,26 @@ MonoBehaviour:
   HealthRegenRate:
     m_InternalValue: 1
   enemyName: MeleeEnemy
+--- !u!114 &6471698036231523750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714088802826837701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469530b766e57544d82f80cc9a7c90ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  enemyType: 0
+  enemyHealth: {fileID: 0}
+  enemyMovement: {fileID: 0}
+  rb: {fileID: 0}
+  networkObject: {fileID: 0}
+  ClosestTarget: {fileID: 0}
+  attackRange: 4
+  attackRate: 1
+  attackDamage: 10
+  attackCooldown: 3

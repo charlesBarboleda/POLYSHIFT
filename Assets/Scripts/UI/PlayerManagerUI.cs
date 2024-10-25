@@ -1,34 +1,17 @@
 using System;
 using System.Collections;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerManagerUI : MonoBehaviour
 {
-    public static PlayerManagerUI Instance { get; private set; }
-    public bool IsIsometric;
     [SerializeField] Image firstPersonHealthbar;
     [SerializeField] GameObject firstPersonUI;
     [SerializeField] TextMeshProUGUI healthText;
-    [SerializeField] PlayerNetworkRotation playerNetworkRotation;
     [SerializeField] PlayerNetworkHealth playerNetworkHealth;
 
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
-
-    void OnEnable()
-    {
-        // Subscribe to health changes
-        playerNetworkHealth.currentHealth.OnValueChanged += FirstPersonOnHealthChanged;
-        playerNetworkHealth.maxHealth.OnValueChanged += FirstPersonOnHealthChanged;
-
-    }
 
     void OnDisable()
     {
@@ -37,6 +20,19 @@ public class PlayerManagerUI : MonoBehaviour
         playerNetworkHealth.maxHealth.OnValueChanged -= FirstPersonOnHealthChanged;
     }
 
+
+    public void OnPlayerSpawnReference(PlayerNetworkHealth player)
+    {
+        playerNetworkHealth = player;
+        player.currentHealth.OnValueChanged += FirstPersonOnHealthChanged;
+        player.maxHealth.OnValueChanged += FirstPersonOnHealthChanged;
+        UpdateHealthText();
+    }
+
+    public void UpdateHealthText()
+    {
+        UpdateFirstPersonHealthBar(playerNetworkHealth.currentHealth.Value, playerNetworkHealth.maxHealth.Value);
+    }
     void FirstPersonOnHealthChanged(float previousValue, float newValue)
     {
         UpdateFirstPersonHealthBar(playerNetworkHealth.currentHealth.Value, playerNetworkHealth.maxHealth.Value);
@@ -45,7 +41,7 @@ public class PlayerManagerUI : MonoBehaviour
     void UpdateFirstPersonHealthBar(float currentHealth, float maxHealth)
     {
         firstPersonHealthbar.fillAmount = currentHealth / maxHealth;
-        healthText.text = $"{currentHealth} / {maxHealth}";
+        healthText.text = $"{Mathf.Round(currentHealth)} / {Mathf.Round(maxHealth)}";
     }
 
     public void OnPerspectiveChange(bool isIsometric)
@@ -61,6 +57,7 @@ public class PlayerManagerUI : MonoBehaviour
             HealthbarManagerUI.Instance.DeactivateAllHealthbars();
         }
     }
+
     IEnumerator ActivateFirstPersonUI()
     {
         yield return new WaitForSeconds(0.9f);

@@ -11,7 +11,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     const float DefaultHealth = 100f;
     const float DefaultRegenRate = 1f;
     const string HealthBarTag = "IsometricPlayerHealthbar";
-
     [FormerlySerializedAs("CurrentHealth")] public NetworkVariable<float> currentHealth = new NetworkVariable<float>(DefaultHealth);
     [FormerlySerializedAs("MaxHealth")] public NetworkVariable<float> maxHealth = new NetworkVariable<float>(DefaultHealth);
     [FormerlySerializedAs("HealthRegenRate")] public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(DefaultRegenRate);
@@ -22,9 +21,9 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     {
         if (IsServer)
         {
+            EventManager.Instance.PlayerSpawnReference(this);
             currentHealth.Value = maxHealth.Value;
         }
-        ActivePlayersList.Instance.RegisterPlayer(this);
         if (IsOwner)
         {
             SpawnIndividualHealthBar();
@@ -35,6 +34,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         {
             SpawnAllPlayerHealthbars();
         }
+        ActivePlayersList.Instance.RegisterPlayer(this);
 
     }
     void OnEnable()
@@ -49,6 +49,10 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
         ActivePlayersList.Instance.UnregisterPlayer(this);
     }
+
+
+
+
 
     void Update()
     {
@@ -95,12 +99,11 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        if (!IsServer) return;
-
-        currentHealth.Value -= damage;
-        if (currentHealth.Value <= 0)
+        // Ensure that only the server or owner can modify the health
+        if (IsServer || IsOwner)
         {
-            HandleDeath();
+            float newHealth = Mathf.Max(currentHealth.Value - damage, 0f); // Ensure health doesn't go below 0
+            currentHealth.Value = newHealth; // This automatically invokes OnValueChanged
         }
     }
 
@@ -114,6 +117,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     {
         Debug.Log("Player died");
         OnPlayerDeath?.Invoke(OwnerClientId);
+
         gameObject.SetActive(false);
     }
 
