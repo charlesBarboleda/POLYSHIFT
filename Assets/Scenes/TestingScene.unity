@@ -1685,9 +1685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4084e01e8f2be5e4eb14478b78f100ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsIsometric: 0
   firstPersonHealthbar: {fileID: 1904090959}
   firstPersonUI: {fileID: 628551790}
-  isometricUI: {fileID: 1876277338}
   healthText: {fileID: 1207570739}
   playerNetworkRotation: {fileID: 9182661801330313306, guid: 11ace2ae31549f0409176ce364b63222, type: 3}
   playerNetworkHealth: {fileID: 7321868169838826265, guid: 11ace2ae31549f0409176ce364b63222, type: 3}
@@ -3617,6 +3617,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 629422228}
+        m_TargetAssemblyTypeName: PlayerManagerUI, Assembly-CSharp
+        m_MethodName: OnPerspectiveChange
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 629422226}
         m_TargetAssemblyTypeName: PlayerManagerUI, Assembly-CSharp
         m_MethodName: OnPerspectiveChange
         m_Mode: 0

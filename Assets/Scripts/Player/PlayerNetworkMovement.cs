@@ -29,7 +29,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         if (playerNetworkHealth.currentHealth.Value <= 0) return; // If the player is dead, they should not be able to move
 
-        if (!playerNetworkRotation.IsIsometric.Value)
+        if (!PlayerManagerUI.Instance.IsIsometric)
         {
             MovePlayerFirstPerson();
         }

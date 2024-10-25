@@ -4,13 +4,13 @@ using Unity.Cinemachine;
 
 public class PlayerNetworkRotation : NetworkBehaviour
 {
-    public NetworkVariable<bool> IsIsometric = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
     public NetworkVariable<float> FirstPersonTurnSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsIsometric.Value)
+        if (!PlayerManagerUI.Instance.IsIsometric)
         {
             RotatePlayerFirstPerson();
         }
@@ -19,6 +19,8 @@ public class PlayerNetworkRotation : NetworkBehaviour
             RotatePlayerIsometric();
         }
     }
+
+
 
     public void RotatePlayerIsometric()
     {

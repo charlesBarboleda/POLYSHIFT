@@ -8,14 +8,14 @@ public class PlayerCameraBehavior : NetworkBehaviour
     [SerializeField] CinemachineCamera firstPersonCamera;
     [SerializeField] CinemachineCamera isometricCamera;
     public Camera MainCamera;
-    PlayerNetworkRotation playerNetworkRotation;
+
 
     float _lastSwitchTime = 0f;  // Tracks last switch time
     float switchCooldown = 1;  // Cooldown duration (adjust as needed)
 
     void Start()
     {
-        playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
+
         if (!IsOwner)
         {
             // Disable cameras for non-local players
@@ -38,8 +38,8 @@ public class PlayerCameraBehavior : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
         {
             // Toggle perspective
-            playerNetworkRotation.IsIsometric.Value = !playerNetworkRotation.IsIsometric.Value;
-            EventManager.Instance.OnPerspectiveChange?.Invoke(playerNetworkRotation.IsIsometric.Value);
+            PlayerManagerUI.Instance.IsIsometric = !PlayerManagerUI.Instance.IsIsometric;
+            EventManager.Instance.PerspectiveChange(PlayerManagerUI.Instance.IsIsometric);
             _lastSwitchTime = Time.time;  // Update last switch time
         }
 
@@ -75,6 +75,6 @@ public class PlayerCameraBehavior : NetworkBehaviour
 
     public bool IsIsometricMode()
     {
-        return playerNetworkRotation.IsIsometric.Value;
+        return PlayerManagerUI.Instance.IsIsometric;
     }
 }

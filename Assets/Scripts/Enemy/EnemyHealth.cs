@@ -59,5 +59,6 @@ public class EnemyHealth : NetworkBehaviour, IDamageable
     {
         Debug.Log("Enemy died");
         NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponent<NetworkObject>(), enemyName);
+        HealthbarManagerUI.Instance.RemoveHealthbar(gameObject.GetComponentInChildren<IsometricEnemyHealthbar>().gameObject);
     }
 }

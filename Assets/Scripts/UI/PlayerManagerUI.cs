@@ -7,10 +7,9 @@ using UnityEngine.UI;
 public class PlayerManagerUI : MonoBehaviour
 {
     public static PlayerManagerUI Instance { get; private set; }
-
+    public bool IsIsometric;
     [SerializeField] Image firstPersonHealthbar;
     [SerializeField] GameObject firstPersonUI;
-    [SerializeField] GameObject isometricUI;
     [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] PlayerNetworkRotation playerNetworkRotation;
     [SerializeField] PlayerNetworkHealth playerNetworkHealth;
@@ -28,7 +27,7 @@ public class PlayerManagerUI : MonoBehaviour
         // Subscribe to health changes
         playerNetworkHealth.currentHealth.OnValueChanged += FirstPersonOnHealthChanged;
         playerNetworkHealth.maxHealth.OnValueChanged += FirstPersonOnHealthChanged;
-    
+
     }
 
     void OnDisable()
@@ -54,20 +53,25 @@ public class PlayerManagerUI : MonoBehaviour
         if (isIsometric)
         {
             firstPersonUI.SetActive(false);
-            isometricUI.SetActive(true);
+            StartCoroutine(ActivateIsometricUI());
         }
         else
         {
             StartCoroutine(ActivateFirstPersonUI());
-            isometricUI.SetActive(false);
+            HealthbarManagerUI.Instance.DeactivateAllHealthbars();
         }
     }
     IEnumerator ActivateFirstPersonUI()
     {
         yield return new WaitForSeconds(0.9f);
         firstPersonUI.SetActive(true);
+
     }
 
-
+    IEnumerator ActivateIsometricUI()
+    {
+        yield return new WaitForSeconds(0.9f);
+        HealthbarManagerUI.Instance.ActivateAllHealthbars();
+    }
 
 }

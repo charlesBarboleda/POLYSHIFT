@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 
@@ -37,7 +38,14 @@ public class HealthbarManagerUI : MonoBehaviour
     {
         foreach (var healthbar in _healthbars)
         {
-            healthbar.SetActive(false);
+            healthbar.GetComponent<Image>().enabled = false;
+
+            // Disable all child Image components
+            Image[] childImages = healthbar.GetComponentsInChildren<Image>();
+            foreach (var childImage in childImages)
+            {
+                childImage.enabled = false;
+            }
         }
     }
 
@@ -45,9 +53,18 @@ public class HealthbarManagerUI : MonoBehaviour
     {
         foreach (var healthbar in _healthbars)
         {
-            healthbar.SetActive(true);
+            healthbar.GetComponent<Image>().enabled = true;
+
+            // Disable all child Image components
+            Image[] childImages = healthbar.GetComponentsInChildren<Image>();
+            foreach (var childImage in childImages)
+            {
+                childImage.enabled = true;
+            }
         }
     }
+
+
 
 
 }
