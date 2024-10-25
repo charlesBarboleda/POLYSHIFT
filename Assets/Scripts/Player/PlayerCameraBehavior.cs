@@ -8,9 +8,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
     [SerializeField] Transform targetTransform;
     [SerializeField] CinemachineCamera firstPersonCamera;
     [SerializeField] CinemachineCamera isometricCamera;
-
-
-
+    public Camera MainCamera;
     PlayerNetworkRotation playerNetworkRotation;
 
     void Start()
@@ -37,7 +35,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
             playerNetworkRotation.IsIsometric.Value = !playerNetworkRotation.IsIsometric.Value;
             EventManager.Instance.OnPerspectiveChange?.Invoke(playerNetworkRotation.IsIsometric.Value);
         }
-        if (playerNetworkRotation.IsIsometric.Value)
+        if (IsIsometricMode())
         {
             EnableIsometricCamera();
         }
@@ -65,6 +63,13 @@ public class PlayerCameraBehavior : NetworkBehaviour
     {
         firstPersonCamera.Priority = 0;
         isometricCamera.Priority = 1;
+    }
+
+
+    // Method to check if we are in isometric mode (for UI visibility)
+    public bool IsIsometricMode()
+    {
+        return playerNetworkRotation.IsIsometric.Value;
     }
 
 

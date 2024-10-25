@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,10 +8,12 @@ public class PlayerManagerUI : MonoBehaviour
 {
     public static PlayerManagerUI Instance { get; private set; }
 
-    [SerializeField] Image healthBarFill;
+    [SerializeField] Image firstPersonHealthbar;
     [SerializeField] GameObject firstPersonUI;
     [SerializeField] GameObject isometricUI;
+    [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] PlayerNetworkRotation playerNetworkRotation;
+    [SerializeField] PlayerNetworkHealth playerNetworkHealth;
 
     void Awake()
     {
@@ -20,10 +23,29 @@ public class PlayerManagerUI : MonoBehaviour
         }
     }
 
-
-    public void UpdateHealthBar(float currentHealth, float maxHealth)
+    void OnEnable()
     {
-        healthBarFill.fillAmount = currentHealth / maxHealth;
+        // Subscribe to health changes
+        playerNetworkHealth.CurrentHealth.OnValueChanged += FirstPersonOnHealthChanged;
+        playerNetworkHealth.MaxHealth.OnValueChanged += FirstPersonOnHealthChanged;
+    }
+
+    void OnDisable()
+    {
+        // Unsubscribe from health changes
+        playerNetworkHealth.CurrentHealth.OnValueChanged -= FirstPersonOnHealthChanged;
+        playerNetworkHealth.MaxHealth.OnValueChanged -= FirstPersonOnHealthChanged;
+    }
+
+    void FirstPersonOnHealthChanged(float previousValue, float newValue)
+    {
+        UpdateFirstPersonHealthBar(playerNetworkHealth.CurrentHealth.Value, playerNetworkHealth.MaxHealth.Value);
+    }
+
+    void UpdateFirstPersonHealthBar(float currentHealth, float maxHealth)
+    {
+        firstPersonHealthbar.fillAmount = currentHealth / maxHealth;
+        healthText.text = $"{currentHealth} / {maxHealth}";
     }
 
     public void OnPerspectiveChange(bool isIsometric)

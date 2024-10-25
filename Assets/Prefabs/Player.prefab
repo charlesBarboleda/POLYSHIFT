@@ -596,6 +596,7 @@ MonoBehaviour:
   targetTransform: {fileID: 3651842665328893977}
   firstPersonCamera: {fileID: 7935171115491977292}
   isometricCamera: {fileID: 1168252853152927014}
+  MainCamera: {fileID: 3418147047808579795, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
 --- !u!114 &9182661801330313306
 MonoBehaviour:
   m_ObjectHideFlags: 0

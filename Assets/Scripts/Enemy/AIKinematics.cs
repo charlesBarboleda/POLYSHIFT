@@ -40,7 +40,7 @@ public class AIKinematics : NetworkBehaviour
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(_closestPlayer.position, out hit, 1.0f, NavMesh.AllAreas))
                 {
-                    Debug.Log("Player position is on the NavMesh: " + hit.position);
+
                     _agent.SetDestination(hit.position);
                 }
                 else

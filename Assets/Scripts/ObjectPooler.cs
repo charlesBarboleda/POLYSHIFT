@@ -1,232 +1,221 @@
-using System;
 using System.Collections.Generic;
-using Unity.Netcode;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
-using UnityEngine.Assertions;
 
-namespace Netcode.Extensions
+#region PoolableType Definition
+[System.Serializable]
+public class PoolableType
 {
-    public class NetworkObjectPool : NetworkBehaviour
+    [Tooltip(@"The Name of this Type of Poolable Object (Does not effect operation)")]
+    public string TypeName;
+
+    [Tooltip(@"The Prefab of the gameobject to be pooled")]
+    public GameObject Prefab;
+
+    [Tooltip(@"The sorting tag is used to organize object pools.  Each object in a given pool will have it's name set to this tag value.")]
+    public string SortingTag = "";
+
+    [Tooltip(@"The maximum number of objects allowed to be instantiated.")]
+    public int Max;
+
+    [Tooltip(@"If true, the object pool can ignore the maximum if there are no objects in storage, and another is requested.")]
+    public bool AutoExpand;
+}
+#endregion
+
+public class ObjectPooler : MonoBehaviour
+{
+    #region Variables
+    /// <summary>
+    /// A static instance of the ObjectPooler
+    /// </summary>
+	private static ObjectPooler Instance;
+
+    [Tooltip("If true, the Object Pooler will organize individual object pools under assigned parent transforms. Only works if checked before starting the game.")]
+    [SerializeField]
+    private bool UseParentTransforms = false;
+
+    /// <summary>
+    /// A list of all poolable types (to be set in the inspector)
+    /// </summary>
+    [Tooltip(@"A list of Poolable Type Definitions")]
+    [SerializeField]
+    private List<PoolableType> PoolableTypes = new List<PoolableType>();
+
+    /// <summary>
+    /// a lookup table to link a sorting tag to a poolable type
+    /// </summary>
+    private Dictionary<string, PoolableType> TagTypeLookup;
+
+    /// <summary>
+    /// A lookup table which links a prefab to an object pool
+    /// </summary>
+    private Dictionary<GameObject, PoolableType> PrefabTypeLookup;
+
+    /// <summary>
+    /// A dictionary to link a sorting tag to a pool of sleeping objects.
+    /// </summary>
+    private Dictionary<string, Queue<GameObject>> SleepingObjects;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private Dictionary<string, HashSet<GameObject>> ActiveObjects;
+
+    /// <summary>
+    /// A lookup table which links a sorting tag to a parent transform (assuming UseParentTransforms = true)
+    /// </summary>
+    private Dictionary<string, Transform> TypeParents;
+    #endregion
+
+    #region Initialize
+    private void Awake()
     {
-        public static NetworkObjectPool Instance;
+        Instance = this;
 
-        [SerializeField]
-        List<PoolConfigObject> PooledPrefabsList;
+        // init dictionaries
+        if (UseParentTransforms)
+            TypeParents = new Dictionary<string, Transform>();
+        TagTypeLookup = new Dictionary<string, PoolableType>();
+        PrefabTypeLookup = new Dictionary<GameObject, PoolableType>();
+        SleepingObjects = new Dictionary<string, Queue<GameObject>>();
+        ActiveObjects = new Dictionary<string, HashSet<GameObject>>();
 
-        private Dictionary<string, Queue<NetworkObject>> pooledObjects = new Dictionary<string, Queue<NetworkObject>>();
-        private Dictionary<string, GameObject> prefabLookup = new Dictionary<string, GameObject>();
-
-        private bool m_HasInitialized = false;
-
-        public void Awake()
+        // init types and sets in dicts
+        foreach (PoolableType type in PoolableTypes)
         {
-            if (Instance != null && Instance != this)
+            if (UseParentTransforms)
             {
-                Destroy(this.gameObject);
-            }
-            else
-            {
-                Instance = this;
-            }
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            InitializePool();
-        }
-
-        public override void OnNetworkDespawn()
-        {
-            ClearPool();
-        }
-
-        public override void OnDestroy()
-        {
-            if (Instance == this)
-            {
-                Instance = null;
+                // create empty GameObject to store children under
+                GameObject SortinParent = new GameObject(type.TypeName + " Parent");
+                // assign this GameObject to be a child of whatever GameObject this script is attached to
+                SortinParent.transform.parent = transform;
+                // add a reference to this parent in the TypeParents lookup
+                TypeParents[type.SortingTag] = SortinParent.transform;
             }
 
-            base.OnDestroy();
-        }
+            // add a reference for this sorting tag in each of the required dicitonaries
+            TagTypeLookup.Add(type.SortingTag, type);
+            PrefabTypeLookup.Add(type.Prefab, type);
+            SleepingObjects.Add(type.SortingTag, new Queue<GameObject>());
+            ActiveObjects.Add(type.SortingTag, new HashSet<GameObject>());
 
-        public void OnValidate()
-        {
-            for (var i = 0; i < PooledPrefabsList.Count; i++)
+            // init sleeping objects
+            for (int i = 0; i < type.Max; i++)
             {
-                var prefab = PooledPrefabsList[i].Prefab;
-                if (prefab != null)
-                {
-                    Assert.IsNotNull(
-                        prefab.GetComponent<NetworkObject>(),
-                        $"{nameof(NetworkObjectPool)}: Pooled prefab \"{prefab.name}\" at index {i.ToString()} has no {nameof(NetworkObject)} component."
-                    );
-                }
-
-                var prewarmCount = PooledPrefabsList[i].PrewarmCount;
-                if (prewarmCount < 0)
-                {
-                    Debug.LogWarning($"{nameof(NetworkObjectPool)}: Pooled prefab at index {i.ToString()} has a negative prewarm count! Making it not negative.");
-                    var thisPooledPrefab = PooledPrefabsList[i];
-                    thisPooledPrefab.PrewarmCount *= -1;
-                    PooledPrefabsList[i] = thisPooledPrefab;
-                }
+                // create gameobject and set it's parent as appropriate
+                GameObject pooledObject = Instantiate(type.Prefab, UseParentTransforms ? TypeParents[type.SortingTag] : transform);
+                // name the gameobject for easy sorting
+                pooledObject.name = type.SortingTag;
+                // inactivate the gameobject for storage
+                pooledObject.SetActive(false);
+                // add this object to the sleeping pool
+                SleepingObjects[type.SortingTag].Enqueue(pooledObject);
             }
-        }
-
-        /// <summary>
-        /// Gets an instance of the given prefab by tag from the pool.
-        /// </summary>
-        /// <param name="tag">The tag of the prefab.</param>
-        /// <returns></returns>
-        public NetworkObject GetNetworkObject(string tag)
-        {
-            return GetNetworkObjectInternal(tag, Vector3.zero, Quaternion.identity);
-        }
-
-        /// <summary>
-        /// Gets an instance of the given prefab by tag from the pool.
-        /// </summary>
-        /// <param name="tag">The tag of the prefab.</param>
-        /// <param name="position">The position to spawn the object at.</param>
-        /// <param name="rotation">The rotation to spawn the object with.</param>
-        /// <returns></returns>
-        public NetworkObject GetNetworkObject(string tag, Vector3 position, Quaternion rotation)
-        {
-            return GetNetworkObjectInternal(tag, position, rotation);
-        }
-
-        /// <summary>
-        /// Return an object to the pool by tag (reset objects before returning).
-        /// </summary>
-        public void ReturnNetworkObject(NetworkObject networkObject, string tag)
-        {
-            var go = networkObject.gameObject;
-            go.SetActive(false);
-            pooledObjects[tag].Enqueue(networkObject);
-        }
-
-        /// <summary>
-        /// Adds a prefab to the list of spawnable prefabs with the given tag.
-        /// </summary>
-        /// <param name="prefab">The prefab to add.</param>
-        /// <param name="tag">The tag associated with the prefab.</param>
-        /// <param name="prewarmCount">The number of instances to prewarm in the pool.</param>
-        public void AddPrefab(GameObject prefab, string tag, int prewarmCount = 0)
-        {
-            var networkObject = prefab.GetComponent<NetworkObject>();
-
-            Assert.IsNotNull(networkObject, $"{nameof(prefab)} must have {nameof(networkObject)} component.");
-            Assert.IsFalse(prefabLookup.ContainsKey(tag), $"Tag {tag} is already registered in the pool.");
-
-            RegisterPrefabInternal(prefab, tag, prewarmCount);
-        }
-
-        private void RegisterPrefabInternal(GameObject prefab, string tag, int prewarmCount)
-        {
-            prefabLookup[tag] = prefab;
-            var prefabQueue = new Queue<NetworkObject>();
-            pooledObjects[tag] = prefabQueue;
-
-            for (int i = 0; i < prewarmCount; i++)
-            {
-                var go = CreateInstance(prefab);
-                ReturnNetworkObject(go.GetComponent<NetworkObject>(), tag);
-            }
-
-            // Register Netcode Spawn handlers
-            NetworkManager.Singleton.PrefabHandler.AddHandler(prefab, new PooledPrefabInstanceHandler(prefab, this, tag));
-        }
-
-        private GameObject CreateInstance(GameObject prefab)
-        {
-            return Instantiate(prefab);
-        }
-
-        private NetworkObject GetNetworkObjectInternal(string tag, Vector3 position, Quaternion rotation)
-        {
-            if (!pooledObjects.ContainsKey(tag))
-            {
-                Debug.LogWarning($"No pool exists for tag: {tag}");
-                return null;
-            }
-
-            var queue = pooledObjects[tag];
-            NetworkObject networkObject;
-
-            if (queue.Count > 0)
-            {
-                networkObject = queue.Dequeue();
-            }
-            else
-            {
-                if (!prefabLookup.ContainsKey(tag))
-                {
-                    Debug.LogError($"Prefab not registered for tag: {tag}");
-                    return null;
-                }
-
-                networkObject = CreateInstance(prefabLookup[tag]).GetComponent<NetworkObject>();
-            }
-
-            var go = networkObject.gameObject;
-            go.SetActive(true);
-            go.transform.position = position;
-            go.transform.rotation = rotation;
-
-            return networkObject;
-        }
-
-        public void InitializePool()
-        {
-            if (m_HasInitialized) return;
-            foreach (var configObject in PooledPrefabsList)
-            {
-                RegisterPrefabInternal(configObject.Prefab, configObject.Tag, configObject.PrewarmCount);
-            }
-            m_HasInitialized = true;
-        }
-
-        public void ClearPool()
-        {
-            foreach (var prefab in prefabLookup.Values)
-            {
-                NetworkManager.Singleton.PrefabHandler.RemoveHandler(prefab);
-            }
-            pooledObjects.Clear();
-            prefabLookup.Clear();
         }
     }
+    #endregion
 
-    [Serializable]
-    public struct PoolConfigObject
+    #region Destroy
+
+    /// <summary>
+    /// Deactivate an active object, and enqueue it for later restoration.
+    /// </summary>
+    /// <param name="obj">The active object to deactivate</param>
+    public static void Destroy(GameObject obj) => Instance._Destroy(obj);
+
+    private void _Destroy(GameObject obj)
     {
-        public GameObject Prefab;
-        public string Tag;
-        public int PrewarmCount;
+        string sortingTag = obj.name;
+        // check if this object is one we actually pool
+        if (!ActiveObjects.ContainsKey(sortingTag)) return;
+        // check if this object is actually in our active set right now
+        if (!ActiveObjects[sortingTag].Contains(obj)) return;
+        // since it is, we will deactivate the object
+        obj.SetActive(false);
+        // then remove it from the active set
+        ActiveObjects[sortingTag].Remove(obj);
+        // and add it to the sleeping queue
+        SleepingObjects[sortingTag].Enqueue(obj);
     }
+    #endregion
 
-    class PooledPrefabInstanceHandler : INetworkPrefabInstanceHandler
+    #region Generate
+    /// <summary>
+    /// Grab a member from the list of SleepingObjects
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="Identifier">Either the Prefab to instantiate or the Tag for the PoolableType</param>
+    /// <param name="Position">The Position to activate the object at</param>
+    /// <param name="Rotation">The Rotation to activate the object with</param>
+    /// <returns>A gameobject from the correct pool</returns>
+    public static GameObject Generate<T>(T Identifier, Vector3 Position, Quaternion Rotation) =>
+        Instance._Generate(Identifier, Position, Rotation);
+
+    /// <summary>
+    /// Grab a member from the list of SleepingObjects
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="Identifier">Either the Prefab to instantiate or the Tag for the PoolableType</param>
+    /// <param name="Position">The Position to activate the object at</param>
+    /// <returns>A gameobject from the correct pool</returns>
+    public static GameObject Generate<T>(T Identifier, Vector3 Position) =>
+        Instance._Generate(Identifier, Position, Quaternion.identity);
+
+    /// <summary>
+    /// Grab a member from the list of SleepingObjects
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="Identifier">Either the Prefab to instantiate or the Tag for the PoolableType</param>
+    /// <returns>A gameobject from the correct pool</returns>
+    public static GameObject Generate<T>(T Identifier) =>
+        Instance._Generate(Identifier, Vector3.zero, Quaternion.identity);
+
+    private GameObject _Generate<T>(T Identifier, Vector3 Position, Quaternion Rotation)
     {
-        GameObject m_Prefab;
-        NetworkObjectPool m_Pool;
-        string m_Tag;
-
-        public PooledPrefabInstanceHandler(GameObject prefab, NetworkObjectPool pool, string tag)
+        // get the tag of the prefab we wish to instantiate
+        string Tag = "";
+        // did the user pass us a string tag?
+        if (Identifier is string)
         {
-            m_Prefab = prefab;
-            m_Pool = pool;
-            m_Tag = tag;
+            if (!SleepingObjects.ContainsKey(Identifier as string)) return null;
+            else Tag = Identifier as string;
         }
-
-        NetworkObject INetworkPrefabInstanceHandler.Instantiate(ulong ownerClientId, Vector3 position, Quaternion rotation)
+        // did the user pass us a prefab?
+        else if (Identifier is GameObject)
         {
-            return m_Pool.GetNetworkObject(m_Tag, position, rotation);
+            // check if this prefab is one that we manage
+            if (!PrefabTypeLookup.ContainsKey(Identifier as GameObject)) return null;
+            // if we manage this type, get the tag
+            else Tag = PrefabTypeLookup[Identifier as GameObject].SortingTag;
         }
+        else return null;
 
-        void INetworkPrefabInstanceHandler.Destroy(NetworkObject networkObject)
+        // If we make it here, we know the tag has been set and exists.
+        GameObject Member;
+        // if no objects are left in the queue, but we can auto expand, then make a new object
+        if (SleepingObjects[Tag].Count == 0 && TagTypeLookup[Tag].AutoExpand)
         {
-            m_Pool.ReturnNetworkObject(networkObject, m_Tag);
+            Member = Instantiate(TagTypeLookup[Tag].Prefab, UseParentTransforms ? TypeParents[Tag] : transform);
+            Member.name = Tag;
         }
+        // else if there are members in the queue get the member from the sleeping queue
+        else if (SleepingObjects[Tag].Count > 0)
+            Member = SleepingObjects[Tag].Dequeue();
+        // else we cannot instantiate
+        else return null;
+
+        // Now that we have a member, we can update it's variables and return it
+        Member.transform.position = Position;
+        Member.transform.rotation = Rotation;
+        ActiveObjects[Tag].Add(Member);
+
+        // can't forget to do this!
+        Member.SetActive(true);
+
+        return Member;
     }
+    #endregion
 }

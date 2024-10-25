@@ -1,4 +1,5 @@
 using System;
+using Netcode.Extensions;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(100f);
     public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(100f);
     public NetworkVariable<float> HealthRegenRate = new NetworkVariable<float>(1f);
+    IsometricPlayerHealthbar healthbarScript;
 
     void Start()
     {
@@ -16,6 +18,21 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
         CurrentHealth.Value = MaxHealth.Value;
         ActivePlayersList.Instance.RegisterPlayer(this);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            SpawnIndividualHealthBar();
+            EventManager.Instance.PlayerSpawned();
+        }
+
+        if (IsClient)
+        {
+            SpawnHealthbars();
+        }
+
     }
 
     void OnDisable()
@@ -31,9 +48,41 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
         if (CurrentHealth.Value < MaxHealth.Value)
         {
-            CurrentHealth.Value += HealthRegenRate.Value * Time.deltaTime;
+            RegenHealth(HealthRegenRate.Value);
         }
 
+
+    }
+    void SpawnHealthbars()
+    {
+        SpawnPlayerHealthbars();
+    }
+
+    void SpawnPlayerHealthbars()
+    {
+        foreach (PlayerNetworkHealth player in ActivePlayersList.Instance.GetAlivePlayers())
+        {
+            SpawnIndividualHealthBar();
+        }
+    }
+
+    void SpawnIndividualHealthBar()
+    {
+        GameObject healthbar = ObjectPooler.Generate("IsometricPlayerHealthbar");
+        if (healthbar == null)
+        {
+            Debug.LogError("IsometricPlayerHealthbar not found in pool!");
+            return;
+        }
+        IsometricPlayerHealthbar healthbarScript = healthbar.GetComponentInChildren<IsometricPlayerHealthbar>();
+        HealthbarManagerUI.Instance.AddHealthbar(healthbarScript.gameObject);
+        healthbarScript.SetPlayer(transform);
+    }
+
+    void RegenHealth(float regenAmount)
+    {
+
+        CurrentHealth.Value += regenAmount * Time.deltaTime;
     }
 
     public void TakeDamage(float damage)
