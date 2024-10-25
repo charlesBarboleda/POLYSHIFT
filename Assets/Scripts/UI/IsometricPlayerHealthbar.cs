@@ -16,24 +16,24 @@ public class IsometricPlayerHealthbar : MonoBehaviour
 
     void OnEnable()
     {
-        playerNetworkHealth.CurrentHealth.OnValueChanged += OnHealthChanged;
-        playerNetworkHealth.MaxHealth.OnValueChanged += OnHealthChanged;
+        playerNetworkHealth.currentHealth.OnValueChanged += OnHealthChanged;
+        playerNetworkHealth.maxHealth.OnValueChanged += OnHealthChanged;
 
         playerCameraBehavior.MainCamera = Camera.main; // Set the main camera reference
     }
 
     void OnDisable()
     {
-        playerNetworkHealth.CurrentHealth.OnValueChanged -= OnHealthChanged;
-        playerNetworkHealth.MaxHealth.OnValueChanged -= OnHealthChanged;
+        playerNetworkHealth.currentHealth.OnValueChanged -= OnHealthChanged;
+        playerNetworkHealth.maxHealth.OnValueChanged -= OnHealthChanged;
     }
 
     void Update()
     {
-        if (player == null || playerNetworkHealth.CurrentHealth.Value <= 0)
+        if (player == null || playerNetworkHealth.currentHealth.Value <= 0)
         {
             // If the player is null, return the health bar to the object pool
-            ObjectPooler.Destroy(gameObject);
+            NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponentInParent<NetworkObject>(), "IsometricPlayerHealthbar");
             return;
         }
 
@@ -60,7 +60,7 @@ public class IsometricPlayerHealthbar : MonoBehaviour
     // Update the health bar fill amount based on the player's health
     void OnHealthChanged(float previousValue, float newValue)
     {
-        healthbarFill.fillAmount = playerNetworkHealth.CurrentHealth.Value / playerNetworkHealth.MaxHealth.Value;
+        healthbarFill.fillAmount = playerNetworkHealth.currentHealth.Value / playerNetworkHealth.maxHealth.Value;
     }
 
     public void SetPlayer(Transform playerTransform)

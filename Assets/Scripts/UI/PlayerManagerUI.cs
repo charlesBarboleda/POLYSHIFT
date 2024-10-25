@@ -26,20 +26,21 @@ public class PlayerManagerUI : MonoBehaviour
     void OnEnable()
     {
         // Subscribe to health changes
-        playerNetworkHealth.CurrentHealth.OnValueChanged += FirstPersonOnHealthChanged;
-        playerNetworkHealth.MaxHealth.OnValueChanged += FirstPersonOnHealthChanged;
+        playerNetworkHealth.currentHealth.OnValueChanged += FirstPersonOnHealthChanged;
+        playerNetworkHealth.maxHealth.OnValueChanged += FirstPersonOnHealthChanged;
+    
     }
 
     void OnDisable()
     {
         // Unsubscribe from health changes
-        playerNetworkHealth.CurrentHealth.OnValueChanged -= FirstPersonOnHealthChanged;
-        playerNetworkHealth.MaxHealth.OnValueChanged -= FirstPersonOnHealthChanged;
+        playerNetworkHealth.currentHealth.OnValueChanged -= FirstPersonOnHealthChanged;
+        playerNetworkHealth.maxHealth.OnValueChanged -= FirstPersonOnHealthChanged;
     }
 
     void FirstPersonOnHealthChanged(float previousValue, float newValue)
     {
-        UpdateFirstPersonHealthBar(playerNetworkHealth.CurrentHealth.Value, playerNetworkHealth.MaxHealth.Value);
+        UpdateFirstPersonHealthBar(playerNetworkHealth.currentHealth.Value, playerNetworkHealth.maxHealth.Value);
     }
 
     void UpdateFirstPersonHealthBar(float currentHealth, float maxHealth)

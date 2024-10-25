@@ -1,4 +1,3 @@
-using System.Collections;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,30 +10,40 @@ public class PlayerCameraBehavior : NetworkBehaviour
     public Camera MainCamera;
     PlayerNetworkRotation playerNetworkRotation;
 
+    float _lastSwitchTime = 0f;  // Tracks last switch time
+    float switchCooldown = 1;  // Cooldown duration (adjust as needed)
+
     void Start()
     {
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
         if (!IsOwner)
         {
-            // If this is not the local player, disable cameras
+            // Disable cameras for non-local players
             firstPersonCamera.gameObject.SetActive(false);
             isometricCamera.gameObject.SetActive(false);
             return;
         }
+
+        // Detach cameras from the player
         isometricCamera.transform.SetParent(null);
         firstPersonCamera.transform.SetParent(null);
         EnableFirstPersonCamera();
     }
 
-
     void Update()
     {
         if (!IsOwner) return;
-        if (Input.GetKeyDown(KeyCode.Space))
+
+        // Check if enough time has passed since the last switch
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
         {
+            // Toggle perspective
             playerNetworkRotation.IsIsometric.Value = !playerNetworkRotation.IsIsometric.Value;
             EventManager.Instance.OnPerspectiveChange?.Invoke(playerNetworkRotation.IsIsometric.Value);
+            _lastSwitchTime = Time.time;  // Update last switch time
         }
+
+        // Set camera based on the current mode
         if (IsIsometricMode())
         {
             EnableIsometricCamera();
@@ -42,15 +51,14 @@ public class PlayerCameraBehavior : NetworkBehaviour
         else
         {
             EnableFirstPersonCamera();
-            FollowPlayerHead();  // Update camera position
+            FollowPlayerHead();  // Update first-person camera position
         }
-
     }
 
     void FollowPlayerHead()
     {
-        firstPersonCamera.transform.position = targetTransform.transform.position;
-        firstPersonCamera.transform.rotation = targetTransform.transform.rotation;
+        firstPersonCamera.transform.position = targetTransform.position;
+        firstPersonCamera.transform.rotation = targetTransform.rotation;
     }
 
     void EnableFirstPersonCamera()
@@ -65,13 +73,8 @@ public class PlayerCameraBehavior : NetworkBehaviour
         isometricCamera.Priority = 1;
     }
 
-
-    // Method to check if we are in isometric mode (for UI visibility)
     public bool IsIsometricMode()
     {
         return playerNetworkRotation.IsIsometric.Value;
     }
-
-
-
 }

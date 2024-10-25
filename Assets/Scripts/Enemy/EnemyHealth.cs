@@ -33,7 +33,7 @@ public class EnemyHealth : NetworkBehaviour, IDamageable
             CurrentHealth.Value -= damage;
             if (CurrentHealth.Value <= 0)
             {
-                Die();
+                HandleDeath();
             }
         }
     }
@@ -44,7 +44,7 @@ public class EnemyHealth : NetworkBehaviour, IDamageable
         Debug.Log("Enemy was attacked by " + attackerId);
     }
 
-    void Die()
+    public void HandleDeath()
     {
         Debug.Log("Enemy died");
         NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponent<NetworkObject>(), enemyName);

@@ -1,27 +1,30 @@
 using System;
 using Netcode.Extensions;
 using Unity.Netcode;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 {
     public static event Action<ulong> OnPlayerDeath;
-    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(100f);
-    public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(100f);
-    public NetworkVariable<float> HealthRegenRate = new NetworkVariable<float>(1f);
-    IsometricPlayerHealthbar healthbarScript;
 
-    void Start()
-    {
-        if (!IsServer) return;
+    const float DefaultHealth = 100f;
+    const float DefaultRegenRate = 1f;
+    const string HealthBarTag = "IsometricPlayerHealthbar";
 
-        CurrentHealth.Value = MaxHealth.Value;
-        ActivePlayersList.Instance.RegisterPlayer(this);
-    }
+    [FormerlySerializedAs("CurrentHealth")] public NetworkVariable<float> currentHealth = new NetworkVariable<float>(DefaultHealth);
+    [FormerlySerializedAs("MaxHealth")] public NetworkVariable<float> maxHealth = new NetworkVariable<float>(DefaultHealth);
+    [FormerlySerializedAs("HealthRegenRate")] public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(DefaultRegenRate);
+
+    private IsometricPlayerHealthbar _healthbarScript;
 
     public override void OnNetworkSpawn()
     {
+        if (IsServer)
+        {
+            currentHealth.Value = maxHealth.Value;
+        }
+        ActivePlayersList.Instance.RegisterPlayer(this);
         if (IsOwner)
         {
             SpawnIndividualHealthBar();
@@ -30,80 +33,84 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
         if (IsClient)
         {
-            SpawnHealthbars();
+            SpawnAllPlayerHealthbars();
         }
 
+    }
+    void OnEnable()
+    {
+        if (!IsServer) return;
+        ActivePlayersList.Instance.RegisterPlayer(this);
     }
 
     void OnDisable()
     {
         if (!IsServer) return;
+
         ActivePlayersList.Instance.UnregisterPlayer(this);
     }
-
 
     void Update()
     {
         if (!IsServer) return;
 
-        if (CurrentHealth.Value < MaxHealth.Value)
+        if (currentHealth.Value < maxHealth.Value)
         {
-            RegenHealth(HealthRegenRate.Value);
+            RegenerateHealth(healthRegenRate.Value);
         }
-
-
-    }
-    void SpawnHealthbars()
-    {
-        SpawnPlayerHealthbars();
     }
 
-    void SpawnPlayerHealthbars()
+
+    void SpawnAllPlayerHealthbars()
     {
         foreach (PlayerNetworkHealth player in ActivePlayersList.Instance.GetAlivePlayers())
         {
-            SpawnIndividualHealthBar();
+            if (player == this && IsOwner) continue;  // Skip the local player if they are the owner
+            player.SpawnIndividualHealthBar();
         }
     }
 
     void SpawnIndividualHealthBar()
     {
-        GameObject healthbar = ObjectPooler.Generate("IsometricPlayerHealthbar");
+        // Check if a health bar is already assigned to avoid duplicates
+        if (_healthbarScript != null) return;
+
+        GameObject healthbar = NetworkObjectPool.Instance.GetNetworkObject(HealthBarTag).gameObject;
         if (healthbar == null)
         {
-            Debug.LogError("IsometricPlayerHealthbar not found in pool!");
+            Debug.LogError($"{HealthBarTag} not found in pool!");
             return;
         }
-        IsometricPlayerHealthbar healthbarScript = healthbar.GetComponentInChildren<IsometricPlayerHealthbar>();
-        HealthbarManagerUI.Instance.AddHealthbar(healthbarScript.gameObject);
-        healthbarScript.SetPlayer(transform);
+
+        _healthbarScript = healthbar.GetComponentInChildren<IsometricPlayerHealthbar>();
+        HealthbarManagerUI.Instance.AddHealthbar(_healthbarScript.gameObject);
+        _healthbarScript.SetPlayer(transform);
     }
 
-    void RegenHealth(float regenAmount)
-    {
 
-        CurrentHealth.Value += regenAmount * Time.deltaTime;
+    void RegenerateHealth(float regenAmount)
+    {
+        currentHealth.Value += regenAmount * Time.deltaTime;
     }
 
     public void TakeDamage(float damage)
     {
         if (!IsServer) return;
+
+        currentHealth.Value -= damage;
+        if (currentHealth.Value <= 0)
         {
-            CurrentHealth.Value -= damage;
-            if (CurrentHealth.Value <= 0)
-            {
-                Die();
-            }
+            HandleDeath();
         }
     }
 
     public void TakeDamage(float damage, ulong attackerId)
     {
         TakeDamage(damage);
-        Debug.Log("Player was attacked by " + attackerId);
+        Debug.Log($"Player was attacked by {attackerId}");
     }
 
-    void Die()
+    public void HandleDeath()
     {
         Debug.Log("Player died");
         OnPlayerDeath?.Invoke(OwnerClientId);
@@ -112,7 +119,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     public void Respawn()
     {
-        CurrentHealth.Value = MaxHealth.Value;
+        currentHealth.Value = maxHealth.Value;
         gameObject.SetActive(true);
     }
 }

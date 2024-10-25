@@ -1976,6 +1976,9 @@ MonoBehaviour:
   - Prefab: {fileID: 1714088802826837701, guid: 2aac0192e3ffec448962b5c5ac336cee, type: 3}
     Tag: MeleeEnemy
     PrewarmCount: 100
+  - Prefab: {fileID: 4360208399448754937, guid: 2dd2d3a0e61ece04cb5a7d78c87528ae, type: 3}
+    Tag: IsometricPlayerHealthbar
+    PrewarmCount: 10
 --- !u!4 &879881269
 Transform:
   m_ObjectHideFlags: 0
@@ -2884,12 +2887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UseParentTransforms: 0
-  PoolableTypes:
-  - TypeName: IsometricPlayerHealthbar
-    Prefab: {fileID: 4360208399448754937, guid: 2dd2d3a0e61ece04cb5a7d78c87528ae, type: 3}
-    SortingTag: IsometricPlayerHealthbar
-    Max: 10
-    AutoExpand: 1
+  PoolableTypes: []
 --- !u!4 &1443165072
 Transform:
   m_ObjectHideFlags: 0

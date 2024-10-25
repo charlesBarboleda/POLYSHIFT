@@ -27,7 +27,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     {
         if (!IsOwner) return; // Only the owner of the object should be able to move it
 
-        if (playerNetworkHealth.CurrentHealth.Value <= 0) return; // If the player is dead, they should not be able to move
+        if (playerNetworkHealth.currentHealth.Value <= 0) return; // If the player is dead, they should not be able to move
 
         if (!playerNetworkRotation.IsIsometric.Value)
         {

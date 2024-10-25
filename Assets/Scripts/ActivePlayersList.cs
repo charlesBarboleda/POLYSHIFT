@@ -5,7 +5,8 @@ using UnityEngine;
 public class ActivePlayersList : NetworkBehaviour
 {
     public static ActivePlayersList Instance;
-    List<PlayerNetworkHealth> alivePlayers = new List<PlayerNetworkHealth>();
+    readonly List<PlayerNetworkHealth> _alivePlayers = new List<PlayerNetworkHealth>();
+    readonly List<PlayerNetworkHealth> _deadPlayers = new List<PlayerNetworkHealth>();
 
     void Awake()
     {
@@ -17,28 +18,38 @@ public class ActivePlayersList : NetworkBehaviour
 
     public void RegisterPlayer(PlayerNetworkHealth player)
     {
-        if (!alivePlayers.Contains(player))
+        if (!_alivePlayers.Contains(player))
         {
-            alivePlayers.Add(player);
+            _alivePlayers.Add(player);
+        }
+
+        if (_deadPlayers.Contains(player))
+        {
+            _deadPlayers.Add(player);
         }
     }
 
     public void UnregisterPlayer(PlayerNetworkHealth player)
     {
-        if (alivePlayers.Contains(player))
+        if (_alivePlayers.Contains(player))
         {
-            alivePlayers.Remove(player);
+            _alivePlayers.Remove(player);
+        }
+
+        if (_deadPlayers.Contains(player))
+        {
+            _deadPlayers.Add(player);
         }
     }
 
-    public List<PlayerNetworkHealth> GetAlivePlayers(ulong deadPlayerClientId)
+    public List<PlayerNetworkHealth> GetAlivePlayer(ulong deadPlayerClientId)
     {
         // Return all alive players except the dead player
-        return alivePlayers.FindAll(p => p.OwnerClientId != deadPlayerClientId && p.CurrentHealth.Value > 0);
+        return _alivePlayers.FindAll(p => p.OwnerClientId != deadPlayerClientId && p.currentHealth.Value > 0);
     }
 
     public List<PlayerNetworkHealth> GetAlivePlayers()
     {
-        return alivePlayers;
+        return _alivePlayers;
     }
 }
