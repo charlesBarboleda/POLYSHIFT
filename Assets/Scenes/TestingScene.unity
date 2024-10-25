@@ -1979,6 +1979,9 @@ MonoBehaviour:
   - Prefab: {fileID: 4360208399448754937, guid: 2dd2d3a0e61ece04cb5a7d78c87528ae, type: 3}
     Tag: IsometricPlayerHealthbar
     PrewarmCount: 10
+  - Prefab: {fileID: 4360208399448754937, guid: 4f4838bfd8f8e7b418852bdb93688ca5, type: 3}
+    Tag: IsometricEnemyHealthbar
+    PrewarmCount: 10
 --- !u!4 &879881269
 Transform:
   m_ObjectHideFlags: 0
@@ -4376,6 +4379,7 @@ GameObject:
   - component: {fileID: 2061313654}
   - component: {fileID: 2061313652}
   - component: {fileID: 2061313653}
+  - component: {fileID: 2061313655}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4421,6 +4425,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  _alivePlayers: []
+  _deadPlayers: []
 --- !u!4 &2061313654
 Transform:
   m_ObjectHideFlags: 0
@@ -4436,6 +4442,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2061313655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061313651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3412645e98fcf944ab511af4e2d0032, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2063367136
 GameObject:
   m_ObjectHideFlags: 0
@@ -4708,10 +4726,10 @@ SceneRoots:
   m_Roots:
   - {fileID: 7440552082300812833}
   - {fileID: 2061313654}
+  - {fileID: 111730641}
   - {fileID: 879881269}
   - {fileID: 287319905}
   - {fileID: 824950691}
-  - {fileID: 111730641}
   - {fileID: 1280226913}
   - {fileID: 1608804506}
   - {fileID: 2097410308}

@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 5055367318798674458}
   - component: {fileID: 3126185331819892659}
   - component: {fileID: 8731146836077832972}
+  - component: {fileID: 8897300401015763097}
   m_Layer: 0
   m_Name: MeleeEnemy
   m_TagString: Enemy
@@ -155,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 1
-  AuthorityMode: 0
+  AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
   SyncPositionX: 1
@@ -258,3 +259,23 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   MoveSpeed:
     m_InternalValue: 10
+--- !u!114 &8897300401015763097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714088802826837701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 931c04521873d3c4982bf076acdf58d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  CurrentHealth:
+    m_InternalValue: 100
+  MaxHealth:
+    m_InternalValue: 100
+  HealthRegenRate:
+    m_InternalValue: 1
+  enemyName: MeleeEnemy

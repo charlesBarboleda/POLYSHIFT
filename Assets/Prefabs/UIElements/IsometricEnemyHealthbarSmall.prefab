@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5650244775194606655}
+  - component: {fileID: 5860802756799244311}
   m_Layer: 0
   m_Name: IsometricEnemyHealthbarSmall
   m_TagString: Untagged
@@ -32,6 +33,31 @@ Transform:
   - {fileID: 5031856294201442908}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5860802756799244311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4360208399448754937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 158383611
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &6007247538328756396
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,6 +171,7 @@ GameObject:
   - component: {fileID: 3403299759771997693}
   - component: {fileID: 518284282742911474}
   - component: {fileID: 6761499949496026139}
+  - component: {fileID: 2136315499552781509}
   m_Layer: 5
   m_Name: Container
   m_TagString: Untagged
@@ -161,7 +188,7 @@ RectTransform:
   m_GameObject: {fileID: 6640782235151752630}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.46259, y: 0.46259, z: 0.46259}
+  m_LocalScale: {x: 0.060256977, y: 0.034949046, z: 0.060256977}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 660035068958589250}
@@ -210,6 +237,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2136315499552781509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6640782235151752630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed088f39117e7f048a3810fdf402a1fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthbarFill: {fileID: 3678997770329993736}
+  enemy: {fileID: 0}
+  healthbarContainer: {fileID: 6640782235151752630}
+  playerCameraBehavior: {fileID: 7923766061160519678, guid: 11ace2ae31549f0409176ce364b63222, type: 3}
 --- !u!1 &8236812268064474696
 GameObject:
   m_ObjectHideFlags: 0

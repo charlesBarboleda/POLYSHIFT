@@ -5,8 +5,8 @@ using UnityEngine;
 public class ActivePlayersList : NetworkBehaviour
 {
     public static ActivePlayersList Instance;
-    readonly List<PlayerNetworkHealth> _alivePlayers = new List<PlayerNetworkHealth>();
-    readonly List<PlayerNetworkHealth> _deadPlayers = new List<PlayerNetworkHealth>();
+    [SerializeField] List<PlayerNetworkHealth> _alivePlayers = new List<PlayerNetworkHealth>();
+    [SerializeField] List<PlayerNetworkHealth> _deadPlayers = new List<PlayerNetworkHealth>();
 
     void Awake()
     {

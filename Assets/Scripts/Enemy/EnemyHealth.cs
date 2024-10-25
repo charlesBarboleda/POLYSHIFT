@@ -8,11 +8,22 @@ public class EnemyHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(100f);
     public NetworkVariable<float> HealthRegenRate = new NetworkVariable<float>(1f);
     [SerializeField] string enemyName;
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        if (!IsServer) return;
+        if (IsServer)
+        {
+            CurrentHealth.Value = MaxHealth.Value;
 
-        CurrentHealth.Value = MaxHealth.Value;
+        }
+        GameObject healthbar = NetworkObjectPool.Instance.GetNetworkObject("IsometricEnemyHealthbar").gameObject;
+        IsometricEnemyHealthbar healthbarScript = healthbar.GetComponentInChildren<IsometricEnemyHealthbar>();
+        healthbarScript.SetPlayer(transform, this);
+        HealthbarManagerUI.Instance.AddHealthbar(healthbarScript.gameObject);
+
+        if (IsClient)
+        {
+            Debug.Log("Enemy spawned");
+        }
     }
 
     void Update()

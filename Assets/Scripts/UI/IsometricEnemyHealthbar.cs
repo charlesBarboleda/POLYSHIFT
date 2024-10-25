@@ -1,14 +1,14 @@
-using UnityEngine.UI;
-using UnityEngine;
-using Unity.Netcode;
 using Netcode.Extensions;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class IsometricPlayerHealthbar : MonoBehaviour
+public class IsometricEnemyHealthbar : MonoBehaviour
 {
     [SerializeField] Image healthbarFill;
-    [SerializeField] Transform player;
+    [SerializeField] Transform enemy;
     [SerializeField] GameObject healthbarContainer;
-    PlayerNetworkHealth playerNetworkHealth;
+    EnemyHealth enemyHealth;
     [SerializeField] PlayerCameraBehavior playerCameraBehavior; // Reference to the camera behavior
 
     // Offset for positioning the health bar above the player's head
@@ -16,10 +16,10 @@ public class IsometricPlayerHealthbar : MonoBehaviour
 
     void OnEnable()
     {
-        if (playerNetworkHealth != null)
+        if (enemyHealth != null)
         {
-            playerNetworkHealth.currentHealth.OnValueChanged += OnHealthChanged;
-            playerNetworkHealth.maxHealth.OnValueChanged += OnHealthChanged;
+            enemyHealth.CurrentHealth.OnValueChanged += OnHealthChanged;
+            enemyHealth.MaxHealth.OnValueChanged += OnHealthChanged;
         }
 
         playerCameraBehavior.MainCamera = Camera.main; // Set the main camera reference
@@ -27,19 +27,24 @@ public class IsometricPlayerHealthbar : MonoBehaviour
 
     void OnDisable()
     {
-        if (playerNetworkHealth != null)
+        if (enemyHealth != null)
         {
-            playerNetworkHealth.currentHealth.OnValueChanged -= OnHealthChanged;
-            playerNetworkHealth.maxHealth.OnValueChanged -= OnHealthChanged;
+            enemyHealth.CurrentHealth.OnValueChanged -= OnHealthChanged;
+            enemyHealth.MaxHealth.OnValueChanged -= OnHealthChanged;
         }
     }
 
     void Update()
     {
-        if (player == null || playerNetworkHealth.currentHealth.Value <= 0)
+        if (enemy == null || enemyHealth.CurrentHealth.Value <= 0)
         {
             // If the player is null, return the health bar to the object pool
-            NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponentInParent<NetworkObject>(), "IsometricPlayerHealthbar");
+
+
+            NetworkObject networkObject = gameObject.GetComponentInParent<NetworkObject>();
+            NetworkObjectPool.Instance.ReturnNetworkObject(networkObject, "IsometricEnemyHealthbar");
+            networkObject.Despawn(true);
+
             return;
         }
 
@@ -51,7 +56,7 @@ public class IsometricPlayerHealthbar : MonoBehaviour
     void UpdateHealthbarPosition()
     {
         // Directly set the health bar's position in world space (no need for screen space conversion)
-        healthbarContainer.transform.position = player.transform.position + healthBarOffset;
+        healthbarContainer.transform.position = enemy.transform.position + healthBarOffset;
     }
 
     void UpdateHealthbarRotation()
@@ -66,13 +71,13 @@ public class IsometricPlayerHealthbar : MonoBehaviour
     // Update the health bar fill amount based on the player's health
     void OnHealthChanged(float previousValue, float newValue)
     {
-        healthbarFill.fillAmount = playerNetworkHealth.currentHealth.Value / playerNetworkHealth.maxHealth.Value;
+        healthbarFill.fillAmount = enemyHealth.CurrentHealth.Value / enemyHealth.MaxHealth.Value;
     }
 
-    public void SetPlayer(Transform playerTransform, PlayerNetworkHealth playerNetworkHealth)
+    public void SetPlayer(Transform targetTransform, EnemyHealth enemyHealth)
     {
-        player = playerTransform;
-        this.playerNetworkHealth = playerNetworkHealth;
+        enemy = targetTransform;
+        this.enemyHealth = enemyHealth;
     }
 
 }

@@ -84,7 +84,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
         _healthbarScript = healthbar.GetComponentInChildren<IsometricPlayerHealthbar>();
         HealthbarManagerUI.Instance.AddHealthbar(_healthbarScript.gameObject);
-        _healthbarScript.SetPlayer(transform);
+        _healthbarScript.SetPlayer(transform, this);
     }
 
 
