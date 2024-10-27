@@ -1,12 +1,15 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class EventManager : MonoBehaviour
 {
     public static EventManager Instance { get; private set; }
-    public UnityEvent OnPlayerSpawned = new UnityEvent();
     public UnityEvent<PlayerNetworkHealth> OnPlayerSpawnReference = new UnityEvent<PlayerNetworkHealth>();
     public UnityEvent<bool> OnPerspectiveChange = new UnityEvent<bool>();
+
+    // List to keep track of all player IDs
+
 
     void Awake()
     {
@@ -16,18 +19,14 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void PlayerSpawnReference(PlayerNetworkHealth player)
+    public void PlayerSpawnReferenceEvent(PlayerNetworkHealth player)
     {
+
         OnPlayerSpawnReference.Invoke(player);
     }
 
     public void PerspectiveChange(bool isIsometric)
     {
         OnPerspectiveChange.Invoke(isIsometric);
-    }
-
-    public void PlayerSpawned()
-    {
-        OnPlayerSpawned.Invoke();
     }
 }

@@ -16,9 +16,8 @@ public class EnemyHealth : NetworkBehaviour, IDamageable
 
         }
         GameObject healthbar = NetworkObjectPool.Instance.GetNetworkObject("IsometricEnemyHealthbar").gameObject;
-        IsometricEnemyHealthbar healthbarScript = healthbar.GetComponentInChildren<IsometricEnemyHealthbar>();
-        healthbarScript.SetPlayer(transform, this);
-        HealthbarManagerUI.Instance.AddHealthbar(healthbarScript.gameObject);
+
+
 
         if (IsClient)
         {
@@ -59,6 +58,5 @@ public class EnemyHealth : NetworkBehaviour, IDamageable
     {
         Debug.Log("Enemy died");
         NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponent<NetworkObject>(), enemyName);
-        HealthbarManagerUI.Instance.RemoveHealthbar(gameObject.GetComponentInChildren<IsometricEnemyHealthbar>().gameObject);
     }
 }

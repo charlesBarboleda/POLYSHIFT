@@ -58,6 +58,8 @@ public class PlayerCameraBehavior : NetworkBehaviour
         }
     }
 
+
+
     void FollowPlayerHead()
     {
         firstPersonCamera.transform.position = targetTransform.position;

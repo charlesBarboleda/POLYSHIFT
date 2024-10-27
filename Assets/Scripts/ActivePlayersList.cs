@@ -5,8 +5,8 @@ using UnityEngine;
 public class ActivePlayersList : NetworkBehaviour
 {
     public static ActivePlayersList Instance;
-    [SerializeField] List<PlayerNetworkHealth> _alivePlayers = new List<PlayerNetworkHealth>();
-    [SerializeField] List<PlayerNetworkHealth> _deadPlayers = new List<PlayerNetworkHealth>();
+
+    public NetworkVariable<int> playersInGame = new NetworkVariable<int>(0);
 
     void Awake()
     {
@@ -16,40 +16,35 @@ public class ActivePlayersList : NetworkBehaviour
         }
     }
 
-    public void RegisterPlayer(PlayerNetworkHealth player)
+    void OnEnable()
     {
-        if (!_alivePlayers.Contains(player))
+        NetworkManager.Singleton.OnClientConnectedCallback += AddPlayerToList;
+        NetworkManager.Singleton.OnClientDisconnectCallback += RemovePlayerFromList;
+    }
+
+    void OnDisable()
+    {
+        NetworkManager.Singleton.OnClientConnectedCallback -= AddPlayerToList;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= RemovePlayerFromList;
+    }
+
+    void AddPlayerToList(ulong clientId)
+    {
+        if (IsServer)
         {
-            _alivePlayers.Add(player);
+            Debug.Log($"{clientId} connected...");
+            playersInGame.Value++;
         }
 
-        if (_deadPlayers.Contains(player))
+    }
+
+    void RemovePlayerFromList(ulong clientId)
+    {
+        if (IsServer)
         {
-            _deadPlayers.Add(player);
+            Debug.Log($"{clientId} disconnected...");
+            playersInGame.Value--;
         }
     }
 
-    public void UnregisterPlayer(PlayerNetworkHealth player)
-    {
-        if (_alivePlayers.Contains(player))
-        {
-            _alivePlayers.Remove(player);
-        }
-
-        if (_deadPlayers.Contains(player))
-        {
-            _deadPlayers.Add(player);
-        }
-    }
-
-    public List<PlayerNetworkHealth> GetAlivePlayer(ulong deadPlayerClientId)
-    {
-        // Return all alive players except the dead player
-        return _alivePlayers.FindAll(p => p.OwnerClientId != deadPlayerClientId && p.currentHealth.Value > 0);
-    }
-
-    public List<PlayerNetworkHealth> GetAlivePlayers()
-    {
-        return _alivePlayers;
-    }
 }
