@@ -10,12 +10,15 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(DefaultHealth);
     public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(DefaultRegenRate);
 
+
+
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
             currentHealth.Value = maxHealth.Value;
         }
+
     }
 
     private void Update()
