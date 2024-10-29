@@ -3,11 +3,12 @@ using UnityEngine.UI;
 using UnityEngine;
 using Unity.Netcode;
 using Netcode.Extensions;
+using System.Collections;
 
 
 public class PlayerHealthbarsManager : NetworkBehaviour
 {
-    Dictionary<ulong, GameObject> playerHealthbars = new Dictionary<ulong, GameObject>();
+    Dictionary<ulong, NetworkObject> playerHealthbars = new Dictionary<ulong, NetworkObject>();
 
     public override void OnNetworkSpawn()
     {
@@ -33,9 +34,11 @@ public class PlayerHealthbarsManager : NetworkBehaviour
         NetworkObject playerObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(clientId);
         if (playerObject != null)
         {
-            GameObject healthBarInstance = NetworkObjectPool.Instance.GetNetworkObject("IsometricPlayerHealth").gameObject;
-            healthBarInstance.transform.SetParent(playerObject.transform, false);
-            healthBarInstance.transform.localPosition = new Vector3(0, 1.5f, 0); // Adjust position above player
+            NetworkObject healthBarInstance = NetworkObjectPool.Instance.GetNetworkObject("IsometricPlayerHealth");
+            healthBarInstance.SpawnWithOwnership(clientId);
+            IsometricUIManager isometricUIManager = healthBarInstance.GetComponent<IsometricUIManager>();
+            playerObject.GetComponent<PlayerNetworkHealth>().SetIsometricUI(isometricUIManager);
+            isometricUIManager.SetPlayer(playerObject);
 
             playerHealthbars[clientId] = healthBarInstance;
         }
