@@ -2,7 +2,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using Unity.Netcode;
 
-public class IsometricUIManager : MonoBehaviour
+public class PlayerIsometricUIManager : MonoBehaviour
 {
     [SerializeField] private Image healthbarFill;
     [SerializeField] private GameObject healthbarContainer;
@@ -26,15 +26,20 @@ public class IsometricUIManager : MonoBehaviour
         TryAssignPlayerHealth(); // Try assigning the player reference
     }
 
+    // Subscribe to the player health change event
     private void TryAssignPlayerHealth()
     {
+        // Find the player with the given clientId
         foreach (var networkObject in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
         {
+            // Check if the network object is owned by the client
             if (networkObject.OwnerClientId == clientId)
             {
+                // Assign the player health component
                 playerHealth = networkObject.GetComponent<PlayerNetworkHealth>();
                 if (playerHealth != null)
                 {
+                    // Subscribe to the health change event
                     playerHealth.currentHealth.OnValueChanged += UpdateHealthbar;
                     UpdateHealthbar(playerHealth.currentHealth.Value, playerHealth.currentHealth.Value); // Initial update
                 }

@@ -2,27 +2,20 @@ using Netcode.Extensions;
 using Unity.Netcode;
 using UnityEngine;
 
-public class EnemyHealth : NetworkBehaviour, IDamageable
+public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 {
-    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(100f);
-    public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(100f);
-    public NetworkVariable<float> HealthRegenRate = new NetworkVariable<float>(1f);
+    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> HealthRegenRate = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] string enemyName;
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
             CurrentHealth.Value = MaxHealth.Value;
-
         }
-        GameObject healthbar = NetworkObjectPool.Instance.GetNetworkObject("IsometricEnemyHealthbar").gameObject;
+        EventManager.Instance.EnemySpawnedEvent(gameObject);
 
-
-
-        if (IsClient)
-        {
-            Debug.Log("Enemy spawned");
-        }
     }
 
     void Update()

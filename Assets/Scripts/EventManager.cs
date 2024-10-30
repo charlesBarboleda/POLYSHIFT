@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,6 +8,7 @@ public class EventManager : MonoBehaviour
     public static EventManager Instance { get; private set; }
     public UnityEvent<PlayerNetworkHealth> OnPlayerSpawnReference = new UnityEvent<PlayerNetworkHealth>();
     public UnityEvent<bool> OnPerspectiveChange = new UnityEvent<bool>();
+    public UnityEvent<GameObject> OnEnemySpawned = new UnityEvent<GameObject>();
 
     // List to keep track of all player IDs
 
@@ -28,5 +30,10 @@ public class EventManager : MonoBehaviour
     public void PerspectiveChange(bool isIsometric)
     {
         OnPerspectiveChange.Invoke(isIsometric);
+    }
+
+    public void EnemySpawnedEvent(GameObject enemy)
+    {
+        OnEnemySpawned.Invoke(enemy);
     }
 }

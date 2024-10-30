@@ -22,10 +22,12 @@ public class PlayerHealthbarsManager : NetworkBehaviour
         }
     }
 
+    // This method is called when a client connects to the server
     private void OnClientConnected(ulong clientId)
     {
         // Gather all client IDs into an array
         List<ulong> allClientIdsList = new List<ulong>();
+        // Add the new client ID
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             allClientIdsList.Add(client.ClientId);
@@ -45,7 +47,7 @@ public class PlayerHealthbarsManager : NetworkBehaviour
             {
                 // Each client spawns a health bar for each player
                 GameObject healthBarInstance = ObjectPooler.Generate("IsometricPlayerHealth");
-                IsometricUIManager isometricUIManager = healthBarInstance.GetComponent<IsometricUIManager>();
+                PlayerIsometricUIManager isometricUIManager = healthBarInstance.GetComponent<PlayerIsometricUIManager>();
 
                 // Bind the health bar to the player
                 isometricUIManager.SetClientPlayer(clientId); // Using clientId to set up player reference

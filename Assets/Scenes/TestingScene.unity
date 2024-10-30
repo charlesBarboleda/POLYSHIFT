@@ -2449,6 +2449,11 @@ MonoBehaviour:
     SortingTag: IsometricPlayerHealth
     Max: 10
     AutoExpand: 1
+  - TypeName: IsometricEnemyHealth
+    Prefab: {fileID: 8780789418580452908, guid: ce9c82477f51f9d4182468b205b3403f, type: 3}
+    SortingTag: IsometricEnemyHealth
+    Max: 100
+    AutoExpand: 1
 --- !u!4 &1443165072
 Transform:
   m_ObjectHideFlags: 0
@@ -3174,6 +3179,21 @@ MonoBehaviour:
   OnPerspectiveChange:
     m_PersistentCalls:
       m_Calls: []
+  OnEnemySpawned:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2061313656}
+        m_TargetAssemblyTypeName: EnemyHealthbarsManager, Assembly-CSharp
+        m_MethodName: OnEnemySpawned
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &1758678892
 Transform:
   m_ObjectHideFlags: 0
@@ -3741,6 +3761,7 @@ GameObject:
   - component: {fileID: 2061313652}
   - component: {fileID: 2061313653}
   - component: {fileID: 2061313655}
+  - component: {fileID: 2061313656}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3816,6 +3837,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &2061313656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061313651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97035531684e0fd4b81d62b9b22e0f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2063367136
 GameObject:
   m_ObjectHideFlags: 0
@@ -4090,10 +4123,10 @@ SceneRoots:
   - {fileID: 2061313654}
   - {fileID: 111730641}
   - {fileID: 879881269}
+  - {fileID: 1443165072}
   - {fileID: 287319905}
   - {fileID: 824950691}
   - {fileID: 1280226913}
   - {fileID: 1608804506}
   - {fileID: 2097410308}
   - {fileID: 1758678892}
-  - {fileID: 1443165072}

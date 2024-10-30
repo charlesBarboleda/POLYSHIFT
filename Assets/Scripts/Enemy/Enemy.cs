@@ -13,7 +13,7 @@ public enum EnemyType
 public abstract class Enemy : NetworkBehaviour
 {
     public EnemyType enemyType;
-    public EnemyHealth enemyHealth;
+    public EnemyNetworkHealth enemyHealth;
     public AIKinematics enemyMovement;
     public Rigidbody rb;
     public NetworkObject networkObject;
