@@ -5,7 +5,7 @@ using Unity.Cinemachine;
 public class PlayerNetworkRotation : NetworkBehaviour
 {
     public NetworkVariable<float> FirstPersonTurnSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
+    [SerializeField] GameObject playerHead;
     PlayerNetworkMovement playerNetworkMovement;
     public override void OnNetworkSpawn()
     {
@@ -18,6 +18,7 @@ public class PlayerNetworkRotation : NetworkBehaviour
         if (!playerNetworkMovement.IsIsometric.Value)
         {
             RotatePlayerFirstPerson();
+            RotateHeadVertical();
         }
         else
         {
@@ -27,7 +28,7 @@ public class PlayerNetworkRotation : NetworkBehaviour
 
 
 
-    public void RotatePlayerIsometric()
+    void RotatePlayerIsometric()
     {
         // Get the mouse position in screen space
         Vector3 mouseScreenPos = Input.mousePosition;
@@ -62,10 +63,30 @@ public class PlayerNetworkRotation : NetworkBehaviour
 
 
 
-    public void RotatePlayerFirstPerson()
+    void RotatePlayerFirstPerson()
     {
         // Rotate the player based on the mouse input
         float horizontalMouseInput = Input.GetAxis("Mouse X");
         transform.Rotate(Vector3.up, horizontalMouseInput * FirstPersonTurnSpeed.Value);
     }
+
+    void RotateHeadVertical()
+    {
+        // Get vertical mouse input
+        float verticalMouseInput = Input.GetAxis("Mouse Y");
+
+        // Calculate new vertical rotation based on cumulative angle
+        float rotationChange = verticalMouseInput * FirstPersonTurnSpeed.Value;
+
+        // Add the rotation change to the current rotation
+        float newRotation = playerHead.transform.localEulerAngles.x - rotationChange;
+
+        // Clamp the rotation to avoid flipping
+        if (newRotation > 180f) newRotation -= 360f; // Convert to a -180 to 180 range for clamping
+        newRotation = Mathf.Clamp(newRotation, -90f, 90f);
+
+        // Apply the new clamped rotation to the head on the local X-axis only
+        playerHead.transform.localRotation = Quaternion.Euler(newRotation, 0f, 0f);
+    }
+
 }

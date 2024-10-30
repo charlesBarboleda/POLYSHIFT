@@ -394,13 +394,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3096287934318979276}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.000016793607, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.581, z: 0.356}
   m_LocalScale: {x: 0.5853101, y: 0.30425006, z: 0.38423854}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 999592856915055916}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.002, y: 0, z: 0}
 --- !u!33 &2401443111203688551
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -784,6 +784,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   FirstPersonTurnSpeed:
     m_InternalValue: 10
+  playerHead: {fileID: 3096287934318979276}
 --- !u!114 &7321868169838826265
 MonoBehaviour:
   m_ObjectHideFlags: 0
