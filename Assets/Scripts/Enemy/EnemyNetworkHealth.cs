@@ -41,7 +41,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
             CurrentHealth.Value -= damage;
             if (CurrentHealth.Value <= 0)
             {
-                HandleDeathServerRpc();
+                HandleDeathClientRpc();
             }
         }
     }
@@ -52,10 +52,9 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         Debug.Log("Enemy was attacked by " + attackerId);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void HandleDeathServerRpc()
+    [ClientRpc]
+    public void HandleDeathClientRpc()
     {
-        Debug.Log("Handle death server rpc");
         HandleDeath();
     }
     public void HandleDeath()
