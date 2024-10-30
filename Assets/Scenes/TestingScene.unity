@@ -2006,51 +2006,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1026856075}
   m_CullTransparentMesh: 1
---- !u!1 &1250648337
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1250648338}
-  - component: {fileID: 1250648339}
-  m_Layer: 0
-  m_Name: HealthbarManagerUI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1250648338
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1250648337}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -400.00003, y: -224.95686, z: 0}
-  m_LocalScale: {x: 0.920069, y: 0.920069, z: 0.920069}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1280226913}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1250648339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1250648337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36fb47b593e76c14db01a085bc4e737e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1260185470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,7 +2239,6 @@ RectTransform:
   - {fileID: 2137080399}
   - {fileID: 1005887241}
   - {fileID: 1260185471}
-  - {fileID: 1250648338}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3185,6 +3139,21 @@ MonoBehaviour:
       - m_Target: {fileID: 2061313656}
         m_TargetAssemblyTypeName: EnemyHealthbarsManager, Assembly-CSharp
         m_MethodName: OnEnemySpawned
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnEnemyDespawned:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2061313656}
+        m_TargetAssemblyTypeName: EnemyHealthbarsManager, Assembly-CSharp
+        m_MethodName: OnEnemyDespawned
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

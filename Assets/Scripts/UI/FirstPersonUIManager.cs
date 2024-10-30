@@ -7,6 +7,8 @@ public class FirstPersonUIManager : MonoBehaviour
 {
     [SerializeField] private Image healthFill;
     [SerializeField] private TextMeshProUGUI healthText;
+    [SerializeField] private TextMeshProUGUI ammoCountText;
+    [SerializeField] private PlayerWeapon playerWeapon;
 
     private PlayerNetworkHealth playerHealth;
 
@@ -31,6 +33,13 @@ public class FirstPersonUIManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (playerWeapon != null)
+        {
+            UpdateAmmoUI(0, playerWeapon.currentAmmoCount);
+        }
+    }
     private void OnDisable()
     {
         // Clean up subscriptions if this component is disabled
@@ -38,6 +47,14 @@ public class FirstPersonUIManager : MonoBehaviour
         {
             playerHealth.currentHealth.OnValueChanged -= UpdateHealthUI;
             playerHealth.maxHealth.OnValueChanged -= UpdateHealthUI;
+        }
+    }
+
+    private void UpdateAmmoUI(int previousAmmo, int newAmmo)
+    {
+        if (playerWeapon != null)
+        {
+            ammoCountText.text = $"{newAmmo} / {playerWeapon.maxAmmoCount}";
         }
     }
 

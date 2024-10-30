@@ -9,6 +9,7 @@ public class EventManager : MonoBehaviour
     public UnityEvent<PlayerNetworkHealth> OnPlayerSpawnReference = new UnityEvent<PlayerNetworkHealth>();
     public UnityEvent<bool> OnPerspectiveChange = new UnityEvent<bool>();
     public UnityEvent<GameObject> OnEnemySpawned = new UnityEvent<GameObject>();
+    public UnityEvent<GameObject> OnEnemyDespawned = new UnityEvent<GameObject>();
 
     // List to keep track of all player IDs
 
@@ -35,5 +36,10 @@ public class EventManager : MonoBehaviour
     public void EnemySpawnedEvent(GameObject enemy)
     {
         OnEnemySpawned.Invoke(enemy);
+    }
+
+    public void EnemyDespawnedEvent(GameObject enemy)
+    {
+        OnEnemyDespawned.Invoke(enemy);
     }
 }

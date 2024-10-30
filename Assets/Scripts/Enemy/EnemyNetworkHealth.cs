@@ -28,6 +28,11 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         }
 
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestTakeDamageServerRpc(float damage)
+    {
+        TakeDamage(damage);
+    }
 
     public void TakeDamage(float damage)
     {
@@ -36,7 +41,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
             CurrentHealth.Value -= damage;
             if (CurrentHealth.Value <= 0)
             {
-                HandleDeath();
+                HandleDeathServerRpc();
             }
         }
     }
@@ -47,9 +52,16 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         Debug.Log("Enemy was attacked by " + attackerId);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void HandleDeathServerRpc()
+    {
+        Debug.Log("Handle death server rpc");
+        HandleDeath();
+    }
     public void HandleDeath()
     {
-        Debug.Log("Enemy died");
+        Debug.Log("Handle death");
         NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponent<NetworkObject>(), enemyName);
+        EventManager.Instance.EnemyDespawnedEvent(gameObject);
     }
 }

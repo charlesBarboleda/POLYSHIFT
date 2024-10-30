@@ -39,6 +39,12 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         currentHealth.Value += regenAmount * Time.deltaTime;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestTakeDamageServerRpc(float damage)
+    {
+        TakeDamage(damage);
+    }
+
     public void TakeDamage(float damage)
     {
         if (IsServer)
@@ -47,13 +53,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             currentHealth.Value = newHealth;
         }
     }
-
-    public void TakeDamage(float damage, ulong attackerId)
-    {
-        TakeDamage(damage);
-        Debug.Log($"Player was attacked by {attackerId}");
-    }
-
     public void HandleDeath()
     {
         Debug.Log("Player died");
