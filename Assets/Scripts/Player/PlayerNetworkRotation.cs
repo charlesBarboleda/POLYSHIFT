@@ -4,7 +4,7 @@ using Unity.Cinemachine;
 
 public class PlayerNetworkRotation : NetworkBehaviour
 {
-    public NetworkVariable<float> FirstPersonTurnSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public float FirstPersonTurnSpeed;
     [SerializeField] GameObject playerHead;
     PlayerNetworkMovement playerNetworkMovement;
     public override void OnNetworkSpawn()
@@ -18,7 +18,6 @@ public class PlayerNetworkRotation : NetworkBehaviour
         if (!playerNetworkMovement.IsIsometric.Value)
         {
             RotatePlayerFirstPerson();
-            RotateHeadVertical();
         }
         else
         {
@@ -67,7 +66,8 @@ public class PlayerNetworkRotation : NetworkBehaviour
     {
         // Rotate the player based on the mouse input
         float horizontalMouseInput = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up, horizontalMouseInput * FirstPersonTurnSpeed.Value);
+        transform.Rotate(Vector3.up, horizontalMouseInput * FirstPersonTurnSpeed);
+        RotateHeadVertical();
     }
 
     void RotateHeadVertical()
@@ -76,7 +76,7 @@ public class PlayerNetworkRotation : NetworkBehaviour
         float verticalMouseInput = Input.GetAxis("Mouse Y");
 
         // Calculate new vertical rotation based on cumulative angle
-        float rotationChange = verticalMouseInput * FirstPersonTurnSpeed.Value;
+        float rotationChange = verticalMouseInput * FirstPersonTurnSpeed;
 
         // Add the rotation change to the current rotation
         float newRotation = playerHead.transform.localEulerAngles.x - rotationChange;
