@@ -1,21 +1,16 @@
 using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
 using Unity.Netcode;
-using Netcode.Extensions;
-using System.Collections;
-
 
 public class PlayerHealthbarsManager : NetworkBehaviour
 {
-    Dictionary<ulong, NetworkObject> playerHealthbars = new Dictionary<ulong, NetworkObject>();
+    private Dictionary<ulong, GameObject> playerHealthbars = new Dictionary<ulong, GameObject>();
 
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
-            // Listen for when new players join
-            NetworkManager.OnClientConnectedCallback += SpawnHealthBarForPlayer;
+            NetworkManager.OnClientConnectedCallback += OnClientConnected;
         }
     }
 
@@ -23,24 +18,39 @@ public class PlayerHealthbarsManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            NetworkManager.OnClientConnectedCallback -= SpawnHealthBarForPlayer;
+            NetworkManager.OnClientConnectedCallback -= OnClientConnected;
         }
     }
 
-    private void SpawnHealthBarForPlayer(ulong clientId)
+    private void OnClientConnected(ulong clientId)
     {
-        if (!IsServer) return;
-
-        NetworkObject playerObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(clientId);
-        if (playerObject != null)
+        // Gather all client IDs into an array
+        List<ulong> allClientIdsList = new List<ulong>();
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
-            NetworkObject healthBarInstance = NetworkObjectPool.Instance.GetNetworkObject("IsometricPlayerHealth");
-            healthBarInstance.SpawnWithOwnership(clientId);
-            IsometricUIManager isometricUIManager = healthBarInstance.GetComponent<IsometricUIManager>();
-            playerObject.GetComponent<PlayerNetworkHealth>().SetIsometricUI(isometricUIManager);
-            isometricUIManager.SetPlayer(playerObject);
+            allClientIdsList.Add(client.ClientId);
+        }
+        ulong[] allClientIds = allClientIdsList.ToArray(); // Convert to array
 
-            playerHealthbars[clientId] = healthBarInstance;
+        // Call the ClientRpc to spawn health bars on each client for all players
+        SpawnHealthBarsForAllClientsClientRpc(allClientIds);
+    }
+
+    [ClientRpc]
+    private void SpawnHealthBarsForAllClientsClientRpc(ulong[] allClientIds)
+    {
+        foreach (var clientId in allClientIds)
+        {
+            if (!playerHealthbars.ContainsKey(clientId))
+            {
+                // Each client spawns a health bar for each player
+                GameObject healthBarInstance = ObjectPooler.Generate("IsometricPlayerHealth");
+                IsometricUIManager isometricUIManager = healthBarInstance.GetComponent<IsometricUIManager>();
+
+                // Bind the health bar to the player
+                isometricUIManager.SetClientPlayer(clientId); // Using clientId to set up player reference
+                playerHealthbars[clientId] = healthBarInstance;
+            }
         }
     }
 }

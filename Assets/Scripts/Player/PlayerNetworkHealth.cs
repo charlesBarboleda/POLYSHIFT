@@ -10,8 +10,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(DefaultHealth, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(DefaultRegenRate, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    [SerializeField] IsometricUIManager isometricUIManager;
-
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -34,12 +32,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         {
             HandleDeath();
         }
-    }
-
-    void OnDisable()
-    {
-        currentHealth.OnValueChanged -= (previous, current) => isometricUIManager.UpdateHealthbarClientRpc();
-
     }
 
     private void RegenerateHealth(float regenAmount)
@@ -74,10 +66,5 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         gameObject.SetActive(true);
     }
 
-    public void SetIsometricUI(IsometricUIManager isometricUIManager)
-    {
-        this.isometricUIManager = isometricUIManager;
-        currentHealth.OnValueChanged += (previous, current) => isometricUIManager.UpdateHealthbarClientRpc();
-        Debug.Log("Set Isometric UI subscribed to health changes");
-    }
+
 }
