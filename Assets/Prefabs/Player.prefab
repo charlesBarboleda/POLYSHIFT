@@ -431,7 +431,7 @@ GameObject:
   - component: {fileID: 9182661801330313306}
   - component: {fileID: 7321868169838826265}
   - component: {fileID: 3601094521028987543}
-  - component: {fileID: 1970518981699678297}
+  - component: {fileID: 7554751333955013019}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -685,7 +685,7 @@ MonoBehaviour:
   reloadTimeReduction: 1
   bulletSpawnPoint: {fileID: 1763966314182918516}
   Camera: {fileID: 0}
---- !u!114 &1970518981699678297
+--- !u!114 &7554751333955013019
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -694,7 +694,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7401702113207284416}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
@@ -924,7 +924,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 674253994008239393}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 9921498557a4a6046b7ad347a7aec74d, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 483b8d75adfeeb34b86f8cb6159c8f94, type: 2}
   m_Controller: {fileID: 9100000, guid: ca11f50e0eae0e74faf21f635a60f4f0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0

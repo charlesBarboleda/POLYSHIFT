@@ -5,23 +5,24 @@ using Unity.Netcode;
 public class PlayerNetworkMovement : NetworkBehaviour
 {
     [Header("Player Inputs")]
-    PlayerInput moveInput;
-    InputAction moveAction;
+    private PlayerInput moveInput;
+    private InputAction moveAction;
 
     [Header("Player Movement")]
     public NetworkVariable<float> MoveSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> IsIsometric = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    Animator animator;
-    PlayerNetworkRotation playerNetworkRotation;
-    PlayerNetworkHealth playerNetworkHealth;
 
-    private const float movementThreshold = 0.1f; // Adjust threshold to filter out small movements
+    private Animator animator;
+    private PlayerNetworkRotation playerNetworkRotation;
+    private PlayerNetworkHealth playerNetworkHealth;
+
+    private const float movementThreshold = 0.1f;
 
     public override void OnNetworkSpawn()
     {
+        animator = GetComponentInChildren<Animator>();
         if (!IsOwner) return;
 
-        animator = GetComponentInChildren<Animator>();
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
         playerNetworkHealth = GetComponent<PlayerNetworkHealth>();
         moveInput = GetComponent<PlayerInput>();
@@ -30,74 +31,81 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     void Update()
     {
-        if (!IsOwner) return; // Only the owner of the object should be able to move it
+        if (!IsOwner) return;
 
-        if (playerNetworkHealth.currentHealth.Value <= 0) return; // If the player is dead, they should not be able to move
-
-        if (!IsIsometric.Value)
-        {
-            MovePlayerFirstPerson();
-        }
-        else
-        {
-            MovePlayerIsometric();
-        }
-    }
-
-    public void MovePlayerIsometric()
-    {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        if (playerNetworkHealth.currentHealth.Value <= 0) return;
 
         Vector2 inputDirection = moveAction.ReadValue<Vector2>();
 
+        // Determine movement direction and apply animations for both first-person and isometric view
+
+        HandleMovementAndAnimations(inputDirection);
+    }
+
+    void HandleMovementAndAnimations(Vector2 inputDirection)
+    {
+        Vector3 moveDirection;
+
+        if (!IsIsometric.Value)
+        {
+            moveDirection = GetFirstPersonMoveDirection(inputDirection);
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        else
+        {
+            moveDirection = GetIsometricMoveDirection(inputDirection);
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        float movementMagnitude = moveDirection.magnitude;
+        bool isMoving = movementMagnitude > movementThreshold;
+        animator.SetBool("IsMoving", isMoving);
+
+        if (isMoving)
+        {
+            animator.SetFloat("HorizontalDirection", inputDirection.x);
+            animator.SetFloat("VerticalDirection", inputDirection.y);
+
+            transform.position += moveDirection * Time.deltaTime * MoveSpeed.Value;
+        }
+        else
+        {
+            animator.SetFloat("HorizontalDirection", 0);
+            animator.SetFloat("VerticalDirection", 0);
+        }
+    }
+
+
+    private Vector3 GetFirstPersonMoveDirection(Vector2 inputDirection)
+    {
+        Vector3 forward = transform.forward;
+        Vector3 right = transform.right;
+
+        return (forward * inputDirection.y) + (right * inputDirection.x);
+    }
+
+    private Vector3 GetIsometricMoveDirection(Vector2 inputDirection)
+    {
         Vector3 cameraForward = Camera.main.transform.forward;
         Vector3 cameraRight = Camera.main.transform.right;
+
         cameraForward.y = 0;
         cameraRight.y = 0;
         cameraForward.Normalize();
         cameraRight.Normalize();
 
-        Vector3 moveDirection = (cameraForward * inputDirection.y) + (cameraRight * inputDirection.x);
-
-        // Determine whether the player is moving based on the threshold
-        float movementMagnitude = moveDirection.magnitude;
-        animator.SetBool("isMoving", movementMagnitude > movementThreshold);
-
-        // Move the player
-        if (movementMagnitude > movementThreshold)
-        {
-            transform.position += moveDirection * Time.deltaTime * MoveSpeed.Value;
-        }
+        return (cameraForward * inputDirection.y) + (cameraRight * inputDirection.x);
     }
 
-    public void MovePlayerFirstPerson()
+    private float CalculateMovementDirection(Vector2 inputDirection)
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Confined;
-
-        Vector2 inputDirection = moveAction.ReadValue<Vector2>();
-        Vector3 forward = transform.forward;
-        Vector3 right = transform.right;
-
-        Vector3 moveDirection = (forward * inputDirection.y) + (right * inputDirection.x);
-
-
-        // Determine whether the player is moving based on the threshold
-        float movementMagnitude = moveDirection.magnitude;
-        animator.SetBool("isMoving", movementMagnitude > movementThreshold);
-        Debug.Log(movementMagnitude > movementThreshold);
-
-
-        if (movementMagnitude > 1)
-        {
-            moveDirection.Normalize();
-        }
-
-        // Move the player
-        if (movementMagnitude > movementThreshold)
-        {
-            transform.position += moveDirection * Time.deltaTime * MoveSpeed.Value;
-        }
+        // Set values based on input direction for animation blending
+        if (inputDirection.y > 0) return 1f;   // Forward
+        if (inputDirection.y < 0) return -1f;  // Backward
+        if (inputDirection.x > 0) return 0.5f; // Right
+        if (inputDirection.x < 0) return -0.5f;// Left
+        return 0f;                             // Idle
     }
 }
