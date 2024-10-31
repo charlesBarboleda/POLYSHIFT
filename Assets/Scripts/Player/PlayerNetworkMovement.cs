@@ -12,11 +12,12 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [Header("Player Movement")]
     public NetworkVariable<float> MoveSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> IsIsometric = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
+    Animator animator;
     PlayerNetworkRotation playerNetworkRotation;
     PlayerNetworkHealth playerNetworkHealth;
     void Start()
     {
+        animator = GetComponentInChildren<Animator>();
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
         playerNetworkHealth = GetComponent<PlayerNetworkHealth>();
         moveInput = GetComponent<PlayerInput>();
@@ -66,7 +67,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         // Calculate the desired movement direction based on the camera's orientation
         Vector3 moveDirection = (cameraForward * inputDirection.y) + (cameraRight * inputDirection.x);
-
+        animator.SetFloat("IsMoving", moveDirection.magnitude);
         // Move the player
         transform.position += moveDirection * Time.deltaTime * MoveSpeed.Value;
     }
@@ -86,7 +87,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         // Calculate movement direction based on input and player rotation
         Vector3 moveDirection = (forward * inputDirection.y) + (right * inputDirection.x);
-
+        Debug.Log(moveDirection);
+        animator.SetFloat("IsMoving", moveDirection.magnitude);
         // Normalize to avoid faster diagonal movement
         if (moveDirection.magnitude > 1)
         {

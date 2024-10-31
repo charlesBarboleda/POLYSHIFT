@@ -117,8 +117,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthFill: {fileID: 0}
-  playerHealth: {fileID: 0}
   healthText: {fileID: 4568249716186392295}
+  ammoCountText: {fileID: 0}
+  playerWeapon: {fileID: 0}
 --- !u!1 &1639626403073876513
 GameObject:
   m_ObjectHideFlags: 0

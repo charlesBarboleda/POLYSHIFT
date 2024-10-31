@@ -4,30 +4,31 @@ using UnityEngine;
 
 public class PlayerCameraBehavior : NetworkBehaviour
 {
-    [SerializeField] Transform targetTransform;
-    [SerializeField] CinemachineCamera firstPersonCamera;
-    [SerializeField] CinemachineCamera isometricCamera;
+    [SerializeField] private Transform playerHead; // The head target for first-person view
+    [SerializeField] private CinemachineCamera firstPersonCamera;
+    [SerializeField] private CinemachineCamera isometricCamera;
     public Camera MainCamera;
+    private PlayerNetworkMovement playerNetworkMovement;
+    private PlayerNetworkRotation playerNetworkRotation;
 
-    PlayerNetworkMovement playerNetworkMovement;
+    float verticalRotation = 0f;
+    float horizontalRotation = 0f;
 
-
-    float _lastSwitchTime = 0f;  // Tracks last switch time
-    float switchCooldown = 1;  // Cooldown duration (adjust as needed)
+    float _lastSwitchTime = 0f;
+    float switchCooldown = 1;
 
     public override void OnNetworkSpawn()
     {
-
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
+        playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
+
         if (!IsOwner)
         {
-            // Disable cameras for non-local players
             firstPersonCamera.gameObject.SetActive(false);
             isometricCamera.gameObject.SetActive(false);
             return;
         }
 
-        // Detach cameras from the player
         isometricCamera.transform.SetParent(null);
         firstPersonCamera.transform.SetParent(null);
         EnableFirstPersonCamera();
@@ -37,16 +38,12 @@ public class PlayerCameraBehavior : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        // Check if enough time has passed since the last switch
         if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
         {
-            // Toggle perspective
             playerNetworkMovement.IsIsometric.Value = !playerNetworkMovement.IsIsometric.Value;
-            EventManager.Instance.PerspectiveChange(playerNetworkMovement.IsIsometric.Value);
-            _lastSwitchTime = Time.time;  // Update last switch time
+            _lastSwitchTime = Time.time;
         }
 
-        // Set camera based on the current mode
         if (IsIsometricMode())
         {
             EnableIsometricCamera();
@@ -54,17 +51,34 @@ public class PlayerCameraBehavior : NetworkBehaviour
         else
         {
             EnableFirstPersonCamera();
-            FollowPlayerHead();  // Update first-person camera position
+            FollowPlayerHead();
+            RotateCameraIndependently();
         }
     }
 
-
-
     void FollowPlayerHead()
     {
-        firstPersonCamera.transform.position = targetTransform.position;
-        firstPersonCamera.transform.rotation = targetTransform.rotation;
+        // Position the first-person camera at the head's position
+        firstPersonCamera.transform.position = playerHead.position;
     }
+    void RotateCameraIndependently()
+    {
+        // Handle horizontal and vertical rotation independently of the player
+        float horizontalMouseInput = Input.GetAxis("Mouse X") * playerNetworkRotation.FirstPersonTurnSpeed;
+        float verticalMouseInput = Input.GetAxis("Mouse Y") * playerNetworkRotation.FirstPersonTurnSpeed;
+
+        // Update rotations based on input
+        horizontalRotation += horizontalMouseInput;
+        verticalRotation -= verticalMouseInput;
+        verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
+
+        // Apply the rotation to the camera
+        firstPersonCamera.transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
+
+        // Rotate the player’s body to match only the horizontal rotation of the camera
+        transform.rotation = Quaternion.Euler(0f, horizontalRotation, 0f);
+    }
+
 
     void EnableFirstPersonCamera()
     {
