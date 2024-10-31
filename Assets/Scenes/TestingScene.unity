@@ -1669,9 +1669,9 @@ MonoBehaviour:
   - Prefab: {fileID: 1714088802826837701, guid: 2aac0192e3ffec448962b5c5ac336cee, type: 3}
     Tag: MeleeEnemy
     PrewarmCount: 100
-  - Prefab: {fileID: 178107405148591004, guid: befdbed130da29848b060499adb7bd68, type: 3}
-    Tag: KnockbackBullet
-    PrewarmCount: 10
+  - Prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
+    Tag: LaserBullet
+    PrewarmCount: 100
 --- !u!4 &879881269
 Transform:
   m_ObjectHideFlags: 0
@@ -2406,6 +2406,16 @@ MonoBehaviour:
   - TypeName: IsometricEnemyHealth
     Prefab: {fileID: 8780789418580452908, guid: ce9c82477f51f9d4182468b205b3403f, type: 3}
     SortingTag: IsometricEnemyHealth
+    Max: 100
+    AutoExpand: 1
+  - TypeName: LaserBulletImpact
+    Prefab: {fileID: 1795992203533318, guid: 890aba7398207db48978724168fac5a7, type: 3}
+    SortingTag: LaserBulletImpact
+    Max: 100
+    AutoExpand: 1
+  - TypeName: LaserBullet
+    Prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
+    SortingTag: LaserBullet
     Max: 100
     AutoExpand: 1
 --- !u!4 &1443165072
@@ -4037,15 +4047,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.47202078
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.00000011920929
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.2324176
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.w

@@ -44,6 +44,9 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     public void MovePlayerIsometric()
     {
+        // Disable the cursor
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         // Get the input from the player (WASD or arrow keys)
         Vector2 inputDirection = moveAction.ReadValue<Vector2>();
 
@@ -71,6 +74,9 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     public void MovePlayerFirstPerson()
     {
+        // Enable the cursor
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
         // Get input from the Move action
         Vector2 inputDirection = moveAction.ReadValue<Vector2>();
 

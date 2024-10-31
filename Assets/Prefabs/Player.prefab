@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 667402235613522531}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.234, y: 0.39, z: 0.716}
+  m_LocalPosition: {x: 0.234, y: 0.148, z: 0.407}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -675,7 +675,7 @@ MonoBehaviour:
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
-  SyncRotAngleX: 0
+  SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 0
   SyncScaleX: 0
@@ -782,8 +782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  FirstPersonTurnSpeed:
-    m_InternalValue: 10
+  FirstPersonTurnSpeed: 3
   playerHead: {fileID: 3096287934318979276}
 --- !u!114 &7321868169838826265
 MonoBehaviour:
@@ -823,6 +822,9 @@ MonoBehaviour:
   ShootRate: 0.1
   currentAmmoCount: 0
   maxAmmoCount: 30
+  addedAmmoCount: 0
+  shootRateReduction: 1
+  reloadTimeReduction: 1
   bulletSpawnPoint: {fileID: 1763966314182918516}
 --- !u!1001 &2234867605229511217
 PrefabInstance:

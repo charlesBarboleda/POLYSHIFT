@@ -15,15 +15,18 @@ public enum WeaponType
 }
 public class PlayerWeapon : NetworkBehaviour
 {
-    public WeaponType WeaponType;
     public float Damage = 10f;
     public float ReloadTime = 1f;
     public float ShootRate = 0.5f;
     public int currentAmmoCount;
     public int maxAmmoCount = 30;
-    [SerializeField] Transform bulletSpawnPoint;
+    public int addedAmmoCount = 0;
+    public float shootRateReduction = 1f;
+    public float reloadTimeReduction = 1f;
+    public Transform bulletSpawnPoint;
     PlayerNetworkMovement playerNetworkMovement;
-    Camera _camera;
+    IWeaponBehavior currentWeaponBehavior;
+    public Camera Camera;
     float _nextShotTime;
     bool _isReloading;
 
@@ -31,8 +34,8 @@ public class PlayerWeapon : NetworkBehaviour
     {
         TryGetComponent(out playerNetworkMovement);
         currentAmmoCount = maxAmmoCount;
-        WeaponType = WeaponType.SingleShot;
-        _camera = Camera.main;
+        SetWeaponBehavior(WeaponType.SingleShot);
+        Camera = Camera.main;
 
     }
 
@@ -40,14 +43,14 @@ public class PlayerWeapon : NetworkBehaviour
     {
         if (!IsOwner) return; // Only the owner can control the weapon
 
-
         if (Input.GetMouseButton(0) && Time.time >= _nextShotTime && !_isReloading)
         {
             if (currentAmmoCount > 0)
             {
-                Shoot(WeaponType);
+
                 _nextShotTime = Time.time + 1f * ShootRate;
                 currentAmmoCount--;
+                currentWeaponBehavior.Fire(this);
             }
             else
             {
@@ -60,60 +63,93 @@ public class PlayerWeapon : NetworkBehaviour
         {
             Reload();
         }
-
     }
 
-    public void Shoot(WeaponType weaponType)
+    public void ApplyDamage(RaycastHit hit)
     {
-        switch (weaponType)
+        if (hit.collider.TryGetComponent(out IDamageable iDamageable))
         {
-            case WeaponType.SingleShot:
-
-                // Create a bullet and set its properties
-                FireSingleShot();
-                break;
-            case WeaponType.Shotgun:
-
-                break;
-            case WeaponType.SingleAutomatic:
-
-                break;
-            case WeaponType.Burst:
-
-                break;
-            case WeaponType.Sniper:
-                ;
-                break;
-        }
-    }
-
-    void FireSingleShot()
-    {
-        // Raycast a bullet from the player's position
-        RaycastHit hit;
-        if (Physics.Raycast(_camera.transform.position, _camera.transform.TransformDirection(Vector3.forward), out hit))
-        {
-            Debug.Log("Hit detected on " + hit.transform.name);
-            hit.transform.GetComponent<IDamageable>()?.RequestTakeDamageServerRpc(Damage);
+            iDamageable.TakeDamage(Damage);
         }
     }
 
 
+    [ServerRpc]
+    public void FireSingleShotServerRpc(Vector3 startPoint, Vector3 hitPoint)
+    {
+        Vector3 direction = (hitPoint - startPoint).normalized;
+        SpawnBulletVisualClientRpc(startPoint, hitPoint, direction);
+    }
 
+    [ClientRpc]
+    void SpawnBulletVisualClientRpc(Vector3 startPoint, Vector3 hitPoint, Vector3 direction)
+    {
+        SpawnBullet(startPoint, direction, Vector3.Distance(startPoint, hitPoint));
+        SpawnImpact(hitPoint);
+    }
+
+    void SpawnBullet(Vector3 startPoint, Vector3 direction, float distance)
+    {
+        GameObject bullet = ObjectPooler.Generate("LaserBullet");
+        if (bullet != null)
+        {
+            bullet.transform.position = startPoint;
+            bullet.transform.rotation = Quaternion.LookRotation(direction);
+            StartCoroutine(MoveObject(bullet, direction, distance, 500f, () => ObjectPooler.Destroy(bullet)));
+        }
+    }
+
+    void SpawnImpact(Vector3 position)
+    {
+        GameObject impact = ObjectPooler.Generate("LaserBulletImpact");
+        if (impact != null)
+        {
+            impact.transform.position = position;
+            StartCoroutine(DelayedDestroy(impact, 1f));
+        }
+    }
+
+    IEnumerator MoveObject(GameObject obj, Vector3 direction, float distance, float speed, System.Action onComplete)
+    {
+        float traveled = 0;
+        while (traveled < distance)
+        {
+            float step = speed * Time.deltaTime;
+            obj.transform.position += direction * step;
+            traveled += step;
+            yield return null;
+        }
+        onComplete?.Invoke();
+    }
+
+    IEnumerator DelayedDestroy(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ObjectPooler.Destroy(obj);
+    }
 
     IEnumerator Reload()
     {
         _isReloading = true;
-        Debug.Log("Reloading...");
         yield return new WaitForSeconds(ReloadTime);
         currentAmmoCount = maxAmmoCount;
         _isReloading = false;
-        Debug.Log("Reloaded");
     }
 
-    public void SwitchWeapon(WeaponType weaponType)
+    void SetWeaponBehavior(WeaponType WeaponType)
     {
-        WeaponType = weaponType;
+        switch (WeaponType)
+        {
+            case WeaponType.SingleShot:
+                currentWeaponBehavior = new SingleShot();
+                ShootRate = 2f * shootRateReduction;
+                ReloadTime = 1f * reloadTimeReduction;
+                maxAmmoCount = 10 + addedAmmoCount;
+                currentAmmoCount = maxAmmoCount;
+                break;
+                // Add cases for other weapon types...
+        }
     }
+
 
 }

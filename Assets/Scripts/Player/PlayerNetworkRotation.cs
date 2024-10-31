@@ -15,9 +15,11 @@ public class PlayerNetworkRotation : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner) return; // Only the owner of the object should be able to move it
         if (!playerNetworkMovement.IsIsometric.Value)
         {
             RotatePlayerFirstPerson();
+            RotateHeadVertical();
         }
         else
         {
@@ -67,7 +69,6 @@ public class PlayerNetworkRotation : NetworkBehaviour
         // Rotate the player based on the mouse input
         float horizontalMouseInput = Input.GetAxis("Mouse X");
         transform.Rotate(Vector3.up, horizontalMouseInput * FirstPersonTurnSpeed);
-        RotateHeadVertical();
     }
 
     void RotateHeadVertical()
