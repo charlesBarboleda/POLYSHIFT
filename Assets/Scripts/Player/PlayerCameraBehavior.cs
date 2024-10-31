@@ -59,7 +59,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
     void FollowPlayerHead()
     {
         // Position the first-person camera at the head's position
-        firstPersonCamera.transform.position = playerHead.position;
+        firstPersonCamera.transform.position = playerHead.position + playerHead.forward * 0.2f;
     }
     void RotateCameraIndependently()
     {
