@@ -1673,9 +1673,6 @@ MonoBehaviour:
   - Prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
     Tag: LaserBullet
     PrewarmCount: 100
-  - Prefab: {fileID: 6823200998282874702, guid: 8f8fe12323625f5499b2853dd2ad3e58, type: 3}
-    Tag: BloodSplatter
-    PrewarmCount: 100
 --- !u!4 &879881269
 Transform:
   m_ObjectHideFlags: 0
@@ -2422,6 +2419,11 @@ MonoBehaviour:
   - TypeName: LaserBullet
     Prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
     SortingTag: LaserBullet
+    Max: 100
+    AutoExpand: 1
+  - TypeName: BloodSplatter
+    Prefab: {fileID: 6823200998282874702, guid: 8f8fe12323625f5499b2853dd2ad3e58, type: 3}
+    SortingTag: BloodSplatter
     Max: 100
     AutoExpand: 1
 --- !u!4 &1443165072
@@ -4059,7 +4061,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.31
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.z

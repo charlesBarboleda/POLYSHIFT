@@ -90,23 +90,33 @@ public class MeleeEnemy : Enemy
         }
     }
 
-    public override void OnRaycastHit(Vector3 hitPoint, Vector3 hitNormal)
+
+
+    [ServerRpc]
+    public void OnRaycastHitServerRpc(Vector3 hitPoint, Vector3 hitNormal)
     {
-        if (IsServer)
-        {
-            StartCoroutine(SpawnBloodSplatter(hitPoint, hitNormal));
-        }
+        SpawnBloodSplatterClientRpc(hitPoint, hitNormal);
     }
 
-    IEnumerator SpawnBloodSplatter(Vector3 hitPoint, Vector3 hitNormal)
+    [ClientRpc]
+    private void SpawnBloodSplatterClientRpc(Vector3 hitPoint, Vector3 hitNormal)
     {
-        // Spawn blood splatter effect
-        GameObject bloodSplatter = NetworkObjectPool.Instance.GetNetworkObject("BloodSplatter").gameObject;
-        bloodSplatter.GetComponent<NetworkObject>().Spawn();
+        StartCoroutine(SpawnBloodSplatterCoroutine(hitPoint, hitNormal));
+    }
+
+    IEnumerator SpawnBloodSplatterCoroutine(Vector3 hitPoint, Vector3 hitNormal)
+    {
+        // Instantiate the blood splatter effect locally on each client
+        GameObject bloodSplatter = ObjectPooler.Generate("BloodSplatter");
         bloodSplatter.transform.position = hitPoint;
         bloodSplatter.transform.rotation = Quaternion.LookRotation(hitNormal);
-        yield return new WaitForSeconds(1f);
-        bloodSplatter.GetComponent<NetworkObject>().Despawn();
-        NetworkObjectPool.Instance.ReturnNetworkObject(bloodSplatter.GetComponent<NetworkObject>(), "BloodSplatter");
+
+        yield return new WaitForSeconds(3f);
+        // Optionally, destroy after a short time to prevent clutter
+        ObjectPooler.Destroy(bloodSplatter);
     }
+
 }
+
+
+

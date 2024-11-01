@@ -97,8 +97,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
         animator.SetTrigger("isDead");
         yield return new WaitForSeconds(5f);
-        kinematics.enabled = true;
         meleeEnemy.enabled = true;
+        kinematics.enabled = true;
         agent.enabled = true;
         NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponent<NetworkObject>(), enemyName);
     }

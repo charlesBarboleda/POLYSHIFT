@@ -16,7 +16,7 @@ public class SingleShot : IWeaponBehavior
             Enemy enemy = hit.collider.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.OnRaycastHit(hit.point, hit.normal);
+                enemy.OnRaycastHitServerRpc(hit.point, hit.normal);
             }
 
             if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
@@ -41,7 +41,7 @@ public class SingleShot : IWeaponBehavior
             Enemy enemy = hit.collider.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.OnRaycastHit(hit.point, hit.normal);
+                enemy.OnRaycastHitServerRpc(hit.point, hit.normal);
             }
 
             // Check for nearby enemies within a certain radius

@@ -5,7 +5,7 @@ using FIMSpace.FLook;
 
 public class AIKinematics : NetworkBehaviour
 {
-    public NetworkVariable<float> MoveSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public float MoveSpeed;
     public NavMeshAgent Agent;
     public Transform ClosestPlayer;
     FLookAnimator lookAnimator;
@@ -32,6 +32,7 @@ public class AIKinematics : NetworkBehaviour
         {
             lookAnimator.SetLookTarget(ClosestPlayer);
             FindClosestPlayer();
+            StopAndRotateTowardsTarget();
 
             if (ClosestPlayer != null)
             {
@@ -59,7 +60,27 @@ public class AIKinematics : NetworkBehaviour
             }
         }
         animator.SetFloat("Speed", Agent.velocity.magnitude);
-        Agent.speed = MoveSpeed.Value;
+        Agent.speed = MoveSpeed;
+    }
+
+    void StopAndRotateTowardsTarget()
+    {
+        if (ClosestPlayer != null)
+        {
+            if (Vector3.Distance(transform.position, ClosestPlayer.position) <= Agent.stoppingDistance)
+            {
+                Agent.velocity = Vector3.zero;
+                Agent.isStopped = true;
+                Vector3 direction = (ClosestPlayer.position - transform.position).normalized;
+                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+            }
+            else
+            {
+                Agent.isStopped = false;
+            }
+
+        }
     }
 
     void FindClosestPlayer()
