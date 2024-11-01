@@ -18,7 +18,7 @@ public class SpawnerManagerUI : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            GameObject enemy = NetworkObjectPool.Instance.GetNetworkObject("MeleeEnemy").gameObject;
+            GameObject enemy = NetworkObjectPool.Instance.GetNetworkObject("MeleeZombieEnemy").gameObject;
             enemy.GetComponent<NetworkObject>().Spawn();
             // enemy.GetComponent<Rigidbody>().isKinematic = false;
 

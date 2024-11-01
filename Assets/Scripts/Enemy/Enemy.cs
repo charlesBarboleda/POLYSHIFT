@@ -20,6 +20,7 @@ public abstract class Enemy : NetworkBehaviour
     public Transform ClosestTarget;
 
     protected abstract void Attack();
+    public abstract void OnRaycastHit(Vector3 hitPoint, Vector3 hitNormal);
 
     public override void OnNetworkSpawn()
     {

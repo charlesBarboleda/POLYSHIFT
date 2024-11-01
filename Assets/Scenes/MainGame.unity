@@ -1668,10 +1668,13 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   PooledPrefabsList:
   - Prefab: {fileID: 1714088802826837701, guid: 2aac0192e3ffec448962b5c5ac336cee, type: 3}
-    Tag: MeleeEnemy
+    Tag: MeleeZombieEnemy
     PrewarmCount: 100
   - Prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
     Tag: LaserBullet
+    PrewarmCount: 100
+  - Prefab: {fileID: 6823200998282874702, guid: 8f8fe12323625f5499b2853dd2ad3e58, type: 3}
+    Tag: BloodSplatter
     PrewarmCount: 100
 --- !u!4 &879881269
 Transform:

@@ -1,21 +1,27 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.AI;
+using FIMSpace.FLook;
 
 public class AIKinematics : NetworkBehaviour
 {
     public NetworkVariable<float> MoveSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NavMeshAgent Agent;
     public Transform ClosestPlayer;
+    FLookAnimator lookAnimator;
+    Animator animator;
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         Debug.Log("IsServer OnNetworkSpawn: " + IsServer);
         if (!IsServer)
         {
             // Disable AI logic on clients since only the server should run this
             enabled = false;
         }
+        animator = GetComponentInChildren<Animator>();
+        lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<NavMeshAgent>();
     }
 
@@ -24,6 +30,7 @@ public class AIKinematics : NetworkBehaviour
 
         if (IsServer)
         {
+            lookAnimator.SetLookTarget(ClosestPlayer);
             FindClosestPlayer();
 
             if (ClosestPlayer != null)
@@ -45,12 +52,13 @@ public class AIKinematics : NetworkBehaviour
                 Debug.LogWarning("Agent has no path!");
             }
 
+
             if (Agent.pathStatus == NavMeshPathStatus.PathInvalid)
             {
                 Debug.LogError("Invalid Path!");
             }
         }
-
+        animator.SetFloat("Speed", Agent.velocity.magnitude);
         Agent.speed = MoveSpeed.Value;
     }
 

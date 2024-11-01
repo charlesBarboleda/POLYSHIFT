@@ -23,6 +23,24 @@ namespace FIMSpace.FLook
         public bool DestroyMomentTargetOnMaxDistance = true;
 
 
+        /// <summary>
+        /// Sets a new look target for the animator to follow.
+        /// </summary>
+        public void SetLookTargetTransform(Transform newTarget)
+        {
+            activeLookTarget = newTarget;
+            OnTargetChanged(); // Update the look state to reflect the new target
+        }
+
+        /// <summary>
+        /// Sets a new look target at a specific position (without a Transform).
+        /// </summary>
+        public void SetLookTargetPosition(Vector3 newPosition)
+        {
+            activeLookPosition = newPosition;
+            activeLookTarget = null; // Clear the Transform target to prioritize the position
+            OnTargetChanged();
+        }
 
         /// <summary>
         /// Updating variable smoothLookPosition which is position at which object is looking

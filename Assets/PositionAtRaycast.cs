@@ -6,9 +6,13 @@ public class PositionAtRaycast : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!playerNetworkMovement.IsIsometric.Value)
+        if (!playerNetworkMovement.IsIsometric)
         {
             PositionAtRaycastFirstPerson();
+        }
+        else
+        {
+            PositionAtMouseIsometric();
         }
 
     }
@@ -30,5 +34,19 @@ public class PositionAtRaycast : MonoBehaviour
             transform.position = ray.origin + ray.direction * maxDistance;
         }
     }
+
+    void PositionAtMouseIsometric()
+    {
+        Vector3 mouseScreenPos = Input.mousePosition;
+        Ray ray = Camera.main.ScreenPointToRay(mouseScreenPos);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            // Move this game object to the point where the raycast hit another game object
+            transform.position = hit.point;
+        }
+    }
+
+
 
 }

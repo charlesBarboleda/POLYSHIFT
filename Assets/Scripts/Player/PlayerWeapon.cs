@@ -24,7 +24,7 @@ public class PlayerWeapon : NetworkBehaviour
     public float shootRateReduction = 1f;
     public float reloadTimeReduction = 1f;
     public Transform bulletSpawnPoint;
-    PlayerNetworkMovement playerNetworkMovement;
+    public PlayerNetworkMovement playerNetworkMovement;
     IWeaponBehavior currentWeaponBehavior;
     public Camera Camera;
     float _nextShotTime;
@@ -45,18 +45,24 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (Input.GetMouseButton(0) && Time.time >= _nextShotTime && !_isReloading)
         {
+
             if (currentAmmoCount > 0)
             {
 
+
                 _nextShotTime = Time.time + 1f * ShootRate;
                 currentAmmoCount--;
-                currentWeaponBehavior.Fire(this);
+                if (playerNetworkMovement.IsIsometric)
+                    currentWeaponBehavior.FireIsometric(this);
+                else
+                    currentWeaponBehavior.FireFirstPerson(this);
             }
             else
             {
                 Debug.Log("Out of ammo, reloading...");
                 StartCoroutine(Reload());
             }
+
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -65,13 +71,17 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    public void ApplyDamage(RaycastHit hit)
+    [ServerRpc]
+    public void ApplyDamageServerRpc(ulong targetNetworkObjectId, Vector3 hitPosition)
     {
-        if (hit.collider.TryGetComponent(out IDamageable iDamageable))
+        NetworkObject targetObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[targetNetworkObjectId];
+        if (targetObject != null && targetObject.TryGetComponent(out IDamageable iDamageable))
         {
             iDamageable.TakeDamage(Damage);
+            // Optional: Use hitPosition for visual effects or other purposes
         }
     }
+
 
 
     [ServerRpc]

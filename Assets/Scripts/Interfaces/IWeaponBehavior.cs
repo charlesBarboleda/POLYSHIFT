@@ -2,5 +2,7 @@
 
 public interface IWeaponBehavior
 {
-    void Fire(PlayerWeapon playerWeapon);
+    void FireFirstPerson(PlayerWeapon playerWeapon);
+
+    void FireIsometric(PlayerWeapon playerWeapon);
 }

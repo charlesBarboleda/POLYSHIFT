@@ -40,7 +40,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
         {
-            playerNetworkMovement.IsIsometric.Value = !playerNetworkMovement.IsIsometric.Value;
+            playerNetworkMovement.IsIsometric = !playerNetworkMovement.IsIsometric;
             _lastSwitchTime = Time.time;
         }
 
@@ -94,6 +94,6 @@ public class PlayerCameraBehavior : NetworkBehaviour
 
     public bool IsIsometricMode()
     {
-        return playerNetworkMovement.IsIsometric.Value;
+        return playerNetworkMovement.IsIsometric;
     }
 }

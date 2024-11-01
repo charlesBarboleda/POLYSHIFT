@@ -9,9 +9,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
     private InputAction moveAction;
 
     [Header("Player Movement")]
-    public NetworkVariable<float> MoveSpeed = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    public NetworkVariable<bool> IsIsometric = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
+    public float MoveSpeed = 5f;
+    public bool IsIsometric = false;
     private Animator animator;
     private PlayerNetworkRotation playerNetworkRotation;
     private PlayerNetworkHealth playerNetworkHealth;
@@ -46,7 +45,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     {
         Vector3 moveDirection;
 
-        if (!IsIsometric.Value)
+        if (!IsIsometric)
         {
             moveDirection = GetFirstPersonMoveDirection(inputDirection);
             Cursor.visible = false;
@@ -68,7 +67,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
             animator.SetFloat("HorizontalDirection", inputDirection.x);
             animator.SetFloat("VerticalDirection", inputDirection.y);
 
-            transform.position += moveDirection * Time.deltaTime * MoveSpeed.Value;
+            transform.position += moveDirection * Time.deltaTime * MoveSpeed;
         }
         else
         {
@@ -99,13 +98,4 @@ public class PlayerNetworkMovement : NetworkBehaviour
         return (cameraForward * inputDirection.y) + (cameraRight * inputDirection.x);
     }
 
-    private float CalculateMovementDirection(Vector2 inputDirection)
-    {
-        // Set values based on input direction for animation blending
-        if (inputDirection.y > 0) return 1f;   // Forward
-        if (inputDirection.y < 0) return -1f;  // Backward
-        if (inputDirection.x > 0) return 0.5f; // Right
-        if (inputDirection.x < 0) return -0.5f;// Left
-        return 0f;                             // Idle
-    }
 }
