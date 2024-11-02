@@ -26,12 +26,15 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         meleeEnemy = GetComponent<MeleeEnemy>();
         agent = GetComponent<NavMeshAgent>();
         CurrentHealth.OnValueChanged += OnHitAnimation;
+        CurrentHealth.OnValueChanged += OnHitEffects;
         EventManager.Instance.EnemySpawnedEvent(gameObject);
     }
 
     void OnDisable()
     {
         CurrentHealth.OnValueChanged -= OnHitAnimation;
+        CurrentHealth.OnValueChanged -= OnHitEffects;
+
     }
 
 
@@ -45,6 +48,16 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         }
 
     }
+
+    void OnHitEffects(float prev, float current)
+    {
+        if (prev > current)
+        {
+            // Slow down the enemy when hit
+            kinematics.Agent.velocity = Vector3.one;
+        }
+    }
+
     void OnHitAnimation(float prev, float current)
     {
         if (prev > current)

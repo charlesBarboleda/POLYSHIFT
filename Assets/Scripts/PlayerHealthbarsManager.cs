@@ -46,7 +46,7 @@ public class PlayerHealthbarsManager : NetworkBehaviour
             if (!playerHealthbars.ContainsKey(clientId))
             {
                 // Each client spawns a health bar for each player
-                GameObject healthBarInstance = ObjectPooler.Generate("IsometricPlayerHealth");
+                GameObject healthBarInstance = ObjectPooler.Instance.Spawn("IsometricPlayerHealth", transform.position, Quaternion.identity);
                 PlayerIsometricUIManager isometricUIManager = healthBarInstance.GetComponent<PlayerIsometricUIManager>();
 
                 // Bind the health bar to the player

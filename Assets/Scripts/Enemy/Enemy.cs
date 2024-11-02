@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 public enum EnemyType
 {
@@ -25,6 +26,7 @@ public abstract class Enemy : NetworkBehaviour
     public float attackCooldown = 3f;
     public bool canAttack = false;
     private float elapsedCooldown = 0f;
+    private List<string> bloodSplatterEffects = new List<string> { "BloodSplatter1", "BloodSplatter2", "BloodSplatter3", "BloodSplatter4", "BloodSplatter5" };
 
     protected abstract void Attack();
 
@@ -113,7 +115,7 @@ public abstract class Enemy : NetworkBehaviour
     IEnumerator SpawnBloodSplatterCoroutine(Vector3 hitPoint, Vector3 hitNormal)
     {
         // Instantiate the blood splatter effect locally on each client
-        GameObject bloodSplatter = ObjectPooler.Generate("BloodSplatter");
+        GameObject bloodSplatter = ObjectPooler.Instance.Spawn(bloodSplatterEffects[Random.Range(0, bloodSplatterEffects.Count)], hitPoint, Quaternion.identity);
         bloodSplatter.transform.position = hitPoint;
         bloodSplatter.transform.rotation = Quaternion.LookRotation(hitNormal);
 

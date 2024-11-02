@@ -100,7 +100,7 @@ public class PlayerWeapon : NetworkBehaviour
 
     void SpawnBullet(Vector3 startPoint, Vector3 direction, float distance)
     {
-        GameObject bullet = ObjectPooler.Generate("LaserBullet");
+        GameObject bullet = ObjectPooler.Instance.Spawn("LaserBullet", transform.position, Quaternion.identity);
         if (bullet != null)
         {
             bullet.transform.position = startPoint;
@@ -111,7 +111,7 @@ public class PlayerWeapon : NetworkBehaviour
 
     void SpawnImpact(Vector3 position)
     {
-        GameObject impact = ObjectPooler.Generate("LaserBulletImpact");
+        GameObject impact = ObjectPooler.Instance.Spawn("LaserBulletImpact", transform.position, Quaternion.identity);
         if (impact != null)
         {
             impact.transform.position = position;

@@ -11,6 +11,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [Header("Player Movement")]
     public float MoveSpeed = 5f;
     public bool IsIsometric = false;
+    public bool canMove = true;
     private Animator animator;
     private PlayerNetworkRotation playerNetworkRotation;
     private PlayerNetworkHealth playerNetworkHealth;
@@ -37,8 +38,10 @@ public class PlayerNetworkMovement : NetworkBehaviour
         Vector2 inputDirection = moveAction.ReadValue<Vector2>();
 
         // Determine movement direction and apply animations for both first-person and isometric view
-
-        HandleMovementAndAnimations(inputDirection);
+        if (canMove)
+        {
+            HandleMovementAndAnimations(inputDirection);
+        }
     }
 
     void HandleMovementAndAnimations(Vector2 inputDirection)

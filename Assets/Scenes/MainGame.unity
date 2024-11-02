@@ -1928,9 +1928,6 @@ MonoBehaviour:
   - Prefab: {fileID: 1714088802826837701, guid: 2aac0192e3ffec448962b5c5ac336cee, type: 3}
     Tag: MeleeZombieEnemyBig
     PrewarmCount: 100
-  - Prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
-    Tag: LaserBullet
-    PrewarmCount: 100
   - Prefab: {fileID: 1714088802826837701, guid: e8c63009167ca0d41a7ec6fc5f9f1c02, type: 3}
     Tag: MeleeZombieEnemySmall
     PrewarmCount: 100
@@ -2645,7 +2642,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1443165072}
-  - component: {fileID: 1443165071}
+  - component: {fileID: 1443165073}
   m_Layer: 0
   m_Name: ObjectPooler
   m_TagString: Untagged
@@ -2653,45 +2650,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1443165071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1443165070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd420136fac54eb43b96df9a5da0747f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseParentTransforms: 0
-  PoolableTypes:
-  - TypeName: IsometricPlayerHealth
-    Prefab: {fileID: 8780789418580452908, guid: b29653dcacc034d41bc5fdcdcf72304e, type: 3}
-    SortingTag: IsometricPlayerHealth
-    Max: 10
-    AutoExpand: 1
-  - TypeName: IsometricEnemyHealth
-    Prefab: {fileID: 8780789418580452908, guid: ce9c82477f51f9d4182468b205b3403f, type: 3}
-    SortingTag: IsometricEnemyHealth
-    Max: 100
-    AutoExpand: 1
-  - TypeName: LaserBulletImpact
-    Prefab: {fileID: 1795992203533318, guid: 890aba7398207db48978724168fac5a7, type: 3}
-    SortingTag: LaserBulletImpact
-    Max: 100
-    AutoExpand: 1
-  - TypeName: LaserBullet
-    Prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
-    SortingTag: LaserBullet
-    Max: 100
-    AutoExpand: 1
-  - TypeName: BloodSplatter
-    Prefab: {fileID: 6823200998282874702, guid: 8f8fe12323625f5499b2853dd2ad3e58, type: 3}
-    SortingTag: BloodSplatter
-    Max: 100
-    AutoExpand: 1
 --- !u!4 &1443165072
 Transform:
   m_ObjectHideFlags: 0
@@ -2707,6 +2665,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1443165073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443165070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd420136fac54eb43b96df9a5da0747f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolableItems:
+  - itemName: BloodSplatter1
+    prefab: {fileID: 100002, guid: f63523b97f3ae744b80a1e6ff09a4759, type: 3}
+    initialSize: 100
+    autoExpand: 1
+  - itemName: LaserBulletImpact
+    prefab: {fileID: 1795992203533318, guid: 890aba7398207db48978724168fac5a7, type: 3}
+    initialSize: 100
+    autoExpand: 1
+  - itemName: IsometricEnemyHealth
+    prefab: {fileID: 8780789418580452908, guid: ce9c82477f51f9d4182468b205b3403f, type: 3}
+    initialSize: 100
+    autoExpand: 1
+  - itemName: IsometricPlayerHealth
+    prefab: {fileID: 8780789418580452908, guid: b29653dcacc034d41bc5fdcdcf72304e, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: MeleeSlash1
+    prefab: {fileID: 3403989515355231779, guid: 086d1088808497e4b81baa93b8f16fd5, type: 3}
+    initialSize: 50
+    autoExpand: 1
+  - itemName: LaserBullet
+    prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
+    initialSize: 500
+    autoExpand: 1
+  - itemName: BloodSplatter2
+    prefab: {fileID: 100002, guid: d4a66304d9609aa46b6b14565b193481, type: 3}
+    initialSize: 100
+    autoExpand: 1
+  - itemName: BloodSplatter3
+    prefab: {fileID: 100006, guid: a489745b26b04fd42aa49e3b762b9ba0, type: 3}
+    initialSize: 100
+    autoExpand: 1
+  - itemName: BloodSplatter4
+    prefab: {fileID: 1891902229039176, guid: 762dfe761f7d7274793acf4f6087a029, type: 3}
+    initialSize: 100
+    autoExpand: 1
+  - itemName: BloodSplatter5
+    prefab: {fileID: 100004, guid: 5aac6238f52473c4ab422c13d2511616, type: 3}
+    initialSize: 100
+    autoExpand: 1
 --- !u!1 &1536107985
 GameObject:
   m_ObjectHideFlags: 0
@@ -4327,7 +4338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.31
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.z

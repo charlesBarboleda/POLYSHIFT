@@ -7,7 +7,7 @@ public class EnemyHealthbarsManager : MonoBehaviour
     public void OnEnemySpawned(GameObject enemy)
     {
         // Spawn health bar for the enemy
-        GameObject healthBarInstance = ObjectPooler.Generate("IsometricEnemyHealth");
+        GameObject healthBarInstance = ObjectPooler.Instance.Spawn("IsometricEnemyHealth", transform.position, Quaternion.identity);
         EnemyIsometricUIManager isometricUIManager = healthBarInstance.GetComponent<EnemyIsometricUIManager>();
 
         // Add the health bar to the dictionary
@@ -20,7 +20,7 @@ public class EnemyHealthbarsManager : MonoBehaviour
     public void OnEnemyDespawned(GameObject enemy)
     {
         // Despawn health bar for the enemy
-        ObjectPooler.Destroy(enemyHealthbars[enemy]);
+        ObjectPooler.Instance.Despawn("IsometricEnemyHealth", enemyHealthbars[enemy]);
         enemyHealthbars.Remove(enemy);
     }
 }
