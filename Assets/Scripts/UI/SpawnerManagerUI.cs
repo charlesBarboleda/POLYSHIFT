@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Netcode.Extensions;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,29 +8,56 @@ using UnityEngine.UI;
 public class SpawnerManagerUI : MonoBehaviour
 {
     [SerializeField] Button spawnEnemyBtn;
+    [SerializeField] Button spawnEnemiesBtn;
+    [SerializeField] List<string> enemyNames;
 
 
 
     void Start()
     {
-        spawnEnemyBtn.onClick.AddListener(OnSpawnEnemyBtnClicked);
+        spawnEnemiesBtn.onClick.AddListener(OnSpawnEnemyBtnClicked);
+        spawnEnemyBtn.onClick.AddListener(OnSpawnSingleEnemyBtnClicked);
     }
 
     void OnSpawnEnemyBtnClicked()
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            GameObject enemy = NetworkObjectPool.Instance.GetNetworkObject("MeleeZombieEnemy").gameObject;
-            enemy.GetComponent<NetworkObject>().Spawn();
-            // enemy.GetComponent<Rigidbody>().isKinematic = false;
-
-            // Debug log to confirm the enemy is being spawned by the server
-            Debug.Log("Enemy spawned by server: " + enemy.name);
+            // Spawn enemies continuously in a circle around the player
+            StartCoroutine(SpawnEnemies());
         }
         else
         {
             Debug.LogError("Trying to spawn enemy from client, but this should only happen on the server.");
         }
     }
+
+    void OnSpawnSingleEnemyBtnClicked()
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            GameObject enemy = NetworkObjectPool.Instance.GetNetworkObject(enemyNames[Random.Range(0, enemyNames.Count)]).gameObject;
+            enemy.transform.position = new Vector3(0, 1, 0);
+            enemy.GetComponent<NetworkObject>().Spawn();
+        }
+        else
+        {
+            Debug.LogError("Trying to spawn enemy from client, but this should only happen on the server.");
+        }
+    }
+
+    IEnumerator SpawnEnemies()
+    {
+        int numOfEnemies = 100;
+        while (numOfEnemies-- > 0)
+        {
+            GameObject enemy = NetworkObjectPool.Instance.GetNetworkObject(enemyNames[Random.Range(0, enemyNames.Count)]).gameObject;
+            enemy.transform.position = new Vector3(Random.Range(-100, 100), 1, Random.Range(-100, 100));
+            enemy.GetComponent<NetworkObject>().Spawn();
+            yield return new WaitForSeconds(2f);
+        }
+
+    }
+
 
 }

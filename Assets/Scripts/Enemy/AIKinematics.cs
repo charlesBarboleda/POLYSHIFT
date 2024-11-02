@@ -14,7 +14,6 @@ public class AIKinematics : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        Debug.Log("IsServer OnNetworkSpawn: " + IsServer);
         if (!IsServer)
         {
             // Disable AI logic on clients since only the server should run this
@@ -36,16 +35,7 @@ public class AIKinematics : NetworkBehaviour
 
             if (ClosestPlayer != null)
             {
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(ClosestPlayer.position, out hit, 1.0f, NavMesh.AllAreas))
-                {
-
-                    Agent.SetDestination(hit.position);
-                }
-                else
-                {
-                    Debug.LogWarning("Player position is NOT on the NavMesh!");
-                }
+                Agent.SetDestination(ClosestPlayer.position);
             }
 
             if (!Agent.hasPath)

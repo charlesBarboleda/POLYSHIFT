@@ -25,6 +25,6 @@ public class EnemyIsometricUIManager : MonoBehaviour
 
     void UpdateHealthBar(float oldHealth, float newHealth)
     {
-        enemyHealthbarFill.fillAmount = newHealth / enemyNetworkHealth.MaxHealth.Value;
+        enemyHealthbarFill.fillAmount = newHealth / enemyNetworkHealth.MaxHealth;
     }
 }

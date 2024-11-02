@@ -23,6 +23,7 @@ public class SingleShot : IWeaponBehavior
             {
                 weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId, hit.point);
             }
+
             weapon.FireSingleShotServerRpc(startPoint, hit.point); // Server handles visual spawning
         }
 

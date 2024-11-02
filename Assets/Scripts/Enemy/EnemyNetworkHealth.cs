@@ -6,9 +6,9 @@ using UnityEngine.AI;
 
 public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 {
-    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<float> HealthRegenRate = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
+    public float MaxHealth;
+    public float HealthRegenRate;
     Animator animator;
     AIKinematics kinematics;
     MeleeEnemy meleeEnemy;
@@ -19,7 +19,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         base.OnNetworkSpawn();
         if (IsServer)
         {
-            CurrentHealth.Value = MaxHealth.Value;
+            CurrentHealth.Value = MaxHealth;
         }
         animator = GetComponentInChildren<Animator>();
         kinematics = GetComponent<AIKinematics>();
@@ -39,9 +39,9 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
         if (!IsServer) return;
 
-        if (CurrentHealth.Value < MaxHealth.Value)
+        if (CurrentHealth.Value < MaxHealth)
         {
-            CurrentHealth.Value += HealthRegenRate.Value * Time.deltaTime;
+            CurrentHealth.Value += HealthRegenRate * Time.deltaTime;
         }
 
     }

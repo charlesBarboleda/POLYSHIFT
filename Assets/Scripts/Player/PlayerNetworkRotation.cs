@@ -35,12 +35,6 @@ public class PlayerNetworkRotation : NetworkBehaviour
 
     void RotatePlayerIsometric()
     {
-        // Check for mouse input first
-        if (Input.GetMouseButtonDown(0))
-        {
-            RotateTowardsMouse();
-            return; // Skip further processing if the mouse button is pressed
-        }
 
         // If no mouse input, rotate based on keyboard input
         Vector3 movementDirection = GetMovementDirectionFromInput();
@@ -51,26 +45,6 @@ public class PlayerNetworkRotation : NetworkBehaviour
         }
     }
 
-    // Rotate towards the mouse position instantly
-    void RotateTowardsMouse()
-    {
-        Vector3 mouseScreenPos = Input.mousePosition;
-        Ray ray = Camera.main.ScreenPointToRay(mouseScreenPos);
-        Plane groundPlane = new Plane(Vector3.up, 0f);
-
-        if (groundPlane.Raycast(ray, out float rayDistance))
-        {
-            Vector3 worldMousePos = ray.GetPoint(rayDistance);
-            Vector3 directionToLook = worldMousePos - transform.position;
-            directionToLook.y = 0f;
-
-            if (directionToLook.sqrMagnitude > 0.01f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(directionToLook);
-                transform.rotation = targetRotation; // Instantly set rotation
-            }
-        }
-    }
 
     // Get movement direction based on keyboard input and camera orientation
     Vector3 GetMovementDirectionFromInput()

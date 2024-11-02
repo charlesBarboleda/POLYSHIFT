@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
+using UnityEngine.AI;
 
 public enum EnemyType
 {
@@ -14,21 +15,30 @@ public enum EnemyType
 public abstract class Enemy : NetworkBehaviour
 {
     public EnemyType enemyType;
+    public Transform ClosestTarget;
     public EnemyNetworkHealth enemyHealth;
     public AIKinematics enemyMovement;
     public Rigidbody rb;
     public NetworkObject networkObject;
-    public Transform ClosestTarget;
+    public Animator animator;
+    public NavMeshAgent agent;
+    public float attackCooldown = 3f;
+    public bool canAttack = false;
+    private float elapsedCooldown = 0f;
 
     protected abstract void Attack();
 
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         TryGetComponent(out rb);
         TryGetComponent(out enemyHealth);
         TryGetComponent(out enemyMovement);
         TryGetComponent(out networkObject);
+        TryGetComponent(out agent);
+        animator = GetComponentInChildren<Animator>();
+        StartCoroutine(AttackGracePeriod());
         if (enemyMovement != null)
         {
             ClosestTarget = enemyMovement.ClosestPlayer;
@@ -39,6 +49,55 @@ public abstract class Enemy : NetworkBehaviour
         }
 
     }
+    protected virtual void FixedUpdate()
+    {
+
+        if (IsServer)
+        {
+
+            ClosestTarget = enemyMovement.ClosestPlayer;
+            if (ClosestTarget != null)
+            {
+                agent.SetDestination(ClosestTarget.position);
+
+                // Check if agent is close to the target
+                if (agent.remainingDistance <= agent.stoppingDistance)
+                {
+                    // Stop the agent when within range
+                    agent.velocity = Vector3.zero; // Stop sliding
+
+                    // Perform attack if cooldown has reset
+                    if (elapsedCooldown <= 0 && canAttack)
+                    {
+                        Attack();
+                        elapsedCooldown = attackCooldown;
+                    }
+                }
+                else
+                {
+                    // Resume movement if the target is far
+                    agent.isStopped = false;
+                }
+            }
+
+            // Update cooldown timer
+            if (elapsedCooldown > 0)
+            {
+                elapsedCooldown -= Time.deltaTime;
+            }
+        }
+    }
+
+    IEnumerator AttackGracePeriod()
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(3f);
+        canAttack = true;
+    }
+
+
+
+
     [ServerRpc(RequireOwnership = false)]
     public void OnRaycastHitServerRpc(Vector3 hitPoint, Vector3 hitNormal)
     {
@@ -63,13 +122,7 @@ public abstract class Enemy : NetworkBehaviour
         ObjectPooler.Destroy(bloodSplatter);
     }
 
-    public virtual void Update()
-    {
-        if (IsServer)
-        {
-            ClosestTarget = enemyMovement.ClosestPlayer;
-        }
-    }
+
 
 
 }
