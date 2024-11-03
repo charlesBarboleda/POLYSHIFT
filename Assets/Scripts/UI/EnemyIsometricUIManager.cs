@@ -15,7 +15,7 @@ public class EnemyIsometricUIManager : MonoBehaviour
             return;
         }
 
-        enemyHealthbarContainer.transform.position = enemyNetworkHealth.transform.position + new Vector3(0, 2.5f, 0);
+        enemyHealthbarContainer.transform.position = enemyNetworkHealth.transform.position + new Vector3(0, 2f, 0);
     }
     public void SetEnemy(GameObject enemy)
     {

@@ -1,5 +1,4 @@
 using System.Collections;
-using Netcode.Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,6 +8,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
     public float MaxHealth;
     public float HealthRegenRate;
+    public bool IsDead;
     Animator animator;
     AIKinematics kinematics;
     MeleeEnemy meleeEnemy;
@@ -21,6 +21,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         {
             CurrentHealth.Value = MaxHealth;
         }
+        IsDead = false;
         animator = GetComponentInChildren<Animator>();
         kinematics = GetComponent<AIKinematics>();
         meleeEnemy = GetComponent<MeleeEnemy>();
@@ -73,20 +74,15 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        if (!IsServer) return;
+        if (!IsServer || IsDead) return;
         {
             CurrentHealth.Value -= damage;
             if (CurrentHealth.Value <= 0)
             {
+                IsDead = true;
                 HandleDeathClientRpc();
             }
         }
-    }
-
-    public void TakeDamage(float damage, ulong attackerId)
-    {
-        TakeDamage(damage);
-        Debug.Log("Enemy was attacked by " + attackerId);
     }
 
     [ClientRpc]
@@ -97,12 +93,12 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     public void HandleDeath()
     {
         Debug.Log("Handle death");
-        EventManager.Instance.EnemyDespawnedEvent(gameObject);
         kinematics.Agent.velocity = Vector3.zero;
         meleeEnemy.enabled = false;
         kinematics.enabled = false;
         agent.enabled = false;
         StartCoroutine(DeathAnim());
+        EventManager.Instance.EnemyDespawnedEvent(gameObject);
 
     }
 
@@ -113,6 +109,6 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         meleeEnemy.enabled = true;
         kinematics.enabled = true;
         agent.enabled = true;
-        NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponent<NetworkObject>(), enemyName);
+        ObjectPooler.Instance.Despawn(enemyName, gameObject);
     }
 }

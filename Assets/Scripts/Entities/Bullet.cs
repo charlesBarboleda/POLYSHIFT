@@ -1,4 +1,4 @@
-using Netcode.Extensions;
+
 using Unity.Netcode;
 using UnityEngine;
 
@@ -29,7 +29,7 @@ public abstract class Bullet : NetworkBehaviour
 
     public void DestroyBullet()
     {
-        NetworkObjectPool.Instance.ReturnNetworkObject(gameObject.GetComponent<NetworkObject>(), bulletTag);
+        ObjectPooler.Instance.Despawn(bulletTag, gameObject);
     }
 
 }

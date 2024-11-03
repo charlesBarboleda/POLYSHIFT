@@ -102,8 +102,14 @@ public class ObjectPooler : MonoBehaviour
             Destroy(obj);  // Fallback to destroy if no pool exists for this item
             return;
         }
-
+        ResetObject(obj);
         obj.SetActive(false);
         poolDictionary[itemName].Enqueue(obj);
+    }
+
+    void ResetObject(GameObject obj)
+    {
+        obj.transform.position = Vector3.zero;
+        obj.transform.rotation = Quaternion.identity;
     }
 }

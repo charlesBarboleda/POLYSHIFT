@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Netcode.Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,7 +35,7 @@ public class SpawnerManagerUI : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            GameObject enemy = NetworkObjectPool.Instance.GetNetworkObject(enemyNames[Random.Range(0, enemyNames.Count)]).gameObject;
+            GameObject enemy = ObjectPooler.Instance.Spawn(enemyNames[Random.Range(0, enemyNames.Count)], Vector3.zero, Quaternion.identity);
             enemy.transform.position = new Vector3(0, 1, 0);
             enemy.GetComponent<NetworkObject>().Spawn();
         }
@@ -51,7 +50,7 @@ public class SpawnerManagerUI : MonoBehaviour
         int numOfEnemies = 100;
         while (numOfEnemies-- > 0)
         {
-            GameObject enemy = NetworkObjectPool.Instance.GetNetworkObject(enemyNames[Random.Range(0, enemyNames.Count)]).gameObject;
+            GameObject enemy = ObjectPooler.Instance.Spawn(enemyNames[Random.Range(0, enemyNames.Count)], Vector3.zero, Quaternion.identity);
             enemy.transform.position = new Vector3(Random.Range(-100, 100), 1, Random.Range(-100, 100));
             enemy.GetComponent<NetworkObject>().Spawn();
             yield return new WaitForSeconds(2f);

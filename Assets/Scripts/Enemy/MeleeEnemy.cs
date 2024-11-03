@@ -1,5 +1,4 @@
 using System.Collections;
-using Netcode.Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
