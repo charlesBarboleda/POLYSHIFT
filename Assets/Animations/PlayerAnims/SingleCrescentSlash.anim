@@ -81712,6 +81712,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0
+    functionName: TurnWeaponMagentaServerRpc
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.73333335
     functionName: OnSingleCrescentSlashSpawnServerRpc
     data: 
@@ -81720,14 +81727,14 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.85
-    functionName: DealDamage
+    functionName: DealConeDamage
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.98333335
-    functionName: EnableMovement
+  - time: 1
+    functionName: EnableMovementAndRotation
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

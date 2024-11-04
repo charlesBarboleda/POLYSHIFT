@@ -191,6 +191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3573523362417896694}
   - component: {fileID: 7935171115491977292}
+  - component: {fileID: 1910248432213371279}
   m_Layer: 0
   m_Name: FirstPersonCamera
   m_TagString: Untagged
@@ -256,6 +257,23 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &1910248432213371279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872473022474357885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  PivotOffset: {x: 0, y: 0, z: 0}
+  AmplitudeGain: 0
+  FrequencyGain: 0
+  m_NoiseOffsets: {x: -885.32715, y: 825.77686, z: -299.40616}
 --- !u!1 &2806916121653097021
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,6 +286,7 @@ GameObject:
   - component: {fileID: 1168252853152927014}
   - component: {fileID: 5040735219552997887}
   - component: {fileID: 822473729868370505}
+  - component: {fileID: 5042641401625840613}
   m_Layer: 0
   m_Name: IsometricCamera
   m_TagString: Untagged
@@ -381,6 +400,23 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
+--- !u!114 &5042641401625840613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2806916121653097021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  PivotOffset: {x: 0, y: 0, z: 0}
+  AmplitudeGain: 0
+  FrequencyGain: 0
+  m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &7401702113207284416
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,6 +437,7 @@ GameObject:
   - component: {fileID: 7321868169838826265}
   - component: {fileID: 3601094521028987543}
   - component: {fileID: 7554751333955013019}
+  - component: {fileID: 6964268025913284407}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -670,6 +707,21 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   TransitionStateInfoList: []
   m_Animator: {fileID: 467022412707883702}
+--- !u!114 &6964268025913284407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401702113207284416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b9cd47664418c7408edaba445bbd218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  isometricShakeSource: {fileID: 5042641401625840613}
+  firstPersonShakeSource: {fileID: 1910248432213371279}
 --- !u!1001 &673526352046816527
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -871,6 +923,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1045401375514670, guid: f11fc98cf1e8d5547a9b2ec85cc9c664, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2157449199144401526}
+    - targetCorrespondingSourceObject: {fileID: 1045401375514670, guid: f11fc98cf1e8d5547a9b2ec85cc9c664, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3511599501661500040}
   m_SourcePrefab: {fileID: 100100000, guid: f11fc98cf1e8d5547a9b2ec85cc9c664, type: 3}
 --- !u!4 &669006597963137127 stripped
 Transform:
@@ -1184,6 +1239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   meleeCooldown: 10
+  attackSpeedMultiplier: 0
   attackIndex: 0
 --- !u!114 &1251221556363403061
 MonoBehaviour:
@@ -1220,6 +1276,21 @@ MonoBehaviour:
   coneAngle: 90
   knockbackForce: 2
   damage: 10
+--- !u!114 &3511599501661500040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 674253994008239393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2f1af0b3ca9eb49822f098daf5ded9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  damage: 100
+  knockbackForce: 10
 --- !u!1001 &2234867605229511217
 PrefabInstance:
   m_ObjectHideFlags: 0

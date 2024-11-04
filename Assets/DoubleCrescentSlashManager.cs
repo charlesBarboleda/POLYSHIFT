@@ -31,10 +31,14 @@ public class DoubleCrescentSlashManager : NetworkBehaviour
         GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + transform.forward * 3f, transform.rotation);
         slash.transform.localScale = new Vector3(attackRange / 2, attackRange / 2, attackRange / 2);
         ParticleSystem[] childParticleSystems = slash.GetComponentsInChildren<ParticleSystem>();
+        ParticleSystem mainParticleSystem = slash.GetComponent<ParticleSystem>();
+
+        var mainModule = mainParticleSystem.main;
+        mainModule.simulationSpeed = 0.5f; // Adjust this value to slow down
         foreach (ParticleSystem ps in childParticleSystems)
         {
-            var mainModule = ps.main;
-            mainModule.simulationSpeed = 0.5f; // Adjust this value to slow down
+            var mainModule2 = ps.main;
+            mainModule2.simulationSpeed = 0.5f; // Adjust this value to slow down
         }
     }
 

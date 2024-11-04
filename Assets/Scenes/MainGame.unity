@@ -681,6 +681,7 @@ GameObject:
   - component: {fileID: 184915879}
   - component: {fileID: 184915878}
   - component: {fileID: 184915877}
+  - component: {fileID: 184915880}
   m_Layer: 3
   m_Name: Cube (11)
   m_TagString: Untagged
@@ -777,6 +778,30 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184915875}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &184915880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184915875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: 31d0dcc6f2dd4e4408d18036a2c93862, type: 2}
+  m_DrawDistance: 1000
+  m_FadeScale: 0.9
+  m_StartAngleFade: 180
+  m_EndAngleFade: 180
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_DecalLayerMask: 1
+  m_ScaleMode: 0
+  m_Offset: {x: 0, y: 0, z: 0.5}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_FadeFactor: 1
 --- !u!1 &287319902
 GameObject:
   m_ObjectHideFlags: 0
@@ -2651,6 +2676,26 @@ MonoBehaviour:
   - itemName: MeleeSlash1Hit
     prefab: {fileID: 7733045279645208561, guid: 6cf23a8f866acc942a8e375dbfb1624b, type: 3}
     initialSize: 100
+    autoExpand: 1
+  - itemName: Devil
+    prefab: {fileID: 9073341608399780697, guid: b897483c2ab50a54198d9797af1af493, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: DevilPortal
+    prefab: {fileID: 100008, guid: e139c99a5ed32f84da65ff9be7b49c98, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: DevilPortal2
+    prefab: {fileID: 146692, guid: d012fbe8542f89b4eb619529cdec2808, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: DevilPillarBlast
+    prefab: {fileID: 175624, guid: 4b88f603ede9aae44bf7f959101d5331, type: 3}
+    initialSize: 30
+    autoExpand: 1
+  - itemName: GroundCrackDecal
+    prefab: {fileID: 524031644135368896, guid: 8fe6a69a4206f0841974f01908018d3a, type: 3}
+    initialSize: 10
     autoExpand: 1
 --- !u!1 &1536107985
 GameObject:

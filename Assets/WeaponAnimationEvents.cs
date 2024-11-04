@@ -9,7 +9,15 @@ public class WeaponAnimationEvents : NetworkBehaviour
     public ParticleSystem weaponOrbMiddle;
     public ParticleSystem weaponOrbStars;
 
-    public void OnMeleeAttackEnd()
+
+    [ServerRpc]
+    public void TurnWeaponWhiteServerRpc()
+    {
+        TurnWeaponWhiteClientRpc();
+    }
+
+    [ClientRpc]
+    public void TurnWeaponWhiteClientRpc()
     {
         foreach (ParticleSystem orb in weaponOrbOrbit)
         {
@@ -21,13 +29,13 @@ public class WeaponAnimationEvents : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void OnDoubleCrescentSlashStartServerRpc()
+    public void TurnWeaponMagentaServerRpc()
     {
-        OnDoubleCrescentSlashStartClientRpc();
+        TurnWeaponMagentaClientRpc();
     }
 
     [ClientRpc]
-    void OnDoubleCrescentSlashStartClientRpc()
+    void TurnWeaponMagentaClientRpc()
     {
         // Change the color of the weapon orbs to magenta
         foreach (ParticleSystem orb in weaponOrbOrbit)

@@ -5,7 +5,7 @@ public class SingleCrescentSlashManager : NetworkBehaviour
 {
     public float attackRange = 3f;
     public float coneAngle = 90f;
-    public float knockbackForce = 2f;
+    public float knockbackForce = 1f;
     public float damage = 10f;
     PlayerMelee playerMelee;
 

@@ -13,17 +13,20 @@ public class PlayerMelee : NetworkBehaviour
     private PlayerNetworkMovement playerMovement;
     private PlayerNetworkRotation playerRotation;
     private float elapsedCooldown;
-    public float meleeCooldown = 10f;
+    public float meleeCooldown = 0f;
+    public float attackSpeedMultiplier = 1f;
 
     public int attackIndex = 0;
 
     public override void OnNetworkSpawn()
     {
+        if (!IsLocalPlayer) return;
         base.OnNetworkSpawn();
         animator = GetComponent<Animator>();
         playerMovement = GetComponentInParent<PlayerNetworkMovement>();
         playerRotation = GetComponentInParent<PlayerNetworkRotation>();
-
+        attackSpeedMultiplier = 1f;
+        meleeCooldown = 0f;
 
         Debug.Log($"Animator assigned: {animator != null}");
         Debug.Log($"PlayerMovement assigned: {playerMovement != null}");
@@ -31,7 +34,10 @@ public class PlayerMelee : NetworkBehaviour
 
         meleeAttacks = new List<MeleeAttack>
         {
+            gameObject.AddComponent<DevilSlam>(), // Attach DevilSlam as a component
+           gameObject.AddComponent<SingleCrescentSlash>(), // Attach DoubleCrescentSlash as a component
            gameObject.AddComponent<DoubleCrescentSlash>(), // Attach DoubleCrescentSlash as a component
+           
             // Add more attacks here as needed
         };
 
@@ -39,6 +45,9 @@ public class PlayerMelee : NetworkBehaviour
         {
             attack.Initialize(animator);
         }
+
+
+
     }
 
     void Update()
@@ -50,6 +59,7 @@ public class PlayerMelee : NetworkBehaviour
             elapsedCooldown = 0;
         }
         elapsedCooldown += Time.deltaTime;
+        animator.SetFloat("MeleeAttackSpeedMultiplier", attackSpeedMultiplier);
     }
 
     private void PerformAttack(int attackIndex)
@@ -156,6 +166,32 @@ public class PlayerMelee : NetworkBehaviour
                 {
                     enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
                 }
+            }
+        }
+    }
+
+    public void DealDamageInCircle(Vector3 origin, float attackRange, float damage, float knockbackForce)
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(origin, attackRange);
+        foreach (Collider collider in hitColliders)
+        {
+            EnemyNetworkHealth enemyHealth = collider.GetComponent<EnemyNetworkHealth>();
+            if (enemyHealth != null)
+            {
+                SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
+                enemyHealth.RequestTakeDamageServerRpc(damage);
+            }
+            Rigidbody rb = collider.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                Vector3 directionToTarget = (collider.transform.position - origin).normalized;
+                rb.AddForce(directionToTarget * knockbackForce, ForceMode.Impulse);
+            }
+            Enemy enemy = collider.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                Vector3 directionToTarget = (collider.transform.position - origin).normalized;
+                enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
             }
         }
     }

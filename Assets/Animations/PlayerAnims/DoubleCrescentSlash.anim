@@ -107092,6 +107092,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0
+    functionName: TurnWeaponMagentaServerRpc
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.45
     functionName: OnSingleCrescentSlashSpawnServerRpc
     data: 
@@ -107136,6 +107143,13 @@ AnimationClip:
     messageOptions: 0
   - time: 1.8833333
     functionName: EnableMovementAndRotation
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.8833333
+    functionName: TurnWeaponWhiteServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
