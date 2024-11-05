@@ -1,0 +1,48 @@
+using Unity.Netcode;
+using UnityEngine;
+
+public class SingleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
+{
+    public float AttackRange { get; set; } = 3f;
+    public float coneAngle = 90f;
+    public float KnockbackForce { get; set; } = 1f;
+    public float Damage { get; set; } = 10f;
+    public float AttackSpeedMultiplier { get; set; } = 1f;
+    public float Cooldown { get; set; } = 5f;
+
+
+    PlayerMelee playerMelee;
+
+    void Start()
+    {
+        playerMelee = GetComponent<PlayerMelee>();
+    }
+
+
+    [ServerRpc]
+    public void OnSingleCrescentSlashSpawnServerRpc()
+    {
+        OnSingleCrescentSlashSpawnClientRpc();
+    }
+    [ClientRpc]
+    void OnSingleCrescentSlashSpawnClientRpc()
+    {
+
+        GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + transform.forward * 2f, transform.rotation);
+        slash.transform.localScale = new Vector3(AttackRange / 6, AttackRange / 6, AttackRange / 6);
+
+    }
+
+
+
+
+    public void DealConeDamage()
+    {
+        playerMelee.DealDamageInCone(playerMelee.transform.position, AttackRange, coneAngle, Damage, KnockbackForce);
+
+    }
+
+
+
+
+}

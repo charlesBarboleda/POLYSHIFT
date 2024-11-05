@@ -1025,7 +1025,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 20
+        scalar: 500
         minScalar: 1
         maxCurve:
           serializedVersion: 2
@@ -4935,8 +4935,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b14331a3d029645bc7ae8a2ee7597d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   timeToReturn: 3
   tagName: MeleeSlash1
+  isNetworkedObject: 0
 --- !u!1 &3403989515355276645
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ public class FirstPersonUIManager : MonoBehaviour
 
     private PlayerNetworkHealth playerHealth;
 
-    private void Start()
+    void OnEnable()
     {
         // Only proceed if this object is owned by the local client
         playerHealth = GetComponentInParent<PlayerNetworkHealth>();

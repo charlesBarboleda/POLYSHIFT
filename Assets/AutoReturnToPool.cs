@@ -1,13 +1,15 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class AutoReturnToPool : MonoBehaviour
+public class AutoReturnToPool : NetworkBehaviour
 {
     public float timeToReturn = 1f;
     public string tagName;
     public bool isNetworkedObject = false;
     void OnEnable()
     {
+
+        if (!IsServer) return;
 
         Invoke("ReturnToPool", timeToReturn);
 
@@ -16,10 +18,11 @@ public class AutoReturnToPool : MonoBehaviour
 
     void ReturnToPool()
     {
+
         if (isNetworkedObject)
         {
             NetworkObject networkObject = GetComponent<NetworkObject>();
-            if (networkObject != null)
+            if (networkObject != null && networkObject.IsSpawned)
             {
                 networkObject.Despawn(false);
                 ObjectPooler.Instance.Despawn(tagName, gameObject);

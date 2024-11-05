@@ -4,6 +4,11 @@ public class DevilSlam : MeleeAttack
 {
     public override void ExecuteAttack()
     {
+        if (OnCooldown)
+        {
+            Debug.Log("Devil Slam is on cooldown!");
+            return;
+        }
         if (animator == null)
         {
             Debug.LogError("Animator not initialized in DevilSlam.");
@@ -11,5 +16,6 @@ public class DevilSlam : MeleeAttack
         }
 
         animator.SetTrigger("isDevilSlam");
+        StartCooldown();
     }
 }

@@ -22,35 +22,35 @@ public class AIKinematics : NetworkBehaviour
         animator = GetComponentInChildren<Animator>();
         lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<NavMeshAgent>();
+
     }
 
     void Update()
     {
 
-        if (IsServer)
+        if (!IsServer) return;
+        lookAnimator.SetLookTarget(ClosestPlayer);
+        FindClosestPlayer();
+        StopAndRotateTowardsTarget();
+
+        if (ClosestPlayer != null)
         {
-            lookAnimator.SetLookTarget(ClosestPlayer);
-            FindClosestPlayer();
-            StopAndRotateTowardsTarget();
+            Agent.SetDestination(ClosestPlayer.position);
+        }
 
-            if (ClosestPlayer != null)
-            {
-                Agent.SetDestination(ClosestPlayer.position);
-            }
-
-            if (!Agent.hasPath)
-            {
-                Debug.LogWarning("Agent has no path!");
-            }
+        if (!Agent.hasPath)
+        {
+            Debug.LogWarning("Agent has no path!");
+        }
 
 
-            if (Agent.pathStatus == NavMeshPathStatus.PathInvalid)
-            {
-                Debug.LogError("Invalid Path!");
-            }
+        if (Agent.pathStatus == NavMeshPathStatus.PathInvalid)
+        {
+            Debug.LogError("Invalid Path!");
         }
         animator.SetFloat("Speed", Agent.velocity.magnitude);
         Agent.speed = MoveSpeed;
+
     }
 
     void StopAndRotateTowardsTarget()

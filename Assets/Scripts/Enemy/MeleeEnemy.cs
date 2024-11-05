@@ -29,10 +29,8 @@ public class MeleeEnemy : Enemy
         {
             StartCoroutine(AttackAnimation());
             // Deal damage after a short delay to sync with the animation
-            if (Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange)
-            {
-                Invoke(nameof(DealDamage), 2f);
-            }
+            Invoke(nameof(DealDamage), 2f);
+
         }
     }
 
@@ -40,11 +38,11 @@ public class MeleeEnemy : Enemy
     {
         if (ClosestTarget != null)
         {
-            Debug.Log("Enemy attacking player");
-            ClosestTarget.GetComponent<PlayerNetworkHealth>().TakeDamage(attackDamage);
-            Debug.Log("Dealt damage to player");
-
-            // End the attack animation
+            if (Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange + 1.0f)
+            {
+                ClosestTarget.GetComponent<PlayerNetworkHealth>().TakeDamage(attackDamage, NetworkObjectId);
+                // End the attack animation
+            }
         }
     }
 

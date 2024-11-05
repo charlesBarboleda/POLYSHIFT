@@ -55,7 +55,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2858936759
+  GlobalObjectIdHash: 2553885864
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 1
+  UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 0
   AutoSetKinematicOnDespawn: 1
 --- !u!114 &8731146836077832972
@@ -155,6 +155,7 @@ MonoBehaviour:
   MaxHealth: 25
   HealthRegenRate: 1
   IsDead: 0
+  ExperienceDrop: 10
   enemyName: MeleeZombieEnemySmall
 --- !u!114 &6471698036231523750
 MonoBehaviour:
@@ -179,6 +180,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   attackCooldown: 3
   canAttack: 0
+  experienceDrop: 2.5
   attackRange: 2
   attackDamage: 10
 --- !u!54 &311354207244748566

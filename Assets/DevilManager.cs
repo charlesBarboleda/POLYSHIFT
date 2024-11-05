@@ -64,9 +64,9 @@ public class DevilManager : NetworkBehaviour
         }
 
         // Spawn ground crack on the server
-        GameObject groundCrack = ObjectPooler.Instance.Spawn("GroundCrackDecal", player.position, Quaternion.Euler(90, 0, 0));
+        GameObject groundCrack = ObjectPooler.Instance.Spawn("GroundCrackDecal", player.position + Vector3.left, Quaternion.Euler(90, 0, 0));
         groundCrack.GetComponent<NetworkObject>().Spawn();
-        groundCrack.GetComponent<DecalProjector>().size = new Vector3(20, 20, 20);
+        groundCrack.GetComponent<DecalProjector>().size = new Vector3(25, 25, 25);
 
     }
 

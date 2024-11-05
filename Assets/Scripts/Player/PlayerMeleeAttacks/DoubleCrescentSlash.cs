@@ -1,11 +1,15 @@
 using UnityEngine;
-using System.Collections;
 
 public class DoubleCrescentSlash : MeleeAttack
 {
-
     public override void ExecuteAttack()
     {
+        if (OnCooldown)
+        {
+            Debug.Log("Double Crescent Slash is on cooldown!");
+            return;
+        }
+
         if (animator == null)
         {
             Debug.LogError("Animator not initialized in DoubleCrescentSlash.");
@@ -13,8 +17,6 @@ public class DoubleCrescentSlash : MeleeAttack
         }
 
         animator.SetTrigger("isDoubleCrescentSlash");
-
+        StartCooldown();
     }
-
-
 }

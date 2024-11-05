@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class EnemyHealthbarsManager : MonoBehaviour
@@ -20,6 +21,7 @@ public class EnemyHealthbarsManager : MonoBehaviour
     public void OnEnemyDespawned(GameObject enemy)
     {
         // Despawn health bar for the enemy
+        enemyHealthbars[enemy].GetComponent<NetworkObject>().Despawn(false);
         ObjectPooler.Instance.Despawn("IsometricEnemyHealth", enemyHealthbars[enemy]);
         enemyHealthbars.Remove(enemy);
     }

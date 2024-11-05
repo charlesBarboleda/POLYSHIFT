@@ -25,6 +25,7 @@ public abstract class Enemy : NetworkBehaviour
     public NavMeshAgent agent;
     public float attackCooldown = 3f;
     public bool canAttack = false;
+    public float experienceDrop;
     private float elapsedCooldown = 0f;
     private List<string> bloodSplatterEffects = new List<string> { "BloodSplatter1", "BloodSplatter2", "BloodSplatter3", "BloodSplatter4", "BloodSplatter5" };
 
@@ -123,6 +124,9 @@ public abstract class Enemy : NetworkBehaviour
         // Optionally, destroy after a short time to prevent clutter
         ObjectPooler.Destroy(bloodSplatter);
     }
+
+
+
 
 
 

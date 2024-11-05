@@ -50824,7 +50824,7 @@ AnimationClip:
     functionName: DealAreaDamageServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 20
+    floatParameter: 5
     intParameter: 0
     messageOptions: 0
   - time: 2.4833333
@@ -50845,7 +50845,7 @@ AnimationClip:
     functionName: DealAreaDamageServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 60
+    floatParameter: 20
     intParameter: 0
     messageOptions: 0
   - time: 2.6833334
@@ -50873,6 +50873,6 @@ AnimationClip:
     functionName: DealAreaDamageServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 100
+    floatParameter: 40
     intParameter: 0
     messageOptions: 0

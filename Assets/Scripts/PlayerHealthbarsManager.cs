@@ -11,6 +11,7 @@ public class PlayerHealthbarsManager : NetworkBehaviour
         if (IsServer)
         {
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.OnClientDisconnectCallback += OnClientDisconnected;
         }
     }
 
@@ -19,8 +20,19 @@ public class PlayerHealthbarsManager : NetworkBehaviour
         if (IsServer)
         {
             NetworkManager.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.OnClientDisconnectCallback -= OnClientDisconnected;
         }
     }
+
+    private void OnClientDisconnected(ulong clientId)
+    {
+        if (playerHealthbars.ContainsKey(clientId))
+        {
+            ObjectPooler.Instance.Despawn("IsometricPlayerHealth", playerHealthbars[clientId]);
+            playerHealthbars.Remove(clientId);
+        }
+    }
+
 
     // This method is called when a client connects to the server
     private void OnClientConnected(ulong clientId)

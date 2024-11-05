@@ -21,7 +21,7 @@ public class SingleShot : IWeaponBehavior
 
             if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
             {
-                weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId, hit.point);
+                weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
             }
 
             weapon.FireSingleShotServerRpc(startPoint, hit.point); // Server handles visual spawning
@@ -64,14 +64,14 @@ public class SingleShot : IWeaponBehavior
             if (targetNetworkObject != null)
             {
                 // If a nearby enemy is found, apply damage to it using NetworkObjectId and hit position
-                weapon.ApplyDamageServerRpc(targetNetworkObject.NetworkObjectId, targetNetworkObject.transform.position);
+                weapon.ApplyDamageServerRpc(targetNetworkObject.NetworkObjectId);
             }
             else
             {
                 // If no nearby enemy is found, apply damage to the direct hit target
                 if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject directHitNetworkObject))
                 {
-                    weapon.ApplyDamageServerRpc(directHitNetworkObject.NetworkObjectId, hit.point);
+                    weapon.ApplyDamageServerRpc(directHitNetworkObject.NetworkObjectId);
                 }
             }
 
