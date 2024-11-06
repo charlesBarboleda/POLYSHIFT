@@ -29,7 +29,7 @@ public class MeleeEnemy : Enemy
         {
             StartCoroutine(AttackAnimation());
             // Deal damage after a short delay to sync with the animation
-            Invoke(nameof(DealDamage), 2f);
+            Invoke(nameof(DealDamage), 1.5f);
 
         }
     }
@@ -38,7 +38,7 @@ public class MeleeEnemy : Enemy
     {
         if (ClosestTarget != null)
         {
-            if (Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange + 1.0f)
+            if (Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange + 2f)
             {
                 ClosestTarget.GetComponent<PlayerNetworkHealth>().TakeDamage(attackDamage, NetworkObjectId);
                 // End the attack animation

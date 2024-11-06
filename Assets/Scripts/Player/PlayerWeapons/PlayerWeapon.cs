@@ -24,6 +24,7 @@ public class PlayerWeapon : NetworkBehaviour
     public float reloadTimeReduction = 1f;
     public Transform bulletSpawnPoint;
     public PlayerNetworkMovement playerNetworkMovement;
+    PlayerAudioManager audioManager;
     IWeaponBehavior currentWeaponBehavior;
     public Camera Camera;
     float _nextShotTime;
@@ -32,6 +33,7 @@ public class PlayerWeapon : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         TryGetComponent(out playerNetworkMovement);
+        TryGetComponent(out audioManager);
         currentAmmoCount = maxAmmoCount;
         SetWeaponBehavior(WeaponType.SingleShot);
         Camera = Camera.main;
@@ -55,6 +57,7 @@ public class PlayerWeapon : NetworkBehaviour
                     currentWeaponBehavior.FireIsometric(this);
                 else
                     currentWeaponBehavior.FireFirstPerson(this);
+                audioManager.PlayShootSound();
             }
             else
             {

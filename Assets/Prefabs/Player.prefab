@@ -688,7 +688,7 @@ MonoBehaviour:
   Damage: 10
   ReloadTime: 1
   ShootRate: 0.1
-  currentAmmoCount: 0
+  currentAmmoCount: 30
   maxAmmoCount: 30
   addedAmmoCount: 0
   shootRateReduction: 1
@@ -856,6 +856,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   levelUpSound: {fileID: 8300000, guid: 70f34d3156572484a9cb417730324a16, type: 3}
+  shootSound: {fileID: 8300000, guid: 2a3f507aa95dc224cadfb006dd19fd2d, type: 3}
 --- !u!114 &70883791136345911
 MonoBehaviour:
   m_ObjectHideFlags: 0

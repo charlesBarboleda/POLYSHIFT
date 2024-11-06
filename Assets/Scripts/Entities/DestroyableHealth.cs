@@ -1,7 +1,15 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class DestroyableHealth : MonoBehaviour, IDamageable
 {
+    public enum DestroyableSize
+    {
+        Small,
+        Medium,
+        Large
+    }
+    public DestroyableSize destroyableSize;
     public float health = 1f;
 
     public void TakeDamage(float damage, ulong instigator)
@@ -20,7 +28,22 @@ public class DestroyableHealth : MonoBehaviour, IDamageable
 
     public void HandleDeath(ulong instigator)
     {
-        // Destroy the parent object
-        Destroy(gameObject.transform.parent.gameObject);
+        switch (destroyableSize)
+        {
+            case DestroyableSize.Small:
+                GameObject effect = ObjectPooler.Instance.Spawn("SmallDebrisDestruction", transform.position, Quaternion.identity);
+                effect.GetComponent<NetworkObject>().Spawn();
+                break;
+            case DestroyableSize.Medium:
+                GameObject effect2 = ObjectPooler.Instance.Spawn("MidDebrisDestruction", transform.position, Quaternion.identity);
+                effect2.GetComponent<NetworkObject>().Spawn();
+                break;
+            case DestroyableSize.Large:
+                GameObject effect3 = ObjectPooler.Instance.Spawn("LargeDebrisDestruction", transform.position, Quaternion.identity);
+                effect3.GetComponent<NetworkObject>().Spawn();
+                break;
+        }
+
+        Destroy(gameObject);
     }
 }

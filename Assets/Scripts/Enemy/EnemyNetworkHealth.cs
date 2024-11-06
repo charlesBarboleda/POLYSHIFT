@@ -15,6 +15,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     AIKinematics kinematics;
     Enemy enemy;
     NavMeshAgent agent;
+    Collider collider;
     [SerializeField] string enemyName;
     public override void OnNetworkSpawn()
     {
@@ -29,6 +30,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
             agent = GetComponent<NavMeshAgent>();
             CurrentHealth.OnValueChanged += OnHitAnimation;
             CurrentHealth.OnValueChanged += OnHitEffects;
+            collider = GetComponent<Collider>();
+            collider.enabled = true;
         }
         EventManager.Instance.EnemySpawnedEvent(gameObject);
     }
@@ -134,8 +137,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         {
             Debug.LogError("NavMeshAgent component is null on client: " + NetworkManager.Singleton.LocalClientId);
         }
-
-        Debug.Log("3Enemy despawned Event called on client: " + NetworkManager.Singleton.LocalClientId);
+        if (collider != null)
+            collider.enabled = false;
         EventManager.Instance.EnemyDespawnedEvent(gameObject);
         StartCoroutine(DeathAnim());
 
@@ -144,6 +147,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 
     IEnumerator DeathAnim()
     {
+
         animator.SetTrigger("isDead");
         yield return new WaitForSeconds(5f);
         enemy.enabled = true;
