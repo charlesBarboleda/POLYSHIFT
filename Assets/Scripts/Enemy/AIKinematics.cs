@@ -2,11 +2,14 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.AI;
 using FIMSpace.FLook;
+using Unity.AI.Navigation;
+using Pathfinding;
 
 public class AIKinematics : NetworkBehaviour
 {
     public float MoveSpeed;
-    public NavMeshAgent Agent;
+
+    public AIPath Agent;
     public Transform ClosestPlayer;
     FLookAnimator lookAnimator;
     Animator animator;
@@ -19,9 +22,10 @@ public class AIKinematics : NetworkBehaviour
             // Disable AI logic on clients since only the server should run this
             enabled = false;
         }
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>();
         lookAnimator = GetComponent<FLookAnimator>();
-        Agent = GetComponent<NavMeshAgent>();
+        Agent = GetComponent<AIPath>();
+
 
     }
 
@@ -35,21 +39,19 @@ public class AIKinematics : NetworkBehaviour
 
         if (ClosestPlayer != null)
         {
-            Agent.SetDestination(ClosestPlayer.position);
+            Agent.destination = ClosestPlayer.position;
         }
 
         if (!Agent.hasPath)
         {
+
             Debug.LogWarning("Agent has no path!");
+            transform.position = Vector3.MoveTowards(transform.position, ClosestPlayer.position, MoveSpeed * Time.deltaTime);
         }
 
 
-        if (Agent.pathStatus == NavMeshPathStatus.PathInvalid)
-        {
-            Debug.LogError("Invalid Path!");
-        }
         animator.SetFloat("Speed", Agent.velocity.magnitude);
-        Agent.speed = MoveSpeed;
+        Agent.maxSpeed = MoveSpeed;
 
     }
 
@@ -57,13 +59,13 @@ public class AIKinematics : NetworkBehaviour
     {
         if (ClosestPlayer != null)
         {
-            if (Vector3.Distance(transform.position, ClosestPlayer.position) <= Agent.stoppingDistance)
+            if (Agent.reachedDestination)
             {
-                Agent.velocity = Vector3.zero;
-                Agent.isStopped = true;
+
                 Vector3 direction = (ClosestPlayer.position - transform.position).normalized;
                 Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+                Agent.isStopped = true;
             }
             else
             {

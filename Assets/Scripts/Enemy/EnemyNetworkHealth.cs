@@ -14,7 +14,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     Animator animator;
     AIKinematics kinematics;
     Enemy enemy;
-    NavMeshAgent agent;
+
+    Rigidbody rb;
     Collider collider;
     [SerializeField] string enemyName;
     public override void OnNetworkSpawn()
@@ -24,14 +25,14 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         {
             CurrentHealth.Value = MaxHealth;
             IsDead = false;
-            animator = GetComponentInChildren<Animator>();
+            animator = GetComponent<Animator>();
             kinematics = GetComponent<AIKinematics>();
             enemy = GetComponent<Enemy>();
-            agent = GetComponent<NavMeshAgent>();
-            CurrentHealth.OnValueChanged += OnHitAnimation;
-            CurrentHealth.OnValueChanged += OnHitEffects;
+            rb = GetComponent<Rigidbody>();
             collider = GetComponent<Collider>();
             collider.enabled = true;
+            CurrentHealth.OnValueChanged += OnHitAnimation;
+            CurrentHealth.OnValueChanged += OnHitEffects;
         }
         EventManager.Instance.EnemySpawnedEvent(gameObject);
     }
@@ -60,7 +61,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         if (prev > current)
         {
             // Slow down the enemy when hit
-            kinematics.Agent.velocity = Vector3.one;
+            kinematics.Agent.maxSpeed = 0;
         }
     }
 
@@ -121,24 +122,16 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 
         if (kinematics != null)
         {
-            kinematics.Agent.velocity = Vector3.zero;
+            kinematics.Agent.maxSpeed = 0f;
             kinematics.enabled = false;
         }
         else
         {
             Debug.LogError("Kinematics component is null on client: " + NetworkManager.Singleton.LocalClientId);
         }
-
-        if (agent != null)
-        {
-            agent.enabled = false;
-        }
-        else
-        {
-            Debug.LogError("NavMeshAgent component is null on client: " + NetworkManager.Singleton.LocalClientId);
-        }
         if (collider != null)
             collider.enabled = false;
+
         EventManager.Instance.EnemyDespawnedEvent(gameObject);
         StartCoroutine(DeathAnim());
 
@@ -152,7 +145,6 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         yield return new WaitForSeconds(5f);
         enemy.enabled = true;
         kinematics.enabled = true;
-        agent.enabled = true;
         GetComponent<NetworkObject>().Despawn(false);
         ObjectPooler.Instance.Despawn(enemyName, gameObject);
     }

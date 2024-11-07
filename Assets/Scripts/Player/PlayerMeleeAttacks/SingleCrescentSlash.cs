@@ -16,6 +16,7 @@ public class SingleCrescentSlash : MeleeAttack
             return;
         }
 
+
         animator.SetTrigger("isSingleCrescentSlash");
         StartCooldown(); // Begin the cooldown
     }

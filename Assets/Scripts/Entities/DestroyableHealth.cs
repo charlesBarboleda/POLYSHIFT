@@ -1,7 +1,10 @@
+using Unity.AI.Navigation;
 using Unity.Netcode;
 using UnityEngine;
+using Pathfinding;
+using Unity.Tutorials.Core.Editor;
 
-public class DestroyableHealth : MonoBehaviour, IDamageable
+public class DestroyableHealth : NetworkBehaviour, IDamageable
 {
     public enum DestroyableSize
     {
@@ -21,6 +24,7 @@ public class DestroyableHealth : MonoBehaviour, IDamageable
         }
     }
 
+    [ServerRpc]
     public void RequestTakeDamageServerRpc(float damage, ulong instigator)
     {
         TakeDamage(damage, instigator);
@@ -43,7 +47,10 @@ public class DestroyableHealth : MonoBehaviour, IDamageable
                 effect3.GetComponent<NetworkObject>().Spawn();
                 break;
         }
-
+        Bounds bounds = GetComponent<Collider>().bounds;
+        var guo = new GraphUpdateObject(bounds);
+        guo.updatePhysics = true;
+        AstarPath.active.UpdateGraphs(guo);
         Destroy(gameObject);
     }
 }

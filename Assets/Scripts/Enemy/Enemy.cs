@@ -3,6 +3,7 @@ using Unity.Netcode;
 using System.Collections;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using Pathfinding;
 
 public enum EnemyType
 {
@@ -22,10 +23,9 @@ public abstract class Enemy : NetworkBehaviour
     public Rigidbody rb;
     public NetworkObject networkObject;
     public Animator animator;
-    public NavMeshAgent agent;
+    public AIPath agent;
     public float attackCooldown = 3f;
     public bool canAttack = false;
-    public float experienceDrop;
     private float elapsedCooldown = 0f;
     private List<string> bloodSplatterEffects = new List<string> { "BloodSplatter1", "BloodSplatter2", "BloodSplatter3", "BloodSplatter4", "BloodSplatter5" };
 
@@ -39,7 +39,7 @@ public abstract class Enemy : NetworkBehaviour
         TryGetComponent(out enemyHealth);
         TryGetComponent(out enemyMovement);
         TryGetComponent(out networkObject);
-        TryGetComponent(out agent);
+        agent = GetComponent<AIPath>();
         animator = GetComponentInChildren<Animator>();
         StartCoroutine(AttackGracePeriod());
         if (enemyMovement != null)
@@ -57,17 +57,16 @@ public abstract class Enemy : NetworkBehaviour
 
         if (IsServer)
         {
-
             ClosestTarget = enemyMovement.ClosestPlayer;
             if (ClosestTarget != null)
             {
-                agent.SetDestination(ClosestTarget.position);
+                agent.destination = ClosestTarget.position;
 
                 // Check if agent is close to the target
-                if (agent.remainingDistance <= agent.stoppingDistance)
+                if (agent.reachedDestination)
                 {
                     // Stop the agent when within range
-                    agent.velocity = Vector3.zero; // Stop sliding
+                    agent.maxSpeed = 0;
 
                     // Perform attack if cooldown has reset
                     if (elapsedCooldown <= 0 && canAttack)
@@ -79,7 +78,7 @@ public abstract class Enemy : NetworkBehaviour
                 else
                 {
                     // Resume movement if the target is far
-                    agent.isStopped = false;
+                    // agent.isStopped = false;
                 }
             }
 

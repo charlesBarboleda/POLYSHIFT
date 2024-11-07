@@ -8,6 +8,8 @@ public class PlayerAudioManager : NetworkBehaviour
     AudioSource audioSource2;
     [SerializeField] AudioClip levelUpSound;
     [SerializeField] AudioClip shootSound;
+    [SerializeField] AudioClip meleeSlash1Sound;
+    [SerializeField] AudioClip arcaneDevilSlamShoutSound;
 
     public override void OnNetworkSpawn()
     {
@@ -32,6 +34,18 @@ public class PlayerAudioManager : NetworkBehaviour
     {
         audioSource2.volume = 0.5f;
         audioSource2.PlayOneShot(shootSound);
+    }
+
+    public void PlayMeleeSlash1Sound()
+    {
+        audioSource.volume = 1f;
+        audioSource.PlayOneShot(meleeSlash1Sound);
+    }
+
+    public void PlayArcaneDevilSlamShoutSound()
+    {
+        audioSource.volume = 0.05f;
+        audioSource.PlayOneShot(arcaneDevilSlamShoutSound);
     }
 
 }

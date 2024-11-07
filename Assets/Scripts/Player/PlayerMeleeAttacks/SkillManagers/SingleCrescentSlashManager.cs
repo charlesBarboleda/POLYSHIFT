@@ -8,7 +8,7 @@ public class SingleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     public float KnockbackForce { get; set; } = 1f;
     public float Damage { get; set; } = 10f;
     public float AttackSpeedMultiplier { get; set; } = 1f;
-    public float Cooldown { get; set; } = 5f;
+
 
 
     PlayerMelee playerMelee;
@@ -28,7 +28,7 @@ public class SingleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     void OnSingleCrescentSlashSpawnClientRpc()
     {
 
-        GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + transform.forward * 2f, transform.rotation);
+        GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + (transform.forward * 2f) + transform.up, transform.rotation * Quaternion.Euler(0, 0, Random.Range(-20, 20)));
         slash.transform.localScale = new Vector3(AttackRange / 6, AttackRange / 6, AttackRange / 6);
 
     }

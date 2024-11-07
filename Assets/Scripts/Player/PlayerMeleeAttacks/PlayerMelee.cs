@@ -147,21 +147,24 @@ public class PlayerMelee : NetworkBehaviour
 
             if (angleToTarget <= coneAngle)
             {
-                IDamageable damageable = collider.GetComponent<IDamageable>();
-                if (damageable != null)
+                if (collider.CompareTag("Enemy"))
                 {
-                    SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
-                    damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
-                }
-                Rigidbody rb = collider.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    rb.AddForce(directionToTarget * knockbackForce, ForceMode.Impulse);
-                }
-                Enemy enemy = collider.GetComponent<Enemy>();
-                if (enemy != null)
-                {
-                    enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
+                    IDamageable damageable = collider.GetComponent<IDamageable>();
+                    if (damageable != null)
+                    {
+                        SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
+                        damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
+                    }
+                    Rigidbody rb = collider.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.AddForce(directionToTarget * knockbackForce, ForceMode.Impulse);
+                    }
+                    Enemy enemy = collider.GetComponent<Enemy>();
+                    if (enemy != null)
+                    {
+                        enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
+                    }
                 }
             }
         }
@@ -172,23 +175,35 @@ public class PlayerMelee : NetworkBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(origin, attackRange);
         foreach (Collider collider in hitColliders)
         {
-            IDamageable damageable = collider.GetComponent<IDamageable>();
-            if (damageable != null)
+            if (collider.CompareTag("Enemy"))
             {
-                SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
-                damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
+                IDamageable damageable = collider.GetComponent<IDamageable>();
+                if (damageable != null)
+                {
+                    SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
+                    damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
+                }
+                Rigidbody rb = collider.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    Vector3 directionToTarget = (collider.transform.position - origin).normalized;
+                    rb.AddForce(directionToTarget * knockbackForce, ForceMode.Impulse);
+                }
+                Enemy enemy = collider.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                    Vector3 directionToTarget = (collider.transform.position - origin).normalized;
+                    enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
+                }
             }
-            Rigidbody rb = collider.GetComponent<Rigidbody>();
-            if (rb != null)
+            else if (collider.CompareTag("Destroyables"))
             {
-                Vector3 directionToTarget = (collider.transform.position - origin).normalized;
-                rb.AddForce(directionToTarget * knockbackForce, ForceMode.Impulse);
-            }
-            Enemy enemy = collider.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                Vector3 directionToTarget = (collider.transform.position - origin).normalized;
-                enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
+                IDamageable damageable = collider.GetComponent<IDamageable>();
+                if (damageable != null)
+                {
+                    SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
+                    damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
+                }
             }
         }
     }

@@ -3,10 +3,16 @@ using UnityEngine;
 
 public class PlayerAnimationEvents : NetworkBehaviour
 {
-    [ServerRpc]
-    public void SpawnCrescentSlashServerRpc()
+    Animator animator;
+
+    public override void OnNetworkSpawn()
     {
-        // Spawn the effect and move the player forward slightly to match the animation
-        GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + transform.forward * 2f, transform.rotation * Quaternion.Euler(0, 0, 20));
+        base.OnNetworkSpawn();
+        animator = GetComponent<Animator>();
+    }
+
+    public void RemoveRootMotion()
+    {
+        animator.applyRootMotion = false;
     }
 }

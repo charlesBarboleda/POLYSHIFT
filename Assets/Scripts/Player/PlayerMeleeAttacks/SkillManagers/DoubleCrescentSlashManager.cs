@@ -9,7 +9,8 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     public float KnockbackForce { get; set; } = 1f;
     public float Damage { get; set; } = 10f;
     public float AttackSpeedMultiplier { get; set; } = 1f;
-    public float Cooldown { get; set; } = 10f;
+
+    PlayerAudioManager audioManager;
     Animator animator;
     PlayerMelee playerMelee;
     GameObject player;
@@ -17,6 +18,7 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
 
     public override void OnNetworkSpawn()
     {
+        audioManager = GetComponentInParent<PlayerAudioManager>();
         animator = GetComponent<Animator>();
         animator.SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
         playerMelee = GetComponent<PlayerMelee>();
@@ -33,7 +35,7 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     void OnDoubleCrescentSlashSpawnClientRpc()
     {
         SetAttackSpeedMultiplier();
-        GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + transform.forward * 3f, transform.rotation);
+        GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + (transform.forward * 3f) + transform.up, transform.rotation * Quaternion.Euler(0, 0, Random.Range(-20, 20)));
         slash.transform.localScale = new Vector3(AttackRange / 2, AttackRange / 2, AttackRange / 2);
         ParticleSystem[] childParticleSystems = slash.GetComponentsInChildren<ParticleSystem>();
         ParticleSystem mainParticleSystem = slash.GetComponent<ParticleSystem>();
@@ -45,6 +47,16 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
             var mainModule2 = ps.main;
             mainModule2.simulationSpeed = 0.5f; // Adjust this value to slow down
         }
+    }
+
+    public void PlayArcaneDevilSlamShoutSound()
+    {
+        audioManager.PlayArcaneDevilSlamShoutSound();
+    }
+
+    public void PlayMeleeSlash1Sound()
+    {
+        audioManager.PlayMeleeSlash1Sound();
     }
 
     public void frontStep()

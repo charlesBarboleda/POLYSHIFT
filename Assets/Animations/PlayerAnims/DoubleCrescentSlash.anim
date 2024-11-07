@@ -107099,6 +107099,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0.33333334
+    functionName: PlayMeleeSlash1Sound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.45
     functionName: OnSingleCrescentSlashSpawnServerRpc
     data: 
@@ -107115,6 +107122,13 @@ AnimationClip:
     messageOptions: 0
   - time: 0.55
     functionName: DealSmallConeDamage
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.0166667
+    functionName: PlayMeleeSlash1Sound
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

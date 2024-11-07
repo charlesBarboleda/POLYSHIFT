@@ -14,7 +14,6 @@ public class DevilSlam : MeleeAttack
             Debug.LogError("Animator not initialized in DevilSlam.");
             return;
         }
-
         animator.SetTrigger("isDevilSlam");
         StartCooldown();
     }

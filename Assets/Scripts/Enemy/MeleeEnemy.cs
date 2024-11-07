@@ -13,11 +13,8 @@ public class MeleeEnemy : Enemy
     {
         base.OnNetworkSpawn();
         enemyType = EnemyType.Melee;
-        animator = GetComponentInChildren<Animator>();
-        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
 
-        // Configure the NavMeshAgent properties (optional)
-        agent.stoppingDistance = attackRange;
 
     }
 
@@ -29,7 +26,7 @@ public class MeleeEnemy : Enemy
         {
             StartCoroutine(AttackAnimation());
             // Deal damage after a short delay to sync with the animation
-            Invoke(nameof(DealDamage), 1.5f);
+            Invoke(nameof(DealDamage), 1.7f);
 
         }
     }
@@ -42,6 +39,15 @@ public class MeleeEnemy : Enemy
             {
                 ClosestTarget.GetComponent<PlayerNetworkHealth>().TakeDamage(attackDamage, NetworkObjectId);
                 // End the attack animation
+            }
+            // Deal damage to the surrounding area
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange);
+            foreach (var hitCollider in hitColliders)
+            {
+                if (hitCollider.CompareTag("Destroyables"))
+                {
+                    hitCollider.GetComponent<IDamageable>().TakeDamage(attackDamage, NetworkObjectId);
+                }
             }
         }
     }

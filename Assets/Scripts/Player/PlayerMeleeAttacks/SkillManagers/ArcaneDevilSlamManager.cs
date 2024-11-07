@@ -10,8 +10,6 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, IMeleeSkillManager
     public float AttackSpeedMultiplier { get; set; } = 1f;
     public float AttackRange { get; set; } = 3f;
 
-    public float Cooldown { get; set; } = 300f;
-
 
 
     GameObject Devil;

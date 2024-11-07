@@ -15,7 +15,6 @@ public class DoubleCrescentSlash : MeleeAttack
             Debug.LogError("Animator not initialized in DoubleCrescentSlash.");
             return;
         }
-
         animator.SetTrigger("isDoubleCrescentSlash");
         StartCooldown();
     }
