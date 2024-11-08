@@ -18,11 +18,11 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
 
     public override void OnNetworkSpawn()
     {
-        audioManager = GetComponentInParent<PlayerAudioManager>();
+        audioManager = GetComponent<PlayerAudioManager>();
         animator = GetComponent<Animator>();
         animator.SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
         playerMelee = GetComponent<PlayerMelee>();
-        player = GetComponentInParent<PlayerNetworkHealth>().gameObject;
+        player = GetComponent<PlayerNetworkHealth>().gameObject;
     }
 
 

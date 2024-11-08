@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class PlayerMelee : NetworkBehaviour
 {
-
-    public List<MeleeAttack> meleeAttacks;
+    public List<MeleeAttack> meleeAttacks = new List<MeleeAttack>();
     private MeleeAttack currentAttack;
     private bool canAttack = true;
     private Animator animator;
@@ -19,105 +18,108 @@ public class PlayerMelee : NetworkBehaviour
     {
         if (!IsLocalPlayer) return;
         base.OnNetworkSpawn();
+
         animator = GetComponent<Animator>();
         playerMovement = GetComponentInParent<PlayerNetworkMovement>();
         playerRotation = GetComponentInParent<PlayerNetworkRotation>();
 
-        Debug.Log($"Animator assigned: {animator != null}");
-        Debug.Log($"PlayerMovement assigned: {playerMovement != null}");
-        Debug.Log($"PlayerRotation assigned: {playerRotation != null}");
-
-        meleeAttacks = new List<MeleeAttack>
+        meleeAttacks.AddRange(new MeleeAttack[]
         {
-            gameObject.AddComponent<DevilSlam>(), // Attach DevilSlam as a component
-           gameObject.AddComponent<SingleCrescentSlash>(), // Attach DoubleCrescentSlash as a component
-           gameObject.AddComponent<DoubleCrescentSlash>(), // Attach DoubleCrescentSlash as a component
-           
-            // Add more attacks here as needed
-        };
+            gameObject.AddComponent<ArcaneBarrier>(),
+            gameObject.AddComponent<SingleCrescentSlash>(),
+            gameObject.AddComponent<DoubleCrescentSlash>(),
+            gameObject.AddComponent<ArcaneCleave>(),
+            gameObject.AddComponent<DevilSlam>()
+        });
 
-        foreach (MeleeAttack attack in meleeAttacks)
-        {
-            attack.Initialize(animator);
-        }
-
-
-
+        foreach (var attack in meleeAttacks) attack.Initialize(animator);
     }
 
     void Update()
     {
-        if (!IsLocalPlayer) return;
-        if (Input.GetMouseButtonDown(1) && canAttack)
-        {
+        if (IsLocalPlayer && Input.GetMouseButtonDown(1) && canAttack)
             PerformAttack(attackIndex);
-        }
     }
 
     private void PerformAttack(int attackIndex)
     {
-        if (attackIndex < 0 || attackIndex >= meleeAttacks.Count) return;
-        currentAttack = meleeAttacks[attackIndex];
-        currentAttack.ExecuteAttack();
-    }
-
-    public void AddMeleeAttack<T>() where T : MeleeAttack
-    {
-        T newAttack = gameObject.AddComponent<T>(); // Add the melee attack as a component
-        newAttack.Initialize(animator); // Initialize with dependencies
-        meleeAttacks.Add(newAttack); // Add to the list for management
-
-        Debug.Log($"Added new melee attack: {typeof(T).Name}");
-    }
-
-    public void RemoveMeleeAttack<T>() where T : MeleeAttack
-    {
-        MeleeAttack attackToRemove = meleeAttacks.Find(attack => attack is T);
-        if (attackToRemove != null)
+        if (attackIndex >= 0 && attackIndex < meleeAttacks.Count)
         {
-            meleeAttacks.Remove(attackToRemove);
-            Destroy(attackToRemove); // Destroy the component
-            Debug.Log($"Removed melee attack: {typeof(T).Name}");
+            currentAttack = meleeAttacks[attackIndex];
+            currentAttack.ExecuteAttack();
         }
     }
 
-    public MeleeAttack GetMeleeAttack<T>() where T : MeleeAttack
+    private void DealDamage(Collider collider, Vector3 origin, float damage, float knockbackForce)
     {
-        return meleeAttacks.Find(attack => attack is T);
-    }
-
-    [ServerRpc]
-    public void SpawnSlashEffectServerRpc(string slashName, Vector3 position, Quaternion rotation, float attackRange)
-    {
-        // Call ClientRpc to spawn the effect for all clients
-        SpawnSlashEffectClientRpc(slashName, position, rotation, attackRange);
-    }
-
-    [ClientRpc]
-    private void SpawnSlashEffectClientRpc(string slashName, Vector3 position, Quaternion rotation, float attackRange)
-    {
-        if (ObjectPooler.Instance == null)
+        var damageable = collider.GetComponent<IDamageable>();
+        if (damageable != null)
         {
-            Debug.LogError("ObjectPooler.Instance is null. Cannot spawn effect.");
-            return;
+            SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
+            damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
         }
 
-        GameObject slash = ObjectPooler.Instance.Spawn(slashName, position, rotation);
-        if (slash != null)
+        var rb = collider.GetComponent<Rigidbody>();
+        if (rb != null)
+            rb.AddForce((collider.transform.position - origin).normalized * knockbackForce, ForceMode.Impulse);
+
+        var enemy = collider.GetComponent<Enemy>();
+        if (enemy != null)
+            enemy.OnRaycastHitServerRpc(collider.transform.position, (collider.transform.position - origin).normalized);
+    }
+
+    public void DealDamageInCone(Vector3 origin, float attackRange, float coneAngle, float damage, float knockbackForce)
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(origin, attackRange);
+        foreach (var collider in hitColliders)
         {
-            slash.transform.localScale = new Vector3(attackRange / 6, attackRange / 6, attackRange / 6);
-        }
-        else
-        {
-            Debug.LogError("Failed to spawn effect. Check ObjectPooler configuration.");
+            Vector3 directionToTarget = (collider.transform.position - origin).normalized;
+            if (Vector3.Angle(transform.forward, directionToTarget) <= coneAngle && collider.CompareTag("Enemy"))
+            {
+                DealDamage(collider, origin, damage, knockbackForce);
+            }
         }
     }
 
-    [ServerRpc]
-    public void SpawnSlashImpactServerRpc(string impactName, Vector3 position, Quaternion rotation)
+    public void DealDamageInCircle(Vector3 origin, float attackRange, float damage, float knockbackForce)
     {
-        // Call ClientRpc to spawn the effect for all clients
-        SpawnSlashImpactClientRpc(impactName, position, rotation);
+        Collider[] hitColliders = Physics.OverlapSphere(origin, attackRange);
+        foreach (var collider in hitColliders)
+        {
+            if (collider.CompareTag("Enemy") || collider.CompareTag("Destroyables"))
+            {
+                DealDamage(collider, origin, damage, knockbackForce);
+            }
+        }
+    }
+
+    public void DealDamageInExpandingCircle(Vector3 origin, float initialRange, float maxRange, float damage, float knockbackForce, float duration, float tickRate)
+    {
+        StartCoroutine(ExpandingDamageOverTimeCoroutine(origin, initialRange, maxRange, damage, knockbackForce, duration, tickRate));
+    }
+
+    private IEnumerator ExpandingDamageOverTimeCoroutine(Vector3 origin, float initialRange, float maxRange, float damage, float knockbackForce, float duration, float tickRate)
+    {
+        float elapsedTime = 0f;
+        float currentRange = initialRange;
+        var hitCount = new Dictionary<Collider, int>();
+
+        while (elapsedTime < duration)
+        {
+            currentRange = Mathf.Lerp(initialRange, maxRange, elapsedTime / duration);
+            Collider[] hitColliders = Physics.OverlapSphere(origin, currentRange);
+
+            foreach (var collider in hitColliders)
+            {
+                if ((collider.CompareTag("Enemy") || collider.CompareTag("Destroyables")) && (!hitCount.ContainsKey(collider) || hitCount[collider] < 3))
+                {
+                    DealDamage(collider, origin, damage, knockbackForce);
+                    hitCount[collider] = hitCount.ContainsKey(collider) ? hitCount[collider] + 1 : 1;
+                }
+            }
+            yield return new WaitForSeconds(tickRate);
+            elapsedTime += tickRate;
+        }
     }
 
     [ClientRpc]
@@ -129,83 +131,8 @@ public class PlayerMelee : NetworkBehaviour
             return;
         }
 
-        GameObject impact = ObjectPooler.Instance.Spawn(impactName, position, rotation);
-        if (impact == null)
-        {
-            Debug.LogError("Failed to spawn effect. Check ObjectPooler configuration.");
-        }
-    }
-
-    public void DealDamageInCone(Vector3 origin, float attackRange, float coneAngle, float damage, float knockbackForce)
-    {
-        // Implement damage logic here, similar to the original DealDamage coroutine
-        Collider[] hitColliders = Physics.OverlapSphere(origin, attackRange);
-        foreach (Collider collider in hitColliders)
-        {
-            Vector3 directionToTarget = (collider.transform.position - origin).normalized;
-            float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
-
-            if (angleToTarget <= coneAngle)
-            {
-                if (collider.CompareTag("Enemy"))
-                {
-                    IDamageable damageable = collider.GetComponent<IDamageable>();
-                    if (damageable != null)
-                    {
-                        SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
-                        damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
-                    }
-                    Rigidbody rb = collider.GetComponent<Rigidbody>();
-                    if (rb != null)
-                    {
-                        rb.AddForce(directionToTarget * knockbackForce, ForceMode.Impulse);
-                    }
-                    Enemy enemy = collider.GetComponent<Enemy>();
-                    if (enemy != null)
-                    {
-                        enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
-                    }
-                }
-            }
-        }
-    }
-
-    public void DealDamageInCircle(Vector3 origin, float attackRange, float damage, float knockbackForce)
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(origin, attackRange);
-        foreach (Collider collider in hitColliders)
-        {
-            if (collider.CompareTag("Enemy"))
-            {
-                IDamageable damageable = collider.GetComponent<IDamageable>();
-                if (damageable != null)
-                {
-                    SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
-                    damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
-                }
-                Rigidbody rb = collider.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    Vector3 directionToTarget = (collider.transform.position - origin).normalized;
-                    rb.AddForce(directionToTarget * knockbackForce, ForceMode.Impulse);
-                }
-                Enemy enemy = collider.GetComponent<Enemy>();
-                if (enemy != null)
-                {
-                    Vector3 directionToTarget = (collider.transform.position - origin).normalized;
-                    enemy.OnRaycastHitServerRpc(collider.transform.position, directionToTarget);
-                }
-            }
-            else if (collider.CompareTag("Destroyables"))
-            {
-                IDamageable damageable = collider.GetComponent<IDamageable>();
-                if (damageable != null)
-                {
-                    SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
-                    damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
-                }
-            }
-        }
+        var impact = ObjectPooler.Instance.Spawn(impactName, position, rotation);
+        if (impact == null) Debug.LogError("Failed to spawn effect. Check ObjectPooler configuration.");
     }
 
     public void DisableMovementAndRotation()

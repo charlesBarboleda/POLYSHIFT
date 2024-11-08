@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 897545559080595120}
   - component: {fileID: 1167963218447522869}
-  - component: {fileID: 467324705658122643}
   - component: {fileID: 7708530728877573965}
+  - component: {fileID: 467324705658122643}
   - component: {fileID: 573002018910352478}
   m_Layer: 0
   m_Name: GroundCrackDecal
@@ -57,22 +57,8 @@ MonoBehaviour:
   m_DecalLayerMask: 1
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0.2, y: 0.2, z: 0.2}
+  m_Size: {x: 20, y: 20, z: 20}
   m_FadeFactor: 1
---- !u!114 &467324705658122643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 524031644135368896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33b14331a3d029645bc7ae8a2ee7597d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeToReturn: 10
-  tagName: GroundCrackDecal
 --- !u!114 &7708530728877573965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 678583289
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -98,6 +84,22 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &467324705658122643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524031644135368896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b14331a3d029645bc7ae8a2ee7597d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  timeToReturn: 10
+  tagName: GroundCrackDecal
+  isNetworkedObject: 0
 --- !u!114 &573002018910352478
 MonoBehaviour:
   m_ObjectHideFlags: 0

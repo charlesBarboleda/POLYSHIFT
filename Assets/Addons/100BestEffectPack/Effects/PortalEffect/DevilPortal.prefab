@@ -19319,8 +19319,8 @@ GameObject:
   - component: {fileID: 400008}
   - component: {fileID: 2264877086605503832}
   - component: {fileID: 5698544291828132348}
-  - component: {fileID: 5986905123125703276}
   - component: {fileID: 3129403088277691627}
+  - component: {fileID: 5986905123125703276}
   - component: {fileID: 6340015269690216470}
   m_Layer: 0
   m_Name: DevilPortal
@@ -24150,21 +24150,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &5986905123125703276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33b14331a3d029645bc7ae8a2ee7597d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeToReturn: 5
-  tagName: DevilPortal
-  isNetworkedObject: 1
 --- !u!114 &3129403088277691627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24190,6 +24175,22 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &5986905123125703276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b14331a3d029645bc7ae8a2ee7597d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  timeToReturn: 5
+  tagName: DevilPortal
+  isNetworkedObject: 1
 --- !u!114 &6340015269690216470
 MonoBehaviour:
   m_ObjectHideFlags: 0

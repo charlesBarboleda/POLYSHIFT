@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RootMotionController : MonoBehaviour
 {
     Animator animator;
-    public string clipNameWithoutRootMotion; // The name of the animation state where you want root motion off
+    public List<string> clipNameWithRootMotion = new List<string>(); // The name of the animation state where you want root motion off
 
     void Start()
     {
@@ -14,13 +15,17 @@ public class RootMotionController : MonoBehaviour
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
         // Toggle root motion based on the animation state
-        if (stateInfo.IsName(clipNameWithoutRootMotion))
+        foreach (string clipName in clipNameWithRootMotion)
         {
-            animator.applyRootMotion = false;
-        }
-        else
-        {
-            animator.applyRootMotion = true;
+            if (stateInfo.IsName(clipName))
+            {
+                animator.applyRootMotion = true;
+                return;
+            }
+            else
+            {
+                animator.applyRootMotion = false;
+            }
         }
     }
 }

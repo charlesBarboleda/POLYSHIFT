@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 2164118039312028702}
   - component: {fileID: 5001509186485010020}
   - component: {fileID: 70883791136345911}
+  - component: {fileID: 1439403175535614687}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -201,7 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4290028803
+  GlobalObjectIdHash: 2803786815
   InScenePlacedSourceGlobalObjectIdHash: 4290028803
   DeferredDespawnTick: 0
   Ownership: 1
@@ -591,6 +592,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstPersonCanvas: {fileID: 1263449724105617601}
+--- !u!114 &1439403175535614687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401702113207284416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07226f1a27f77f44e9998081e825e8ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipNameWithoutRootMotion: []
 --- !u!1001 &673526352046816527
 PrefabInstance:
   m_ObjectHideFlags: 0
