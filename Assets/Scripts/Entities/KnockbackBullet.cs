@@ -8,7 +8,7 @@ public class KnockbackBullet : Bullet
         if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))
         {
             IDamageable health = other.gameObject.GetComponent<IDamageable>();
-            health.TakeDamage(Damage, OwnerClientId);
+            health.TakeDamage(Damage, NetworkObjectId);
             Debug.Log("KnockbackBullet collided with " + other.gameObject.name);
             DestroyBullet();
         }

@@ -2,7 +2,6 @@ using Unity.AI.Navigation;
 using Unity.Netcode;
 using UnityEngine;
 using Pathfinding;
-using Unity.Tutorials.Core.Editor;
 
 public class DestroyableHealth : NetworkBehaviour, IDamageable
 {
@@ -24,7 +23,7 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void RequestTakeDamageServerRpc(float damage, ulong instigator)
     {
         TakeDamage(damage, instigator);

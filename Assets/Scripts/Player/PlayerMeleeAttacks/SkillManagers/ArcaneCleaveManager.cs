@@ -8,8 +8,7 @@ public class ArcaneCleaveManager : NetworkBehaviour, IMeleeSkillManager
 {
     [field: SerializeField] public float Damage { get; set; } = 30f;
     [field: SerializeField] public float KnockbackForce { get; set; } = 1f;
-    [field: SerializeField] public float AttackSpeedMultiplier { get; set; } = 1f;
-
+    [field: SerializeField] public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>();
     public float AttackRange { get; set; } = 2f;
     Animator animator;
     PlayerMelee playerMelee;
@@ -18,12 +17,16 @@ public class ArcaneCleaveManager : NetworkBehaviour, IMeleeSkillManager
     {
         animator = GetComponent<Animator>();
         playerMelee = GetComponent<PlayerMelee>();
+        Damage = 30f;
+        KnockbackForce = 1f;
+        AttackSpeedMultiplier.Value = 1f;
+        AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
+        AttackRange = 2f;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void OnArcaneCleaveSpawnServerRpc()
     {
-        SetAttackSpeedMultiplier();
         for (int i = 0; i <= 12; i++)
         {
             GameObject cleave = ObjectPooler.Instance.Spawn("ArcaneCleave", transform.position, transform.rotation);
@@ -44,7 +47,7 @@ public class ArcaneCleaveManager : NetworkBehaviour, IMeleeSkillManager
         playerMelee.DealDamageInExpandingCircle(transform.position, 0, AttackRange * 4, Damage, KnockbackForce, 0.1f, 0.01f);
     }
 
-    void SetAttackSpeedMultiplier()
+    void SetAttackSpeedMultiplier(float AttackSpeedMultiplier)
     {
         animator.SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
     }

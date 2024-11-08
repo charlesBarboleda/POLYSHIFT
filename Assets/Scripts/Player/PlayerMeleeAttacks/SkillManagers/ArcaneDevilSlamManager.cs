@@ -7,14 +7,28 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, IMeleeSkillManager
 {
     public float Damage { get; set; } = 100f;
     public float KnockbackForce { get; set; } = 1f;
-    public float AttackSpeedMultiplier { get; set; } = 1f;
+    public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>();
     public float AttackRange { get; set; } = 3f;
 
-
+    Animator animator;
 
     GameObject Devil;
     GameObject DevilPortal;
     GameObject DevilPortal2;
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        Devil = null;
+        DevilPortal = null;
+        DevilPortal2 = null;
+        Damage = 100f;
+        KnockbackForce = 5f;
+        AttackSpeedMultiplier.Value = 1f;
+        AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
+        AttackRange = 3f;
+        animator = GetComponent<Animator>();
+    }
 
     [ServerRpc]
     public void OnArcaneDevilSlamSpawnServerRpc()
@@ -32,7 +46,7 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, IMeleeSkillManager
         DevilPortal2.GetComponent<NetworkObject>().Spawn(); // Make sure portal is only spawned on the server
 
         Devil = ObjectPooler.Instance.Spawn("Devil", DevilPortal.transform.position + Vector3.down * 20f, transform.rotation);
-        Devil.GetComponent<Animator>().SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
+        Devil.GetComponent<Animator>().SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier.Value);
         Devil.GetComponent<NetworkObject>().Spawn(); // Make sure Devil is only spawned on the server
         Devil.GetComponent<DevilManager>().SetPlayer(transform, Damage);
 
@@ -89,5 +103,14 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, IMeleeSkillManager
     {
         DevilPortal.GetComponent<NetworkObject>().Despawn(false);
         ObjectPooler.Instance.Despawn("DevilPortal", DevilPortal);
+    }
+
+    void SetAttackSpeedMultiplier(float AttackSpeedMultiplier)
+    {
+        if (Devil != null)
+        {
+            Devil.GetComponent<Animator>().SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
+        }
+        animator.SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
     }
 }

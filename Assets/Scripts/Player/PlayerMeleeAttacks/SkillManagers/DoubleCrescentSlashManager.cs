@@ -8,7 +8,7 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     public float coneAngle = 90f;
     public float KnockbackForce { get; set; } = 1f;
     public float Damage { get; set; } = 10f;
-    public float AttackSpeedMultiplier { get; set; } = 1f;
+    public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>();
 
     PlayerAudioManager audioManager;
     Animator animator;
@@ -20,7 +20,7 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     {
         audioManager = GetComponent<PlayerAudioManager>();
         animator = GetComponent<Animator>();
-        animator.SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
+        AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
         playerMelee = GetComponent<PlayerMelee>();
         player = GetComponent<PlayerNetworkHealth>().gameObject;
     }
@@ -34,7 +34,6 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     [ClientRpc]
     void OnDoubleCrescentSlashSpawnClientRpc()
     {
-        SetAttackSpeedMultiplier();
         GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + (transform.forward * 3f) + transform.up, transform.rotation * Quaternion.Euler(0, 0, Random.Range(-20, 20)));
         slash.transform.localScale = new Vector3(AttackRange / 2, AttackRange / 2, AttackRange / 2);
         ParticleSystem[] childParticleSystems = slash.GetComponentsInChildren<ParticleSystem>();
@@ -81,9 +80,9 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
 
     }
 
-    void SetAttackSpeedMultiplier()
+    void SetAttackSpeedMultiplier(float attackSpeedMultiplier)
     {
-        animator.SetFloat("MeleeAttackSpeedMultiplier", AttackSpeedMultiplier);
+        animator.SetFloat("MeleeAttackSpeedMultiplier", attackSpeedMultiplier);
     }
 
 

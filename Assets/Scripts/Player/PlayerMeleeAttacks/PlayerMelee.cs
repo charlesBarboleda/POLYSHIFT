@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class PlayerMelee : NetworkBehaviour
 {
-    public List<MeleeAttack> meleeAttacks = new List<MeleeAttack>();
+    List<MeleeAttack> meleeAttacks = new List<MeleeAttack>();
+    IMeleeSkillManager[] skillManagers;
     private MeleeAttack currentAttack;
     private bool canAttack = true;
     private Animator animator;
@@ -20,11 +21,13 @@ public class PlayerMelee : NetworkBehaviour
         base.OnNetworkSpawn();
 
         animator = GetComponent<Animator>();
-        playerMovement = GetComponentInParent<PlayerNetworkMovement>();
-        playerRotation = GetComponentInParent<PlayerNetworkRotation>();
+        skillManagers = GetComponents<IMeleeSkillManager>();
+        playerMovement = GetComponent<PlayerNetworkMovement>();
+        playerRotation = GetComponent<PlayerNetworkRotation>();
 
         meleeAttacks.AddRange(new MeleeAttack[]
         {
+            gameObject.AddComponent<RelentlessOnslaught>(),
             gameObject.AddComponent<ArcaneBarrier>(),
             gameObject.AddComponent<SingleCrescentSlash>(),
             gameObject.AddComponent<DoubleCrescentSlash>(),
@@ -135,6 +138,58 @@ public class PlayerMelee : NetworkBehaviour
         if (impact == null) Debug.LogError("Failed to spawn effect. Check ObjectPooler configuration.");
     }
 
+    public void IncreaseMeleeDamageBy(float multiplier, float duration)
+    {
+        StartCoroutine(IncreaseMeleeDamageCoroutine(multiplier, duration));
+    }
+
+    IEnumerator IncreaseMeleeDamageCoroutine(float multiplier, float duration)
+    {
+        foreach (var skillManager in skillManagers)
+        {
+            skillManager.Damage *= multiplier;
+        }
+        yield return new WaitForSeconds(duration);
+        foreach (var skillManager in skillManagers)
+        {
+            skillManager.Damage /= multiplier;
+        }
+    }
+
+    public void IncreaseAttackSpeedBy(float multiplier, float duration)
+    {
+        StartCoroutine(IncreaseAttackSpeedCoroutine(multiplier, duration));
+    }
+
+    IEnumerator IncreaseAttackSpeedCoroutine(float multiplier, float duration)
+    {
+        foreach (var skillManager in skillManagers)
+        {
+            skillManager.AttackSpeedMultiplier.Value *= multiplier;
+        }
+        yield return new WaitForSeconds(duration);
+        foreach (var skillManager in skillManagers)
+        {
+            skillManager.AttackSpeedMultiplier.Value /= multiplier;
+        }
+    }
+
+    public void ReduceCooldownsBy(float multiplier, float duration)
+    {
+        StartCoroutine(ReduceCooldownCoroutine(multiplier, duration));
+    }
+    IEnumerator ReduceCooldownCoroutine(float multiplier, float duration)
+    {
+        foreach (var attack in meleeAttacks)
+        {
+            attack.Cooldown *= multiplier;
+        }
+        yield return new WaitForSeconds(duration);
+        foreach (var attack in meleeAttacks)
+        {
+            attack.Cooldown /= multiplier;
+        }
+    }
     public void DisableMovementAndRotation()
     {
         playerMovement.canMove = false;

@@ -7,15 +7,17 @@ public class SingleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     public float coneAngle = 90f;
     public float KnockbackForce { get; set; } = 1f;
     public float Damage { get; set; } = 10f;
-    public float AttackSpeedMultiplier { get; set; } = 1f;
+    public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>();
 
 
-
+    Animator animator;
     PlayerMelee playerMelee;
 
     void Start()
     {
         playerMelee = GetComponent<PlayerMelee>();
+        animator = GetComponent<Animator>();
+        AttackSpeedMultiplier.OnValueChanged += SetMeleeAttackSpeedMultiplier;
     }
 
 
@@ -40,6 +42,11 @@ public class SingleCrescentSlashManager : NetworkBehaviour, IMeleeSkillManager
     {
         playerMelee.DealDamageInCone(playerMelee.transform.position, AttackRange, coneAngle, Damage, KnockbackForce);
 
+    }
+
+    void SetMeleeAttackSpeedMultiplier(float value)
+    {
+        animator.SetFloat("MeleeAttackSpeedMultiplier", value);
     }
 
 
