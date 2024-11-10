@@ -46,7 +46,7 @@ public class SingleShot : IWeaponBehavior
             }
 
             // Check for nearby enemies within a certain radius
-            Collider[] nearbyEnemies = Physics.OverlapSphere(hit.point, 5); // adjust radius as needed
+            Collider[] nearbyEnemies = Physics.OverlapSphere(hit.point, 0.5f); // adjust radius as needed
             NetworkObject targetNetworkObject = null;
 
             foreach (var col in nearbyEnemies)

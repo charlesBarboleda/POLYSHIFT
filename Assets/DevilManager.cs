@@ -8,7 +8,7 @@ public class DevilManager : NetworkBehaviour
 {
     public float damage;
     Transform player;
-    PlayerMelee playerMelee;
+    PlayerSkills PlayerSkills;
 
     AudioSource audioSource;
     [SerializeField] AudioSource audioSource2;
@@ -36,7 +36,7 @@ public class DevilManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void DealAreaDamageServerRpc(float radius)
     {
-        playerMelee.DealDamageInCircle(transform.position, radius, damage, 5f);
+        PlayerSkills.DealDamageInCircle(transform.position, radius, damage, 5f);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -139,6 +139,6 @@ public class DevilManager : NetworkBehaviour
     {
         this.damage = damage;
         this.player = player;
-        playerMelee = player.GetComponentInParent<PlayerMelee>();
+        PlayerSkills = player.GetComponentInParent<PlayerSkills>();
     }
 }

@@ -13,7 +13,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
     PlayerNetworkHealth playerNetworkHealth;
     PlayerNetworkMovement playerNetworkMovement;
     PlayerWeapon playerWeapon;
-    IMeleeSkillManager[] meleeSkillsManager;
+    ISkillManager[] meleeSkillsManager;
     PlayerAudioManager audioManager;
 
     public override void OnNetworkSpawn()
@@ -24,7 +24,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerWeapon = GetComponent<PlayerWeapon>();
         Level.OnValueChanged += OnLevelUp;
-        meleeSkillsManager = GetComponentsInChildren<IMeleeSkillManager>();
+        meleeSkillsManager = GetComponentsInChildren<ISkillManager>();
         if (IsServer)
         {
 
@@ -57,7 +57,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
         playerNetworkMovement.MoveSpeed += 0.05f;
         playerWeapon.Damage += 1;
 
-        foreach (IMeleeSkillManager skill in meleeSkillsManager)
+        foreach (ISkillManager skill in meleeSkillsManager)
         {
             skill.Damage += Level.Value;
         }

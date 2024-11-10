@@ -929,6 +929,7 @@ GameObject:
   - component: {fileID: 5588953981742103810}
   - component: {fileID: 6816751214802421365}
   - component: {fileID: 4632008771931510260}
+  - component: {fileID: 7398882635146020654}
   m_Layer: 7
   m_Name: ZombieBig
   m_TagString: Enemy
@@ -987,7 +988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 857240174
+  GlobalObjectIdHash: 1395735324
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1362,6 +1363,7 @@ MonoBehaviour:
   networkObject: {fileID: 0}
   animator: {fileID: 0}
   agent: {fileID: 0}
+  debuffs: []
   attackCooldown: 3
   canAttack: 0
   attackRange: 3
@@ -1459,6 +1461,18 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
+--- !u!114 &7398882635146020654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3227787598189730512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9306687927c980a4d815d7aebfa64b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3382776625891409302
 GameObject:
   m_ObjectHideFlags: 0

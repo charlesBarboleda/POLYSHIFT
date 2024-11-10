@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6213d8a0918107a40add6cbfa95445e1, type: 3}
+  m_Name: ExtendedRange
+  m_EditorClassIdentifier: 
+  skillName: Extended Range
+  skillDescription: Increase your Melee Attack Range level by 1
+  skillIcon: {fileID: 21300000, guid: ccc5bd5cabccb0e47bca678a020c6fd8, type: 3}

@@ -22,7 +22,7 @@ AnimatorState:
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 56e3fe7d70d4ce845b8aab991ecdfc6e, type: 2}
   m_Tag: 
-  m_SpeedParameter: MeleeAttackSpeedMultiplier
+  m_SpeedParameter: AttackSpeedMultiplier
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
@@ -57,7 +57,7 @@ AnimatorController:
   m_Name: DevilAnimController
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: MeleeAttackSpeedMultiplier
+  - m_Name: AttackSpeedMultiplier
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0

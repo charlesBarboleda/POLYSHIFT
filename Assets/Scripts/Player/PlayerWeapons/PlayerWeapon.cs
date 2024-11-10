@@ -2,6 +2,8 @@ using System.Collections;
 using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public enum WeaponType
 {
@@ -24,9 +26,10 @@ public class PlayerWeapon : NetworkBehaviour
     public float reloadTimeReduction = 1f;
     public Transform bulletSpawnPoint;
     public PlayerNetworkMovement playerNetworkMovement;
+    public Camera Camera;
+    public List<Debuff> weaponDebuffs = new List<Debuff>();
     PlayerAudioManager audioManager;
     IWeaponBehavior currentWeaponBehavior;
-    public Camera Camera;
     float _nextShotTime;
     bool _isReloading;
 
@@ -73,6 +76,24 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
+    public void IncreaseWeaponDamageBy(float multiplier, float duration)
+    {
+        Damage *= multiplier;
+        StartCoroutine(ReduceDamageAfterDuration(multiplier, duration));
+    }
+
+    IEnumerator ReduceDamageAfterDuration(float multiplier, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        Damage /= multiplier;
+    }
+
+    public void AddWeaponDebuff(Debuff debuff)
+    {
+        if (!weaponDebuffs.Contains(debuff))
+            weaponDebuffs.Add(debuff);
+    }
+
     [ServerRpc]
     public void ApplyDamageServerRpc(ulong targetNetworkObjectId)
     {
@@ -80,10 +101,29 @@ public class PlayerWeapon : NetworkBehaviour
         if (targetObject != null && targetObject.TryGetComponent(out IDamageable iDamageable))
         {
             iDamageable.RequestTakeDamageServerRpc(Damage, NetworkObjectId); // Pass NetworkObjectId instead of clientId
+            ApplyDebuffsOnHit(targetObject);
         }
     }
 
 
+    void ApplyDebuffsOnHit(NetworkObject targetObject)
+    {
+        if (targetObject.TryGetComponent(out DebuffManager debuffManager))
+        {
+            foreach (Debuff debuff in weaponDebuffs)
+            {
+                Debuff debuffInstance = Instantiate(debuff);
+                debuffManager.AddDebuff(debuffInstance);
+            }
+        }
+    }
+
+
+
+    public void PermanentWeaponDamageIncreaseBy(float damageIncrease)
+    {
+        Damage += damageIncrease;
+    }
 
     [ServerRpc]
     public void FireSingleShotServerRpc(Vector3 startPoint, Vector3 hitPoint)

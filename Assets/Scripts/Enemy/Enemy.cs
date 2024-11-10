@@ -24,6 +24,7 @@ public abstract class Enemy : NetworkBehaviour
     public NetworkObject networkObject;
     public Animator animator;
     public AIPath agent;
+    public List<Debuff> debuffs = new List<Debuff>();
     public float attackCooldown = 3f;
     public bool canAttack = false;
     private float elapsedCooldown = 0f;
@@ -67,6 +68,7 @@ public abstract class Enemy : NetworkBehaviour
                 {
                     // Stop the agent when within range
                     agent.maxSpeed = 0;
+                    agent.isStopped = true;
 
                     // Perform attack if cooldown has reset
                     if (elapsedCooldown <= 0 && canAttack)
@@ -78,7 +80,7 @@ public abstract class Enemy : NetworkBehaviour
                 else
                 {
                     // Resume movement if the target is far
-                    // agent.isStopped = false;
+                    agent.isStopped = false;
                 }
             }
 
@@ -96,9 +98,6 @@ public abstract class Enemy : NetworkBehaviour
         yield return new WaitForSeconds(3f);
         canAttack = true;
     }
-
-
-
 
     [ServerRpc(RequireOwnership = false)]
     public void OnRaycastHitServerRpc(Vector3 hitPoint, Vector3 hitNormal)

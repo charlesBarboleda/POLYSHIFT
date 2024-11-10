@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93524f5c4df10ec44b97692197d5aa01, type: 3}
+  m_Name: ArcanePlague
+  m_EditorClassIdentifier: 
+  skillName: Arcane Plague
+  skillDescription: 'Infuse your bullets with Arcane Poison. Arcane Poison: Deal
+    damage over time. If the infected enemy dies, they explode for 10% of their maximum
+    health, spreading the debuff.'
+  skillIcon: {fileID: 21300000, guid: 3881b64a5aa20d9428dc08ad3df1dac2, type: 3}
+  arcanePoison: {fileID: 11400000, guid: 81ca4a641eed7614f8ecafc1f97ef87d, type: 2}

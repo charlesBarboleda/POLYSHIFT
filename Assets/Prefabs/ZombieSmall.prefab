@@ -1305,6 +1305,7 @@ GameObject:
   - component: {fileID: 8778146592191059359}
   - component: {fileID: 1708858290182495423}
   - component: {fileID: 7635314470475647491}
+  - component: {fileID: 4066059136784496415}
   m_Layer: 7
   m_Name: ZombieSmall
   m_TagString: Enemy
@@ -1363,7 +1364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 214571334
+  GlobalObjectIdHash: 3979108100
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1397,6 +1398,7 @@ MonoBehaviour:
   networkObject: {fileID: 0}
   animator: {fileID: 0}
   agent: {fileID: 0}
+  debuffs: []
   attackCooldown: 3
   canAttack: 0
   attackRange: 1
@@ -1835,6 +1837,19 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
+--- !u!114 &4066059136784496415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5226149808726562001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9306687927c980a4d815d7aebfa64b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debuffs: []
 --- !u!1 &5271520574736696962
 GameObject:
   m_ObjectHideFlags: 0

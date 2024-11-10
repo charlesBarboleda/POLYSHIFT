@@ -50,6 +50,8 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         var guo = new GraphUpdateObject(bounds);
         guo.updatePhysics = true;
         AstarPath.active.UpdateGraphs(guo);
+        GetComponent<NetworkObject>().Despawn(true);
         Destroy(gameObject);
+
     }
 }
