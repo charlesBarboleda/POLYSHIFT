@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5705fbd8c4516784ca48a07ffdf3eef6, type: 3}
-  m_Name: MeleeDamage
+  m_Script: {fileID: 11500000, guid: 550bd79e775e50d4c8d4c95860cb84ae, type: 3}
+  m_Name: DoubleCrescentSlashPlus 2
   m_EditorClassIdentifier: 
-  skillName: Melee Damage Plus
-  skillDescription: Increase Melee Damage by 4
+  skillName: Double Crescent Slash Plus
+  skillDescription: Increase Slash Damage by 5, increase Cone Angle by 5, increase
+    Attack Range level by 0.2, and decrease Cooldown by 0.2.
   skillIcon: {fileID: 21300000, guid: cdbe0fe83d899f84aa322d1150101b04, type: 3}

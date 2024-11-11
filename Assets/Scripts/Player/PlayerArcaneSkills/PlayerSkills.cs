@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class PlayerSkills : NetworkBehaviour
     ActiveSkill currentAttack;
     bool canAttack = true;
     Animator animator;
+    PlayerWeapon playerWeapon;
+    PlayerNetworkHealth playerHealth;
     PlayerNetworkMovement playerMovement;
     PlayerNetworkRotation playerRotation;
 
@@ -28,6 +31,8 @@ public class PlayerSkills : NetworkBehaviour
         base.OnNetworkSpawn();
 
         animator = GetComponent<Animator>();
+        playerWeapon = GetComponent<PlayerWeapon>();
+        playerHealth = GetComponent<PlayerNetworkHealth>();
         skillManagers = GetComponentsInChildren<ISkillManager>();
         playerMovement = GetComponent<PlayerNetworkMovement>();
         playerRotation = GetComponent<PlayerNetworkRotation>();
@@ -223,18 +228,191 @@ public class PlayerSkills : NetworkBehaviour
         if (impact == null) Debug.LogError("Failed to spawn effect. Check ObjectPooler configuration.");
     }
 
+    public void BladeVortexPlus()
+    {
+        ArcaneBladeVortexManager script = GetComponent<ArcaneBladeVortexManager>();
+        script.Damage += 0.5f;
+        script.AttackRange += 0.2f;
+        script.Duration += 1f;
+
+        bool bladeVortexUnlocked = false;
+
+        foreach (ActiveSkill skill in unlockedSkills)
+        {
+            if (skill is ArcaneBladeVortex)
+            {
+                skill.Cooldown -= 2f;
+                bladeVortexUnlocked = true;
+                break;
+            }
+        }
+        if (!bladeVortexUnlocked)
+        {
+            PermanentMeleeDamageIncreaseBy(2f);
+            PermanentWeaponDamageIncreaseBy(0.5f);
+            PermanentHealthIncreaseBy(2.5f);
+            PermanentMovementSpeedIncreaseBy(0.1f);
+        }
+    }
+
+    public void ArcanePlaguePlus()
+    {
+        // Increase the duration of the debuff
+        if (unlockedSkills.Find(skill => skill is ArcanePlague) != null)
+        {
+            // If arcanePlague is unlocked, only apply the duration increase
+            foreach (Debuff debuff in playerWeapon.weaponDebuffs)
+            {
+                if (debuff is ArcanePoison)
+                {
+                    debuff.duration += 0.5f;
+                    break;
+                }
+            }
+            playerWeapon.PermanentWeaponDamageIncreaseBy(0.5f);
+        }
+        else
+        {
+            // If arcanePlague is not unlocked, apply the stat increases
+            PermanentMeleeDamageIncreaseBy(2f);
+            PermanentWeaponDamageIncreaseBy(0.5f);
+            PermanentHealthIncreaseBy(2.5f);
+            PermanentMovementSpeedIncreaseBy(0.1f);
+
+        }
+    }
+
+
+    public void ArcaneCleavePlus()
+    {
+        ArcaneCleaveManager script = GetComponent<ArcaneCleaveManager>();
+        script.Damage += 10f;
+        script.AttackRange += 0.2f;
+
+        bool arcaneCleaveUnlocked = false;
+
+        foreach (ActiveSkill skill in unlockedSkills)
+        {
+            if (skill is ArcaneCleave)
+            {
+                skill.Cooldown -= 0.2f;
+                arcaneCleaveUnlocked = true;
+                break; // Exit loop once ArcaneCleave is found
+            }
+        }
+
+        // Apply stat increases if ArcaneCleave was not already unlocked
+        if (!arcaneCleaveUnlocked)
+        {
+            PermanentMeleeDamageIncreaseBy(2f);
+            PermanentWeaponDamageIncreaseBy(0.5f);
+            PermanentHealthIncreaseBy(2.5f);
+            PermanentMovementSpeedIncreaseBy(0.1f);
+
+        }
+    }
+
+
+    public void ArcaneBarrierPlus()
+    {
+        ArcaneBarrierManager script = GetComponent<ArcaneBarrierManager>();
+        script.Duration += 5f;
+        script.DamageReduction += 5f;
+
+        bool arcaneBarrierUnlocked = false;
+
+        foreach (ActiveSkill skill in unlockedSkills)
+        {
+            if (skill is ArcaneBarrier)
+            {
+                skill.Cooldown -= 5f;
+                arcaneBarrierUnlocked = true;
+                break;
+            }
+        }
+        if (!arcaneBarrierUnlocked)
+        {
+            PermanentMeleeDamageIncreaseBy(2f);
+            PermanentWeaponDamageIncreaseBy(0.25f);
+            PermanentHealthIncreaseBy(2.5f);
+            PermanentMovementSpeedIncreaseBy(0.1f);
+
+        }
+    }
+
+
+    public void DoubleCrescentSlashPlus()
+    {
+        DoubleCrescentSlashManager script = GetComponent<DoubleCrescentSlashManager>();
+        script.Damage += 5f;
+        script.coneAngle += 5f;
+        script.AttackRange += 0.2f;
+
+        bool skillUnlocked = false;
+
+        foreach (ActiveSkill skill in unlockedSkills)
+        {
+            if (skill is DoubleCrescentSlash)
+            {
+                skill.Cooldown -= 0.2f;
+                break;
+            }
+        }
+        if (!skillUnlocked)
+        {
+            PermanentMeleeDamageIncreaseBy(2f);
+            PermanentWeaponDamageIncreaseBy(0.5f);
+            PermanentHealthIncreaseBy(2.5f);
+            PermanentMovementSpeedIncreaseBy(0.1f);
+        }
+    }
+
     public void RelentlessOnslaughtPlus()
     {
         RelentlessOnslaughtManager script = GetComponent<RelentlessOnslaughtManager>();
         script.Duration += 2.5f;
+
+        bool skillUnlocked = false;
 
         foreach (ActiveSkill skill in unlockedSkills)
         {
             if (skill is RelentlessOnslaught)
             {
                 skill.Cooldown -= 7.5f;
+                skillUnlocked = true;
+                break;
             }
         }
+        if (!skillUnlocked)
+        {
+            PermanentMeleeDamageIncreaseBy(2f);
+            PermanentWeaponDamageIncreaseBy(0.5f);
+            PermanentHealthIncreaseBy(2.5f);
+            PermanentMovementSpeedIncreaseBy(0.1f);
+        }
+    }
+
+
+    public void PermanentHealthIncreaseBy(float healthIncrease)
+    {
+        playerHealth.maxHealth.Value += healthIncrease;
+        playerHealth.currentHealth.Value += healthIncrease;
+    }
+
+    public void PermanentMovementSpeedIncreaseBy(float speedIncrease)
+    {
+        playerMovement.MoveSpeed += speedIncrease;
+    }
+
+
+    public void PermanentWeaponFireRateIncreaseBy(float fireRateIncrease)
+    {
+        playerWeapon.ShootRate += fireRateIncrease;
+    }
+
+    public void PermanentWeaponDamageIncreaseBy(float damageIncrease)
+    {
+        playerWeapon.Damage += damageIncrease;
     }
 
     public void PermanentMeleeRangeIncreaseBy(float rangeIncrease)

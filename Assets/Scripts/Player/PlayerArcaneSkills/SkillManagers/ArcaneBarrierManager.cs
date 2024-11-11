@@ -13,6 +13,7 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
     private PlayerSkills PlayerSkills;
     private PlayerNetworkHealth playerNetworkHealth;
     public Animator animator { get; set; }
+    public float DamageReduction { get; set; } = 0.5f;
 
     public override void OnNetworkSpawn()
     {
@@ -40,7 +41,7 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
     private void ArcaneBarrierSpawnServerRpc(ServerRpcParams rpcParams = default)
     {
         // Apply the buff only to the activating client
-        ApplyBuffToClientRpc(rpcParams.Receive.SenderClientId, 0.5f, 60f);
+        ApplyBuffToClientRpc(rpcParams.Receive.SenderClientId, DamageReduction, Duration);
 
         // Spawn the barrier effects on the server, which all clients will see
         if (arcaneBarrierInstance == null)

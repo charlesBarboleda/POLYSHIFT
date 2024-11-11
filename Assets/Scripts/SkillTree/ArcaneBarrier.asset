@@ -16,4 +16,4 @@ MonoBehaviour:
   skillDescription: Bring forth a barrier; Protecting you and reducing all damage
     taken by 50%
   skillIcon: {fileID: 21300000, guid: 76c3166313c10e94e9bdbd2b393a60cb, type: 3}
-  Cooldown: 120
+  Cooldown: 180

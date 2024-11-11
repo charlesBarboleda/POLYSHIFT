@@ -3870,6 +3870,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5237053874673588928}
     m_Modifications:
+    - target: {fileID: 454860296615129499, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -77.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 454860296615129499, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -145.6
+      objectReference: {fileID: 0}
     - target: {fileID: 2014488965093096671, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_Name
       value: SkillTreeCanvas

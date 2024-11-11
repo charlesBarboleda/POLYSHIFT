@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: NewBeginnings
   m_EditorClassIdentifier: 
   skillName: New Beginnings
-  skillDescription: Welcome! Increase Health by 10, increase Melee Damage by 5, and
-    increase Weapon Damage by 2.5, increase Move Speed by 0.25.
+  skillDescription: 'Welcome! Increase Health by 10, increase Melee Damage by 5,
+    increase Weapon Damage by 2.5, and increase Move Speed by 0.25. Travel Nodes:
+    Grants permanent bonus stats if the respective Skill Node associated with it
+    is still locked.'
   skillIcon: {fileID: 21300000, guid: d5f00e0ab477d9143ac7ec8efc57effc, type: 3}

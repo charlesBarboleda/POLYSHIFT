@@ -14,8 +14,4 @@ public class ArcanePlagueManager : NetworkBehaviour, ISkillManager
         Damage = 5f;
     }
 
-    public void ExecuteAttack()
-    {
-
-    }
 }
