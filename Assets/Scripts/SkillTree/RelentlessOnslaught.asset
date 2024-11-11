@@ -16,4 +16,4 @@ MonoBehaviour:
   skillDescription: For 30 seconds, gain a buff that doubles Melee Damage and Attack
     Speed while reducing cooldowns.
   skillIcon: {fileID: 21300000, guid: 65a13438a1f85b34dab17340174d2fee, type: 3}
-  Cooldown: 90
+  Cooldown: 120

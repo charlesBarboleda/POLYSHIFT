@@ -7,6 +7,7 @@ public class PlayerSkills : NetworkBehaviour
 {
     public List<Skill> unlockedSkills = new List<Skill>();
     public List<ActiveSkill> hotbarSkills = new List<ActiveSkill>(10); // Fixed-size hotbar
+    [SerializeField] SkillTreeManager skillTreeManager;
     ISkillManager[] skillManagers;
     ActiveSkill currentAttack;
     bool canAttack = true;
@@ -18,19 +19,30 @@ public class PlayerSkills : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsLocalPlayer) return;
+        Debug.Log("PlayerSkills OnNetworkSpawn called.");
+        if (!IsLocalPlayer)
+        {
+            skillTreeManager.gameObject.SetActive(false);
+            return;
+        }
         base.OnNetworkSpawn();
 
         animator = GetComponent<Animator>();
         skillManagers = GetComponentsInChildren<ISkillManager>();
         playerMovement = GetComponent<PlayerNetworkMovement>();
         playerRotation = GetComponent<PlayerNetworkRotation>();
+        skillTreeManager.SetPlayerSkills(this);
+
     }
 
     void Update()
     {
         if (IsLocalPlayer)
         {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                skillTreeManager.ToggleSkillTree();
+            }
             if (Input.GetMouseButtonDown(1) && canAttack)
             {
                 UseSkill(attackIndex);
@@ -62,6 +74,7 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
+
     public void UnlockSkill(Skill skill)
     {
         if (!unlockedSkills.Contains(skill))
@@ -70,6 +83,10 @@ public class PlayerSkills : NetworkBehaviour
             if (skill is ActiveSkill)
             {
                 AddToHotbar((ActiveSkill)skill);
+            }
+            else if (skill is PassiveSkill)
+            {
+                skill.ApplySkillEffect(gameObject);
             }
         }
     }
@@ -204,6 +221,20 @@ public class PlayerSkills : NetworkBehaviour
 
         var impact = ObjectPooler.Instance.Spawn(impactName, position, rotation);
         if (impact == null) Debug.LogError("Failed to spawn effect. Check ObjectPooler configuration.");
+    }
+
+    public void RelentlessOnslaughtPlus()
+    {
+        RelentlessOnslaughtManager script = GetComponent<RelentlessOnslaughtManager>();
+        script.Duration += 2.5f;
+
+        foreach (ActiveSkill skill in unlockedSkills)
+        {
+            if (skill is RelentlessOnslaught)
+            {
+                skill.Cooldown -= 7.5f;
+            }
+        }
     }
 
     public void PermanentMeleeRangeIncreaseBy(float rangeIncrease)

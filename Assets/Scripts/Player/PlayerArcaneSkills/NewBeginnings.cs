@@ -12,6 +12,7 @@ public class NewBeginnings : PassiveSkill
         }
         Debug.Log("Applying NewBeginnings skill effect.");
         user.GetComponent<PlayerNetworkHealth>().currentHealth.Value += 10f;
+        user.GetComponent<PlayerNetworkHealth>().maxHealth.Value += 10f;
         user.GetComponent<PlayerNetworkMovement>().MoveSpeed += 0.25f;
         user.GetComponent<PlayerSkills>().PermanentMeleeDamageIncreaseBy(5f);
         user.GetComponent<PlayerWeapon>().PermanentWeaponDamageIncreaseBy(2.5f);
