@@ -24,6 +24,7 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
         AttackRange = 1f;
         PlayerSkills = GetComponent<PlayerSkills>();
+        animator = GetComponent<Animator>();
     }
 
     public void ActivateArcaneBladeVortex()

@@ -35,9 +35,9 @@ public class MeleeEnemy : Enemy
     {
         if (ClosestTarget != null)
         {
-            if (Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange + 2f)
+            if (Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange + 1f)
             {
-                ClosestTarget.GetComponent<PlayerNetworkHealth>().TakeDamage(attackDamage, NetworkObjectId);
+                ClosestTarget.GetComponent<IDamageable>().RequestTakeDamageServerRpc(attackDamage, NetworkObjectId);
                 // End the attack animation
             }
             // Deal damage to the surrounding area

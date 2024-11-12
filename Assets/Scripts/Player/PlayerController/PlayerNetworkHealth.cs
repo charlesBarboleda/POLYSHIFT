@@ -10,12 +10,14 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> currentHealth = new NetworkVariable<float>(DefaultHealth, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(DefaultHealth, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(DefaultRegenRate, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    public float DamageReduction = 0;
+    public float DamageReduction = 1;
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
             currentHealth.Value = maxHealth.Value;
+            DamageReduction = 1;
+            GameManager.Instance.SpawnedAllies.Add(gameObject);
         }
 
     }
@@ -35,27 +37,28 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         }
     }
 
+    public void PermanentHealthIncreaseBy(float healthIncrease)
+    {
+        maxHealth.Value += healthIncrease;
+        currentHealth.Value += healthIncrease;
+    }
+
+    public void PermanentHealthRegenIncreaseBy(float regenIncrease)
+    {
+        healthRegenRate.Value += regenIncrease;
+    }
+
+    public void PermanentDamageReductionIncreaseBy(float damageReductionIncrease)
+    {
+        DamageReduction += damageReductionIncrease;
+    }
+
+
     void RegenerateHealth(float regenAmount)
     {
         currentHealth.Value += regenAmount * Time.deltaTime;
     }
 
-
-    void Heal(float healAmount, ulong clientId)
-    {
-        if (IsServer)
-        {
-            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(clientId, out var networkObject))
-            {
-                if (networkObject.NetworkObjectId == clientId)
-                {
-                    float newHealth = Mathf.Min(currentHealth.Value + healAmount, maxHealth.Value);
-                    currentHealth.Value = newHealth;
-                }
-
-            }
-        }
-    }
     public void ReduceDamageTakenBy(float damageReduction, float duration)
     {
         StartCoroutine(ReduceDamageTakenCoroutine(damageReduction, duration));
@@ -93,7 +96,12 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public void HandleDeath(ulong clientId)
     {
         Debug.Log("Player died");
-        gameObject.SetActive(false);
+        if (IsServer)
+        {
+            GameManager.Instance.SpawnedAllies.Remove(gameObject);
+            gameObject.SetActive(false);
+
+        }
     }
 
     public void Respawn()

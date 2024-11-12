@@ -17,6 +17,7 @@ public class PlayerSkills : NetworkBehaviour
     PlayerNetworkHealth playerHealth;
     PlayerNetworkMovement playerMovement;
     PlayerNetworkRotation playerRotation;
+    GolemManager golemManager;
 
     public int attackIndex = 0;
 
@@ -33,9 +34,10 @@ public class PlayerSkills : NetworkBehaviour
         animator = GetComponent<Animator>();
         playerWeapon = GetComponent<PlayerWeapon>();
         playerHealth = GetComponent<PlayerNetworkHealth>();
-        skillManagers = GetComponentsInChildren<ISkillManager>();
         playerMovement = GetComponent<PlayerNetworkMovement>();
         playerRotation = GetComponent<PlayerNetworkRotation>();
+        golemManager = GetComponent<GolemManager>();
+        skillManagers = GetComponents<ISkillManager>();
         skillTreeManager.SetPlayerSkills(this);
 
     }
@@ -76,9 +78,19 @@ public class PlayerSkills : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha0))
 
                 attackIndex = 9;
+
+            foreach (var skill in hotbarSkills)
+            {
+                skill.Update();
+            }
+
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                ObjectPooler.Instance.Spawn("GuardianGolem", transform.position + transform.forward * 2, Quaternion.identity);
+            }
+
         }
     }
-
 
     public void UnlockSkill(Skill skill)
     {
@@ -88,6 +100,7 @@ public class PlayerSkills : NetworkBehaviour
             if (skill is ActiveSkill)
             {
                 AddToHotbar((ActiveSkill)skill);
+                ((ActiveSkill)skill).Initialize(animator);
             }
             else if (skill is PassiveSkill)
             {
@@ -228,37 +241,83 @@ public class PlayerSkills : NetworkBehaviour
         if (impact == null) Debug.LogError("Failed to spawn effect. Check ObjectPooler configuration.");
     }
 
+    [ServerRpc]
+    public void SummonGolemServerRpc(string golemName, float health, float damage, float attackRange, float moveSpeed, float attackSpeed, float damageReduction)
+    {
+        SummonGolemClientRpc(golemName, health, damage, attackRange, moveSpeed, attackSpeed, damageReduction);
+    }
+
+    [ClientRpc]
+    public void SummonGolemClientRpc(string golemName, float health, float damage, float attackRange, float moveSpeed, float attackSpeed, float damageReduction)
+    {
+        if (!IsClient) return;
+        // Spawn the Golem on the server
+        GameObject golem = ObjectPooler.Instance.Spawn(golemName, transform.position, Quaternion.identity);
+
+        if (golem != null)
+        {
+            Golem script = golem.GetComponent<Golem>();
+            script.SetOwner(gameObject);
+            script.Damage = damage;
+            script.MaxHealth.Value = health;
+            script.CurrentHealth.Value = health;
+            script.AttackRange = attackRange;
+            script.MovementSpeed = moveSpeed;
+            script.AttackCooldown = attackSpeed;
+            script.DamageReduction = damageReduction;
+
+            // Register the golem in game manager (if needed)
+            golemManager.SpawnedGolems.Add(script);
+
+            // Spawn the NetworkObject so it is synchronized with all clients
+            NetworkObject networkObject = golem.GetComponent<NetworkObject>();
+            networkObject.Spawn();
+
+        }
+    }
+
+    [ClientRpc]
+    void SummonGolemClientRpc()
+    {
+
+    }
+
+
+
     public void BladeVortexPlus()
     {
-        ArcaneBladeVortexManager script = GetComponent<ArcaneBladeVortexManager>();
-        script.Damage += 0.5f;
-        script.AttackRange += 0.2f;
-        script.Duration += 1f;
-
-        bool bladeVortexUnlocked = false;
-
-        foreach (ActiveSkill skill in unlockedSkills)
+        var BladeVortex = unlockedSkills.Find(skill => skill is ArcaneBladeVortex) as ArcaneBladeVortex;
+        if (BladeVortex != null)
         {
-            if (skill is ArcaneBladeVortex)
+            ArcaneBladeVortexManager script = GetComponent<ArcaneBladeVortexManager>();
+            script.Damage += 5f;
+            script.AttackRange += 0.2f;
+            script.Duration += 2f;
+
+            foreach (Skill skill in unlockedSkills)
             {
-                skill.Cooldown -= 2f;
-                bladeVortexUnlocked = true;
-                break;
+                if (skill is ArcaneBladeVortex arcaneBladeVortex)
+                {
+                    arcaneBladeVortex.Cooldown -= 5f;
+                    break;
+                }
             }
         }
-        if (!bladeVortexUnlocked)
+        else
         {
             PermanentMeleeDamageIncreaseBy(2f);
             PermanentWeaponDamageIncreaseBy(0.5f);
             PermanentHealthIncreaseBy(2.5f);
             PermanentMovementSpeedIncreaseBy(0.1f);
         }
+
     }
 
     public void ArcanePlaguePlus()
     {
         // Increase the duration of the debuff
-        if (unlockedSkills.Find(skill => skill is ArcanePlague) != null)
+        var ArcanePlague = unlockedSkills.Find(skill => skill is ArcanePlague) as ArcanePlague;
+        if (ArcanePlague != null)
         {
             // If arcanePlague is unlocked, only apply the duration increase
             foreach (Debuff debuff in playerWeapon.weaponDebuffs)
@@ -285,24 +344,23 @@ public class PlayerSkills : NetworkBehaviour
 
     public void ArcaneCleavePlus()
     {
-        ArcaneCleaveManager script = GetComponent<ArcaneCleaveManager>();
-        script.Damage += 10f;
-        script.AttackRange += 0.2f;
-
-        bool arcaneCleaveUnlocked = false;
-
-        foreach (ActiveSkill skill in unlockedSkills)
+        var ArcaneCleave = unlockedSkills.Find(skill => skill is ArcaneCleave) as ArcaneCleave;
+        if (ArcaneCleave != null)
         {
-            if (skill is ArcaneCleave)
+            ArcaneCleaveManager script = GetComponent<ArcaneCleaveManager>();
+            script.Damage += 10f;
+            script.AttackRange += 0.2f;
+
+            foreach (Skill skill in unlockedSkills)
             {
-                skill.Cooldown -= 0.2f;
-                arcaneCleaveUnlocked = true;
-                break; // Exit loop once ArcaneCleave is found
+                if (skill is ArcaneCleave arcaneCleave)
+                {
+                    arcaneCleave.Cooldown -= 0.2f;
+                    break; // Exit loop once ArcaneCleave is found
+                }
             }
         }
-
-        // Apply stat increases if ArcaneCleave was not already unlocked
-        if (!arcaneCleaveUnlocked)
+        else
         {
             PermanentMeleeDamageIncreaseBy(2f);
             PermanentWeaponDamageIncreaseBy(0.5f);
@@ -315,50 +373,56 @@ public class PlayerSkills : NetworkBehaviour
 
     public void ArcaneBarrierPlus()
     {
-        ArcaneBarrierManager script = GetComponent<ArcaneBarrierManager>();
-        script.Duration += 5f;
-        script.DamageReduction += 5f;
+        // Try to find an instance of ArcaneBarrier within unlockedSkills
+        var arcaneBarrierSkill = unlockedSkills.Find(skill => skill is ArcaneBarrier) as ArcaneBarrier;
 
-        bool arcaneBarrierUnlocked = false;
-
-        foreach (ActiveSkill skill in unlockedSkills)
+        if (arcaneBarrierSkill != null)
         {
-            if (skill is ArcaneBarrier)
+            ArcaneBarrierManager script = GetComponent<ArcaneBarrierManager>();
+            script.Duration += 5f;
+            script.DamageReduction += 5f;
+
+            foreach (Skill skill in unlockedSkills)
             {
-                skill.Cooldown -= 5f;
-                arcaneBarrierUnlocked = true;
-                break;
+                if (skill is ArcaneBarrier arcaneBarrier)
+                {
+                    arcaneBarrier.Cooldown -= 5f;  // Now accessing Cooldown safely
+                    break;
+                }
             }
         }
-        if (!arcaneBarrierUnlocked)
+        else
         {
             PermanentMeleeDamageIncreaseBy(2f);
             PermanentWeaponDamageIncreaseBy(0.25f);
             PermanentHealthIncreaseBy(2.5f);
             PermanentMovementSpeedIncreaseBy(0.1f);
-
         }
     }
 
 
     public void DoubleCrescentSlashPlus()
     {
-        DoubleCrescentSlashManager script = GetComponent<DoubleCrescentSlashManager>();
-        script.Damage += 5f;
-        script.coneAngle += 5f;
-        script.AttackRange += 0.2f;
+        // Try to find an instance of DoubleCrescentSlash within unlockedSkills
+        var doubleCrescentSlashSkill = unlockedSkills.Find(skill => skill is DoubleCrescentSlash) as DoubleCrescentSlash;
 
-        bool skillUnlocked = false;
-
-        foreach (ActiveSkill skill in unlockedSkills)
+        if (doubleCrescentSlashSkill != null)
         {
-            if (skill is DoubleCrescentSlash)
+            DoubleCrescentSlashManager script = GetComponent<DoubleCrescentSlashManager>();
+            script.Damage += 5f;
+            script.coneAngle += 5f;
+            script.AttackRange += 0.2f;
+
+            foreach (Skill skill in unlockedSkills)
             {
-                skill.Cooldown -= 0.2f;
-                break;
+                if (skill is DoubleCrescentSlash doubleCrescentSlash)
+                {
+                    doubleCrescentSlash.Cooldown -= 0.2f;  // Safely accessing Cooldown
+                    break;
+                }
             }
         }
-        if (!skillUnlocked)
+        else
         {
             PermanentMeleeDamageIncreaseBy(2f);
             PermanentWeaponDamageIncreaseBy(0.5f);
@@ -367,29 +431,32 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
+
     public void RelentlessOnslaughtPlus()
     {
-        RelentlessOnslaughtManager script = GetComponent<RelentlessOnslaughtManager>();
-        script.Duration += 2.5f;
-
-        bool skillUnlocked = false;
-
-        foreach (ActiveSkill skill in unlockedSkills)
+        var relentlessOnslaughtSkill = unlockedSkills.Find(skill => skill is RelentlessOnslaught) as RelentlessOnslaught;
+        if (relentlessOnslaughtSkill != null)
         {
-            if (skill is RelentlessOnslaught)
+            RelentlessOnslaughtManager script = GetComponent<RelentlessOnslaughtManager>();
+            script.Duration += 2.5f;
+
+            foreach (Skill skill in unlockedSkills)
             {
-                skill.Cooldown -= 7.5f;
-                skillUnlocked = true;
-                break;
+                if (skill is RelentlessOnslaught relentlessOnslaught)
+                {
+                    relentlessOnslaught.Cooldown -= 5f;
+                    break;
+                }
             }
         }
-        if (!skillUnlocked)
+        else
         {
             PermanentMeleeDamageIncreaseBy(2f);
             PermanentWeaponDamageIncreaseBy(0.5f);
             PermanentHealthIncreaseBy(2.5f);
             PermanentMovementSpeedIncreaseBy(0.1f);
         }
+
     }
 
 

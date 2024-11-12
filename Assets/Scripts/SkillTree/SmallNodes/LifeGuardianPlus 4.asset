@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c374cdc2b08b346b2ba4f16a44c48b, type: 3}
+  m_Name: LifeGuardianPlus 4
+  m_EditorClassIdentifier: 
+  skillName: Life Guardian Plus
+  skillDescription: 'Golem: Increase Damage Reduction by 2.5%, increase Health by
+    50, increase Damage by 5, increase Attack Range level by 0.25, and increase Movement
+    Speed level by 0.5.'
+  skillIcon: {fileID: 21300000, guid: cdbe0fe83d899f84aa322d1150101b04, type: 3}

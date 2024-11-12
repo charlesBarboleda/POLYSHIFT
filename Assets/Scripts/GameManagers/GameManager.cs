@@ -6,7 +6,8 @@ using System.Collections.Generic;
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
-
+    public List<Enemy> SpawnedEnemies = new List<Enemy>();
+    public List<GameObject> SpawnedAllies = new List<GameObject>();
     [SerializeField] TMP_InputField _playerNameInput;
     private PlayerInfo _localPlayer;
 

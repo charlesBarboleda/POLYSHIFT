@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aef8918be72f594b98672f90c3f767e, type: 3}
+  m_Name: Regenerative Aura Plus 3
+  m_EditorClassIdentifier: 
+  skillName: Regenerative Aura Plus
+  skillDescription: Permanently increase Health Regen by 1hp/s.
+  skillIcon: {fileID: 0}

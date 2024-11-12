@@ -51,9 +51,10 @@ public abstract class Enemy : NetworkBehaviour
         {
             Debug.LogError("Enemy Movement is null");
         }
+        GameManager.Instance.SpawnedEnemies.Add(this);
 
     }
-    protected virtual void FixedUpdate()
+    protected virtual void Update()
     {
 
         if (IsServer)
@@ -67,7 +68,6 @@ public abstract class Enemy : NetworkBehaviour
                 if (agent.reachedDestination)
                 {
                     // Stop the agent when within range
-                    agent.maxSpeed = 0;
                     agent.isStopped = true;
 
                     // Perform attack if cooldown has reset

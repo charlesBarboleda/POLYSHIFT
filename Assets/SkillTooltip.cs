@@ -22,7 +22,7 @@ public class SkillTooltip : MonoBehaviour
         skillDescriptionText.text = skill.skillDescription;
         skillIcon.sprite = skill.skillIcon;
 
-        tooltipTransform.position = position;
+        tooltipTransform.position = position + new Vector3(0, 50, 0);  // Offset the tooltip slightly above the mouse position
         gameObject.SetActive(true);
     }
 

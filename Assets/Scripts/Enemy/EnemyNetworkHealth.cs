@@ -14,7 +14,6 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     Animator animator;
     AIKinematics kinematics;
     Enemy enemy;
-
     Rigidbody rb;
     Collider collider;
     [SerializeField] string enemyName;
@@ -96,12 +95,10 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     [ClientRpc]
     public void HandleDeathClientRpc(ulong clientId)
     {
-        Debug.Log("HandleDeathClientRpc executed on client: " + NetworkManager.Singleton.LocalClientId);
         HandleDeath(clientId);
     }
     public void HandleDeath(ulong clientId)
     {
-        Debug.Log("1Enemy died called on client: " + NetworkManager.Singleton.LocalClientId);
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(clientId, out var networkObject))
         {
             var playerLevel = networkObject.GetComponent<PlayerNetworkLevel>();
@@ -110,7 +107,6 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
                 playerLevel.AddExperience(ExperienceDrop);
             }
         }
-        Debug.Log("2Enemy died called on client: " + NetworkManager.Singleton.LocalClientId);
         if (enemy != null)
         {
             enemy.enabled = false;
@@ -142,6 +138,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
 
         animator.SetTrigger("isDead");
+        GameManager.Instance.SpawnedEnemies.Remove(enemy);
         yield return new WaitForSeconds(5f);
         enemy.enabled = true;
         kinematics.enabled = true;

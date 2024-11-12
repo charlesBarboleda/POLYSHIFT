@@ -34,7 +34,7 @@ public class AIKinematics : NetworkBehaviour
 
         if (!IsServer) return;
         lookAnimator.SetLookTarget(ClosestPlayer);
-        FindClosestPlayer();
+        FindClosestPossibleTarget();
         StopAndRotateTowardsTarget();
 
         if (ClosestPlayer != null)
@@ -75,24 +75,25 @@ public class AIKinematics : NetworkBehaviour
         }
     }
 
-    void FindClosestPlayer()
+    void FindClosestPossibleTarget()
     {
         float closestDistance = Mathf.Infinity;
-        Transform closestPlayer = null;
+        Transform closestTarget = null;
 
         // Iterate through all connected players in the game
-        foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
+        foreach (GameObject unit in GameManager.Instance.SpawnedAllies)
         {
-            GameObject playerObject = client.PlayerObject.gameObject;
-            float distance = Vector3.Distance(transform.position, playerObject.transform.position);
-
+            // if (unit == null) continue;
+            float distance = Vector3.Distance(transform.position, unit.transform.position);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                closestPlayer = playerObject.transform;
+                closestTarget = unit.transform;
             }
         }
+        ClosestPlayer = closestTarget;
 
-        ClosestPlayer = closestPlayer;
+
+
     }
 }

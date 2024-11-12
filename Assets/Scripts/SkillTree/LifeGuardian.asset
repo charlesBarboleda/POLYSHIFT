@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d6273718910b34e898586c3f247753, type: 3}
+  m_Name: LifeGuardian
+  m_EditorClassIdentifier: 
+  skillName: Life Guardian
+  skillDescription: 'Summon a Guardian Golem to battle. Guardian Golem: Protect nearby
+    allies by increasing their health regeneration and damage reduction while near
+    the Golem''s vicinity.'
+  skillIcon: {fileID: 21300000, guid: bd81d60bf3b03844f8f4dc6db0f61652, type: 3}

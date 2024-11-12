@@ -49171,7 +49171,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1284014474}
   m_Layer: 0
-  m_Name: ------------------------ETC------------------------------
+  m_Name: -----------------------ETC------------------------------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50515,7 +50515,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1318944364}
   m_Layer: 0
-  m_Name: ----------------------CANVAS----------------------
+  m_Name: ---------------------CANVAS----------------------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56340,6 +56340,14 @@ MonoBehaviour:
     autoExpand: 1
   - itemName: ArcaneDOT
     prefab: {fileID: 119602, guid: 1e43cd275d966934cbcec6fe045de7ab, type: 3}
+    initialSize: 50
+    autoExpand: 1
+  - itemName: GuardianGolem
+    prefab: {fileID: 1067925524328404, guid: 6bbfea6690ef7724ba495c866081f855, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: LifeSlashHit
+    prefab: {fileID: 3105154768699876682, guid: d729208f73117e640a61de64a734a53a, type: 3}
     initialSize: 50
     autoExpand: 1
 --- !u!1001 &1448542732
@@ -66764,7 +66772,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1733928546}
   m_Layer: 0
-  m_Name: ----------------------OBJECTS---------------------
+  m_Name: ---------------------OBJECTS---------------------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79850,6 +79858,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  SpawnedEnemies: []
+  SpawnedAllies: []
   _playerNameInput: {fileID: 2070808877}
 --- !u!1001 &2061449658
 PrefabInstance:

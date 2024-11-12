@@ -69,7 +69,6 @@ public class SkillTreeManager : MonoBehaviour
     void UnlockNearbySkills(RectTransform unlockedNode)
     {
         Vector2 unlockedNodePos = unlockedNode.localPosition;
-        Debug.Log($"Unlocked Node Local Position: {unlockedNodePos}");
 
         foreach (var node in skillNodes)
         {
@@ -81,13 +80,12 @@ public class SkillTreeManager : MonoBehaviour
             Vector2 nodePos = node.localPosition;
             float distance = Vector2.Distance(unlockedNodePos, nodePos);
 
-            Debug.Log($"Node: {nodeSkill.skillName} Local Position: {nodePos}, Distance: {distance}");
 
             // Unlock if within specified radius
             if (distance <= unlockRadius)
             {
                 node.GetComponentInChildren<Button>().interactable = true;
-                Debug.Log($"Node {nodeSkill.skillName} unlocked within radius.");
+                node.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             }
         }
     }
