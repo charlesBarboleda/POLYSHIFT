@@ -1367,7 +1367,7 @@ MonoBehaviour:
   attackCooldown: 3
   canAttack: 0
   attackRange: 3
-  attackDamage: 20
+  attackDamage: 30
 --- !u!136 &5588953981742103810
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1473,6 +1473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9306687927c980a4d815d7aebfa64b76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debuffs: []
 --- !u!1 &3382776625891409302
 GameObject:
   m_ObjectHideFlags: 0

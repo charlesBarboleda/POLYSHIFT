@@ -1402,7 +1402,7 @@ MonoBehaviour:
   attackCooldown: 3
   canAttack: 0
   attackRange: 1
-  attackDamage: 5
+  attackDamage: 20
 --- !u!114 &8251639135608465287
 MonoBehaviour:
   m_ObjectHideFlags: 0

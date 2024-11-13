@@ -6,7 +6,7 @@ using System.Collections;
 public class GuardianGolem : Golem
 {
     private List<NetworkClient> playersWithBuff = new List<NetworkClient>(); // Track players with the buff
-
+    [SerializeField] GameObject healthBar;
     protected override void BuffEffect(float buffRadius)
     {
         foreach (NetworkClient networkClient in NetworkManager.Singleton.ConnectedClientsList)
@@ -21,7 +21,7 @@ public class GuardianGolem : Golem
             {
                 // Apply the buff
                 var health = player.GetComponent<PlayerNetworkHealth>();
-                health.PermanentDamageReductionIncreaseBy(-0.15f);
+                health.PermanentDamageReductionIncreaseBy(0.15f);
                 health.PermanentHealthRegenIncreaseBy(5f);
 
                 playersWithBuff.Add(networkClient); // Track this player as having the buff
@@ -30,7 +30,7 @@ public class GuardianGolem : Golem
             {
                 // Remove the buff
                 var health = player.GetComponent<PlayerNetworkHealth>();
-                health.PermanentDamageReductionIncreaseBy(0.15f);
+                health.PermanentDamageReductionIncreaseBy(-0.15f);
                 health.PermanentHealthRegenIncreaseBy(-5f);
 
                 playersWithBuff.Remove(networkClient); // Stop tracking this player
@@ -59,9 +59,9 @@ public class GuardianGolem : Golem
                     hitCollider.GetComponent<IDamageable>().RequestTakeDamageServerRpc(Damage, NetworkObjectId);
                     if (IsServer)
                     {
-                        GameObject lifehit = ObjectPooler.Instance.Spawn("LifeSlashHit", hitCollider.transform.position, Quaternion.identity);
+                        GameObject lifehit = ObjectPooler.Instance.Spawn("LifeSlashHit", hitCollider.transform.position + transform.up * 2f, Quaternion.identity);
                         lifehit.GetComponent<NetworkObject>().Spawn();
-                        GameObject bloodSplatter = ObjectPooler.Instance.Spawn($"BloodSplatter{Random.Range(1, 6)}", hitCollider.transform.position, Quaternion.identity);
+                        GameObject bloodSplatter = ObjectPooler.Instance.Spawn($"BloodSplatter{Random.Range(1, 6)}", hitCollider.transform.position + transform.up * 2f, Quaternion.identity);
                         bloodSplatter.GetComponent<NetworkObject>().Spawn();
                     }
                 }
@@ -101,30 +101,59 @@ public class GuardianGolem : Golem
     {
         if (IsServer)
         {
-            Animator.SetTrigger("IsDead");
             GameManager.Instance.SpawnedAllies.Remove(gameObject);
-            collider.enabled = false;
-            rb.isKinematic = true;
-            Agent.enabled = false;
-            Agent.isStopped = true;
-            Agent.canMove = false;
-            StartCoroutine(ReviveAfter(30f));
+            StartCoroutine(DeathRoutine());
 
+            // Call a ClientRpc to hide the health bar for all clients
+            SetHealthBarVisibilityClientRpc(false);
         }
     }
+
+    private IEnumerator DeathRoutine()
+    {
+        Animator.SetTrigger("IsDead");
+
+        // Disable movement and interactions
+        CanAttack = false;
+        collider.enabled = false;
+        rb.isKinematic = true;
+        Agent.enabled = false;
+        Agent.isStopped = true;
+        Agent.canMove = false;
+
+        yield return new WaitForSeconds(2.5f);
+
+        Animator.enabled = false;
+        StartCoroutine(ReviveAfter(30f));
+    }
+
+    [ClientRpc]
+    private void SetHealthBarVisibilityClientRpc(bool isVisible)
+    {
+        healthBar.SetActive(isVisible);
+    }
+
 
     IEnumerator ReviveAfter(float seconds)
     {
         yield return new WaitForSeconds(seconds);
+
         if (IsServer)
         {
+            SetHealthBarVisibilityClientRpc(true);  // Show the health bar on all clients
             CurrentHealth.Value = MaxHealth.Value;
             transform.position = Owner.transform.position + transform.forward * 2f;
+            CanAttack = true;
             collider.enabled = true;
             rb.isKinematic = false;
             Agent.enabled = true;
             Agent.isStopped = false;
             Agent.canMove = true;
+            Animator.enabled = true;
+            Animator.ResetTrigger("IsDead");
         }
     }
+
+
+
 }

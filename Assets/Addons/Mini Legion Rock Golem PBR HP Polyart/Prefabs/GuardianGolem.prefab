@@ -256,6 +256,7 @@ MonoBehaviour:
   CanAttack: 1
   AttackCooldown: 3
   healthFill: {fileID: 6549173224329751761}
+  healthBar: {fileID: 590443669179047036}
 --- !u!114 &1916217955896881431
 MonoBehaviour:
   m_ObjectHideFlags: 0

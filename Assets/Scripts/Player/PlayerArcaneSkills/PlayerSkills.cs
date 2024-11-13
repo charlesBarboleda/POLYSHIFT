@@ -12,12 +12,15 @@ public class PlayerSkills : NetworkBehaviour
     ISkillManager[] skillManagers;
     ActiveSkill currentAttack;
     bool canAttack = true;
+    bool bloodBond = false;
+    float bloodBondRange = 10f;
     Animator animator;
     PlayerWeapon playerWeapon;
     PlayerNetworkHealth playerHealth;
     PlayerNetworkMovement playerMovement;
     PlayerNetworkRotation playerRotation;
     GolemManager golemManager;
+
 
     public int attackIndex = 0;
 
@@ -30,7 +33,6 @@ public class PlayerSkills : NetworkBehaviour
             return;
         }
         base.OnNetworkSpawn();
-
         animator = GetComponent<Animator>();
         playerWeapon = GetComponent<PlayerWeapon>();
         playerHealth = GetComponent<PlayerNetworkHealth>();
@@ -84,11 +86,34 @@ public class PlayerSkills : NetworkBehaviour
                 skill.Update();
             }
 
-            if (Input.GetKeyDown(KeyCode.L))
+            if (bloodBond)
             {
-                ObjectPooler.Instance.Spawn("GuardianGolem", transform.position + transform.forward * 2, Quaternion.identity);
+                BloodBondEffect();
             }
 
+        }
+    }
+    public void ActivateBloodBond()
+    {
+        bloodBond = true;
+    }
+    public void IncreaseBloodBondRange(float rangeIncrease)
+    {
+        bloodBondRange += rangeIncrease;
+    }
+    void BloodBondEffect()
+    {
+        // For each enemy within distance, gain increased health regen rate
+        foreach (Enemy enemy in GameManager.Instance.SpawnedEnemies)
+        {
+            if (enemy != null)
+            {
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                if (distance <= bloodBondRange)
+                {
+                    playerHealth.PermanentHealthRegenIncreaseBy(0.25f);
+                }
+            }
         }
     }
 
@@ -242,22 +267,19 @@ public class PlayerSkills : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SummonGolemServerRpc(string golemName, float health, float damage, float attackRange, float moveSpeed, float attackSpeed, float damageReduction)
+    public void SummonGuardianGolemServerRpc(string golemName, float health, float damage, float attackRange, float moveSpeed, float attackSpeed, float damageReduction)
     {
-        SummonGolemClientRpc(golemName, health, damage, attackRange, moveSpeed, attackSpeed, damageReduction);
-    }
-
-    [ClientRpc]
-    public void SummonGolemClientRpc(string golemName, float health, float damage, float attackRange, float moveSpeed, float attackSpeed, float damageReduction)
-    {
-        if (!IsClient) return;
-        // Spawn the Golem on the server
-        GameObject golem = ObjectPooler.Instance.Spawn(golemName, transform.position, Quaternion.identity);
-
-        if (golem != null)
+        if (!IsServer)
         {
-            Golem script = golem.GetComponent<Golem>();
-            script.SetOwner(gameObject);
+            Debug.LogError("Only the server can spawn golems.");
+            return;
+        }
+        // Only the server spawns the golem
+        GameObject guardianGolem = ObjectPooler.Instance.Spawn(golemName, transform.position, Quaternion.identity);
+        if (guardianGolem != null)
+        {
+            Golem script = guardianGolem.GetComponent<Golem>();
+            script.SetOwner(gameObject);  // Set the owner to the player who summoned it
             script.Damage = damage;
             script.MaxHealth.Value = health;
             script.CurrentHealth.Value = health;
@@ -266,21 +288,14 @@ public class PlayerSkills : NetworkBehaviour
             script.AttackCooldown = attackSpeed;
             script.DamageReduction = damageReduction;
 
-            // Register the golem in game manager (if needed)
+            // Register the golem in game manager if needed
+            guardianGolem.GetComponent<NetworkObject>().Spawn();
+            Debug.Log($"Golem spawned on {(IsServer ? "Server" : "Client")} with ClientID: {NetworkManager.Singleton.LocalClientId}. Owner: {GetComponent<NetworkObject>().OwnerClientId}");
             golemManager.SpawnedGolems.Add(script);
-
-            // Spawn the NetworkObject so it is synchronized with all clients
-            NetworkObject networkObject = golem.GetComponent<NetworkObject>();
-            networkObject.Spawn();
 
         }
     }
 
-    [ClientRpc]
-    void SummonGolemClientRpc()
-    {
-
-    }
 
 
 

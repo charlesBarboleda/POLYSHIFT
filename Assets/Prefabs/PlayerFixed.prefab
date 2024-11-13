@@ -2429,7 +2429,6 @@ GameObject:
   - component: {fileID: 5589524618480763717}
   - component: {fileID: 7141670800426399483}
   - component: {fileID: 5568089867368270189}
-  - component: {fileID: 5680390640434992843}
   - component: {fileID: 1788471553622581677}
   - component: {fileID: 6441736105564417975}
   - component: {fileID: 6494305044822326712}
@@ -2485,7 +2484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: d241e1549bd30e249a751e6c7f318c78, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -2500,7 +2499,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: Movement
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &2401940659333548537
@@ -3166,20 +3165,8 @@ MonoBehaviour:
   unlockedSkills: []
   hotbarSkills: []
   skillTreeManager: {fileID: 7343400025413893973}
+  GuardianGolem: {fileID: 0}
   attackIndex: 0
---- !u!114 &5680390640434992843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8813290314573825519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0107883a34bbc64c96912910ebaee05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &1788471553622581677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3752,6 +3739,10 @@ PrefabInstance:
     - target: {fileID: 2014488965093096671, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_Name
       value: SkillTreeCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2014488965093096671, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2022413065770426156, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: skill

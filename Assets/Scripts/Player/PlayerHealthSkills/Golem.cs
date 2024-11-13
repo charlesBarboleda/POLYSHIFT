@@ -8,8 +8,8 @@ using System.Collections;
 public abstract class Golem : NetworkBehaviour, IDamageable
 {
     [field: SerializeField] public GameObject Owner { get; private set; }
-    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(1000f);
-    public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(1000f);
+    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(1000f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(1000f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public float Damage = 50f;
     public float AttackRange = 3f;
@@ -31,40 +31,55 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     public abstract void HandleDeath(ulong networkObjectId);
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+        Debug.Log($"Golem spawned on {(IsServer ? "Server" : "Client")} with ClientID: {NetworkManager.Singleton.LocalClientId}. Owner: {GetComponent<NetworkObject>().OwnerClientId}");
+        // Initialize components for both server and client
         Animator = GetComponent<Animator>();
+        Debug.Log($"Animator is {(Animator == null ? "null" : "not null")}");
         Agent = GetComponent<AIPath>();
+        Debug.Log($"Agent is {(Agent == null ? "null" : "not null")}");
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
-        healthFill.fillAmount = CurrentHealth.Value / MaxHealth.Value;
 
+        Debug.Log("Golem spawned");
+
+        // Health UI update for all instances
+        healthFill.fillAmount = CurrentHealth.Value / MaxHealth.Value;
+        CurrentHealth.OnValueChanged += UpdateHealthbar;
+
+        // Only run server-specific setup
         if (IsServer)
         {
+            Debug.Log("Golem is server side");
+
             // Server-only setup
             CurrentHealth.Value = MaxHealth.Value;
             Agent.maxSpeed = MovementSpeed;
-            CurrentHealth.OnValueChanged += UpdateHealthbar;
 
             spawnedEnemies = GameManager.Instance.SpawnedEnemies;
             GameManager.Instance.SpawnedAllies.Add(gameObject);
         }
     }
 
+
     protected virtual void Update()
     {
-        if (IsServer)
+        if (IsServer) // Only run on server
         {
             // Buff effect and animation update
             BuffEffect(BuffRadius);
 
-
-            Animator.SetBool("IsMoving", Agent.velocity.magnitude > 0.1f);
+            if (Animator != null)
+                Animator.SetBool("IsMoving", Agent.velocity.magnitude > 0.2f);
 
 
             // Follow owner or move randomly around them if far away
             float distanceToOwner = Vector3.Distance(transform.position, Owner.transform.position);
             if (distanceToOwner > 15f)
             {
-                Agent.destination = Owner.transform.position + transform.forward * 5f;
+
+                if (Agent != null)
+                    Agent.destination = Owner.transform.position + transform.forward * 5f;
 
                 if (distanceToOwner > 30f)
                 {
@@ -74,10 +89,11 @@ public abstract class Golem : NetworkBehaviour, IDamageable
             else
             {
                 // Find and approach the closest target
-                ClosestTarget = FindClosestEnemy();
+                ClosestTarget = FindClosestEnemyWithinRange();
                 if (ClosestTarget != null)
                 {
-                    Agent.destination = ClosestTarget.transform.position;
+                    if (Agent != null)
+                        Agent.destination = ClosestTarget.transform.position;
 
                     // Check if within attack range
                     float distanceToTarget = Vector3.Distance(transform.position, ClosestTarget.transform.position);
@@ -106,8 +122,9 @@ public abstract class Golem : NetworkBehaviour, IDamageable
                 else
                 {
                     // Move randomly around the owner if no target is found
-                    Vector3 randomDirection = (Vector3)Random.insideUnitCircle * 5f;
-                    Agent.destination = Owner.transform.position + randomDirection;
+
+                    if (Agent != null)
+                        Agent.destination = Owner.transform.position + transform.forward * 10f;
                 }
             }
 
@@ -133,23 +150,25 @@ public abstract class Golem : NetworkBehaviour, IDamageable
         transform.LookAt(ClosestTarget.transform);
     }
 
-    GameObject FindClosestEnemy()
+    GameObject FindClosestEnemyWithinRange()
     {
-        GameObject closest = null;
-        float distance = Mathf.Infinity;
-        Vector3 position = transform.position;
+        GameObject closestEnemy = null;
+        float closestDistance = 20f;
         foreach (var enemy in spawnedEnemies)
         {
-            if (enemy == null) continue;
-            Vector3 diff = enemy.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
-            if (curDistance < distance)
+            if (enemy != null)
             {
-                closest = enemy.gameObject;
-                distance = curDistance;
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestEnemy = enemy.gameObject;
+                }
             }
         }
-        return closest;
+        return closestEnemy;
+
+
     }
     public void SetOwner(GameObject owner)
     {
