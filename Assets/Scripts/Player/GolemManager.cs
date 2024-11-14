@@ -5,55 +5,59 @@ public class GolemManager : MonoBehaviour
 {
     public List<Golem> SpawnedGolems = new List<Golem>();
 
+
+
     public void IncreaseGolemDamageReduction(float amount)
     {
-        var GuardianGolem = SpawnedGolems.Find(golem => golem is GuardianGolem) as GuardianGolem;
-
-        if (GuardianGolem != null)
+        foreach (var golem in SpawnedGolems)
         {
-            GuardianGolem.IncreaseDamageReduction(amount);
+            // Apply diminishing returns to ensure DamageReduction never reaches 100%
+            golem.DamageReduction = 1 - (1 - golem.DamageReduction) * (1 - amount);
         }
     }
 
+
     public void IncreaseGolemHealth(float amount)
     {
-        var GuardianGolem = SpawnedGolems.Find(golem => golem is GuardianGolem) as GuardianGolem;
-
-        if (GuardianGolem != null)
+        foreach (var golem in SpawnedGolems)
         {
-            GuardianGolem.IncreaseHealth(amount);
+            golem.IncreaseHealth(amount);
         }
     }
 
     public void IncreaseGolemDamage(float amount)
     {
-        var GuardianGolem = SpawnedGolems.Find(golem => golem is GuardianGolem) as GuardianGolem;
-
-        if (GuardianGolem != null)
+        foreach (var golem in SpawnedGolems)
         {
-            GuardianGolem.IncreaseDamage(amount);
+            golem.IncreaseDamage(amount);
         }
     }
 
     public void IncreaseGolemAttackRange(float amount)
     {
-        var GuardianGolem = SpawnedGolems.Find(golem => golem is GuardianGolem) as GuardianGolem;
-
-        if (GuardianGolem != null)
+        foreach (var golem in SpawnedGolems)
         {
-            GuardianGolem.IncreaseAttackRange(amount);
+            golem.IncreaseAttackRange(amount);
         }
     }
 
     public void IncreaseGolemMovementSpeed(float amount)
     {
-        var GuardianGolem = SpawnedGolems.Find(golem => golem is GuardianGolem) as GuardianGolem;
-
-        if (GuardianGolem != null)
+        foreach (var golem in SpawnedGolems)
         {
-            GuardianGolem.IncreaseMovementSpeed(amount);
+            golem.IncreaseMovementSpeed(amount);
         }
     }
+
+    public void IncreaseBuffRadius(float amount)
+    {
+        foreach (var golem in SpawnedGolems)
+        {
+            golem.IncreaseBuffRadius(amount);
+        }
+    }
+
+
 
 
 }

@@ -26,7 +26,7 @@ public class GuardianGolem : Golem
 
                 playersWithBuff.Add(networkClient); // Track this player as having the buff
             }
-            else if (!isInRange && playersWithBuff.Contains(networkClient))
+            else if ((!isInRange && playersWithBuff.Contains(networkClient)) || IsDead)
             {
                 // Remove the buff
                 var health = player.GetComponent<PlayerNetworkHealth>();
@@ -36,6 +36,14 @@ public class GuardianGolem : Golem
                 playersWithBuff.Remove(networkClient); // Stop tracking this player
             }
         }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        if (IsServer)
+            BuffEffect(BuffRadius);
     }
 
     public void DealDamageInConeGuardianGolem()
@@ -56,7 +64,7 @@ public class GuardianGolem : Golem
                 // Only apply damage if the target is within the specified cone angle
                 if (angleToTarget <= 45f) // 45 degrees for example, adjust as needed for cone width
                 {
-                    hitCollider.GetComponent<IDamageable>().RequestTakeDamageServerRpc(Damage, NetworkObjectId);
+                    hitCollider.GetComponent<IDamageable>().RequestTakeDamageServerRpc(Damage, Owner.GetComponent<NetworkObject>().NetworkObjectId);
                     if (IsServer)
                     {
                         GameObject lifehit = ObjectPooler.Instance.Spawn("LifeSlashHit", hitCollider.transform.position + transform.up * 2f, Quaternion.identity);
@@ -70,31 +78,6 @@ public class GuardianGolem : Golem
     }
 
 
-    public void IncreaseDamageReduction(float amount)
-    {
-        DamageReduction += amount;
-    }
-
-    public void IncreaseHealth(float amount)
-    {
-        MaxHealth.Value += amount;
-        CurrentHealth.Value += amount;
-    }
-
-    public void IncreaseDamage(float amount)
-    {
-        Damage += amount;
-    }
-
-    public void IncreaseAttackRange(float amount)
-    {
-        AttackRange += amount;
-    }
-
-    public void IncreaseMovementSpeed(float amount)
-    {
-        MovementSpeed += amount;
-    }
 
 
     public override void HandleDeath(ulong networkObjectId)
@@ -103,7 +86,7 @@ public class GuardianGolem : Golem
         {
             GameManager.Instance.SpawnedAllies.Remove(gameObject);
             StartCoroutine(DeathRoutine());
-
+            IsDead = true;
             // Call a ClientRpc to hide the health bar for all clients
             SetHealthBarVisibilityClientRpc(false);
         }
@@ -124,7 +107,7 @@ public class GuardianGolem : Golem
         yield return new WaitForSeconds(2.5f);
 
         Animator.enabled = false;
-        StartCoroutine(ReviveAfter(30f));
+        StartCoroutine(ReviveAfter(ReviveTime));
     }
 
     [ClientRpc]
@@ -143,6 +126,8 @@ public class GuardianGolem : Golem
             SetHealthBarVisibilityClientRpc(true);  // Show the health bar on all clients
             CurrentHealth.Value = MaxHealth.Value;
             transform.position = Owner.transform.position + transform.forward * 2f;
+            GameManager.Instance.SpawnedAllies.Add(gameObject);
+            IsDead = false;
             CanAttack = true;
             collider.enabled = true;
             rb.isKinematic = false;

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82283e2c7f09da347bc5902d97af0057, type: 3}
+  m_Name: BloodBond
+  m_EditorClassIdentifier: 
+  skillName: Blood Bond
+  skillDescription: Increase your Health Regen by 0.5 for each enemy within a certain
+    range.
+  skillIcon: {fileID: 21300000, guid: c145bb05b89a0f44097e361cab4b0239, type: 3}

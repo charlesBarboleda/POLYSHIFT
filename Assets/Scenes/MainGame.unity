@@ -56350,6 +56350,18 @@ MonoBehaviour:
     prefab: {fileID: 3105154768699876682, guid: d729208f73117e640a61de64a734a53a, type: 3}
     initialSize: 50
     autoExpand: 1
+  - itemName: BlastforgedGolem
+    prefab: {fileID: 1438169871030806, guid: c9bc790a133e19c40b64d6db4cfb7a22, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: LifeSphereBlast
+    prefab: {fileID: 149100, guid: 7f20fac9178da8348949f8493ae38a85, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: LifeExplosionMega
+    prefab: {fileID: 104222, guid: ae6f24f0cb6f17d4dbed4fbe01a142f3, type: 3}
+    initialSize: 10
+    autoExpand: 1
 --- !u!1001 &1448542732
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82983,31 +82995,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.602
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.085
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.8723914
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.33253616
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.33476806
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.12760612
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

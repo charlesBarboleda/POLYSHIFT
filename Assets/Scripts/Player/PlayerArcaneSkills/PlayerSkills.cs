@@ -21,6 +21,7 @@ public class PlayerSkills : NetworkBehaviour
     PlayerNetworkRotation playerRotation;
     GolemManager golemManager;
 
+    HashSet<Enemy> enemiesInRange = new HashSet<Enemy>();
 
     public int attackIndex = 0;
 
@@ -101,9 +102,12 @@ public class PlayerSkills : NetworkBehaviour
     {
         bloodBondRange += rangeIncrease;
     }
+
     void BloodBondEffect()
     {
-        // For each enemy within distance, gain increased health regen rate
+        // Track which enemies are currently within range
+        HashSet<Enemy> currentEnemiesInRange = new HashSet<Enemy>();
+
         foreach (Enemy enemy in GameManager.Instance.SpawnedEnemies)
         {
             if (enemy != null)
@@ -111,11 +115,30 @@ public class PlayerSkills : NetworkBehaviour
                 float distance = Vector3.Distance(transform.position, enemy.transform.position);
                 if (distance <= bloodBondRange)
                 {
-                    playerHealth.PermanentHealthRegenIncreaseBy(0.25f);
+                    currentEnemiesInRange.Add(enemy);
+
+                    // If this is a new enemy within range, increase health regen
+                    if (!enemiesInRange.Contains(enemy))
+                    {
+                        playerHealth.PermanentHealthRegenIncreaseBy(0.5f);
+                    }
                 }
             }
         }
+
+        // Remove regen for enemies that left the range
+        foreach (Enemy enemy in enemiesInRange)
+        {
+            if (!currentEnemiesInRange.Contains(enemy))
+            {
+                playerHealth.PermanentHealthRegenIncreaseBy(-0.5f);
+            }
+        }
+
+        // Update the enemies currently in range
+        enemiesInRange = currentEnemiesInRange;
     }
+
 
     public void UnlockSkill(Skill skill)
     {
@@ -267,7 +290,7 @@ public class PlayerSkills : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SummonGuardianGolemServerRpc(string golemName, float health, float damage, float attackRange, float moveSpeed, float attackSpeed, float damageReduction)
+    public void SummonGolemServerRpc(string golemName, float health, float damage, float attackRange, float moveSpeed, float attackSpeed, float damageReduction, float reviveTime)
     {
         if (!IsServer)
         {
@@ -275,10 +298,10 @@ public class PlayerSkills : NetworkBehaviour
             return;
         }
         // Only the server spawns the golem
-        GameObject guardianGolem = ObjectPooler.Instance.Spawn(golemName, transform.position, Quaternion.identity);
-        if (guardianGolem != null)
+        GameObject Golem = ObjectPooler.Instance.Spawn(golemName, transform.position, Quaternion.identity);
+        if (Golem != null)
         {
-            Golem script = guardianGolem.GetComponent<Golem>();
+            Golem script = Golem.GetComponent<Golem>();
             script.SetOwner(gameObject);  // Set the owner to the player who summoned it
             script.Damage = damage;
             script.MaxHealth.Value = health;
@@ -287,9 +310,10 @@ public class PlayerSkills : NetworkBehaviour
             script.MovementSpeed = moveSpeed;
             script.AttackCooldown = attackSpeed;
             script.DamageReduction = damageReduction;
+            script.ReviveTime = reviveTime;
 
             // Register the golem in game manager if needed
-            guardianGolem.GetComponent<NetworkObject>().Spawn();
+            Golem.GetComponent<NetworkObject>().Spawn();
             Debug.Log($"Golem spawned on {(IsServer ? "Server" : "Client")} with ClientID: {NetworkManager.Singleton.LocalClientId}. Owner: {GetComponent<NetworkObject>().OwnerClientId}");
             golemManager.SpawnedGolems.Add(script);
 

@@ -18,6 +18,8 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     public float BuffRadius = 20f;
     public bool CanAttack = true;
     public float AttackCooldown = 3f;
+    public float ReviveTime;
+    public bool IsDead = false;
     float elapsedCooldown = 0f;
     [SerializeField] Image healthFill;
     protected List<Enemy> spawnedEnemies = new List<Enemy>();
@@ -64,11 +66,9 @@ public abstract class Golem : NetworkBehaviour, IDamageable
 
     protected virtual void Update()
     {
+        if (IsDead) return;
         if (IsServer) // Only run on server
         {
-            // Buff effect and animation update
-            BuffEffect(BuffRadius);
-
             if (Animator != null)
                 Animator.SetBool("IsMoving", Agent.velocity.magnitude > 0.2f);
 
@@ -182,10 +182,12 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     }
     public void TakeDamage(float damage, ulong clientId)
     {
+        if (IsDead) return;
         if (IsServer)
         {
             Animator.SetTrigger("IsHit");
-            CurrentHealth.Value -= damage * DamageReduction;
+            damage = damage * (1 - DamageReduction);
+            CurrentHealth.Value -= damage;
             if (CurrentHealth.Value <= 0)
             {
                 HandleDeath(clientId);
@@ -197,4 +199,36 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     {
         healthFill.fillAmount = cur / MaxHealth.Value;
     }
+
+    public virtual void IncreaseDamageReduction(float amount)
+    {
+        DamageReduction += amount;
+    }
+
+    public virtual void IncreaseHealth(float amount)
+    {
+        MaxHealth.Value += amount;
+        CurrentHealth.Value += amount;
+    }
+
+    public virtual void IncreaseDamage(float amount)
+    {
+        Damage += amount;
+    }
+
+    public virtual void IncreaseAttackRange(float amount)
+    {
+        AttackRange += amount;
+    }
+
+    public virtual void IncreaseMovementSpeed(float amount)
+    {
+        MovementSpeed += amount;
+    }
+
+    public virtual void IncreaseBuffRadius(float amount)
+    {
+        BuffRadius += amount;
+    }
+
 }

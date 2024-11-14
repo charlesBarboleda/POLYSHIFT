@@ -107,6 +107,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
                 playerLevel.AddExperience(ExperienceDrop);
             }
         }
+
         if (enemy != null)
         {
             enemy.enabled = false;
@@ -130,9 +131,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 
         EventManager.Instance.EnemyDespawnedEvent(gameObject);
         StartCoroutine(DeathAnim());
-
-
     }
+
 
     IEnumerator DeathAnim()
     {

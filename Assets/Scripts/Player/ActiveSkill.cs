@@ -27,7 +27,7 @@ public abstract class ActiveSkill : Skill
 
     public virtual void ExecuteAttack()
     {
-        Debug.Log("Executing attack.");
+        // Implement in child classes
     }
 
     public void StartCooldown()

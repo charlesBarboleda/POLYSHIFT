@@ -11,6 +11,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(DefaultHealth, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(DefaultRegenRate, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public float DamageReduction = 0;
+    public bool IsDead;
     bool ironResolve = false;
     float ironResolveDamageReduction = 0.15f;
     public override void OnNetworkSpawn()
@@ -36,10 +37,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             RegenerateHealth(healthRegenRate.Value);
         }
 
-        if (currentHealth.Value <= 0)
-        {
-            HandleDeath(OwnerClientId);
-        }
+
     }
 
     public void PermanentHealthIncreaseBy(float healthIncrease)
@@ -124,6 +122,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     public void TakeDamage(float damage, ulong clientId)
     {
+        if (IsDead) return;
         if (IsServer)
         {
             // Check if the player is below 30% health to apply extra damage reduction

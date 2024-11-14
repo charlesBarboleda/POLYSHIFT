@@ -12,7 +12,7 @@ public class LifeGuardianPlus : PassiveSkill
         }
         Debug.Log("Applying LifeGuardianPlus skill effect.");
         var golemManager = user.GetComponent<GolemManager>();
-        golemManager.IncreaseGolemDamageReduction(-0.025f);
+        golemManager.IncreaseGolemDamageReduction(0.025f);
         golemManager.IncreaseGolemHealth(50f);
         golemManager.IncreaseGolemDamage(5f);
         golemManager.IncreaseGolemAttackRange(0.5f);

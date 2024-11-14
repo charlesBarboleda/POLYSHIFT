@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "Skills/BloodBond")]
 public class BloodBond : PassiveSkill
 {
     public override void ApplySkillEffect(GameObject user)
