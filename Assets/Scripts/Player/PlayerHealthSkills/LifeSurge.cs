@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "LifeSurge", menuName = "Skills/LifeSurge")]
 public class LifeSurge : ActiveSkill
 {
     public override void ExecuteAttack()

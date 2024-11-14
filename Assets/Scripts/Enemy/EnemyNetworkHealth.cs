@@ -72,12 +72,12 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         }
     }
     [ServerRpc(RequireOwnership = false)]
-    public void RequestTakeDamageServerRpc(float damage, ulong clientId)
+    public void RequestTakeDamageServerRpc(float damage, ulong networkObjectId)
     {
-        TakeDamage(damage, clientId);
+        TakeDamage(damage, networkObjectId);
     }
 
-    public void TakeDamage(float damage, ulong clientId)
+    public void TakeDamage(float damage, ulong networkObjectId)
     {
         if (!IsServer) return;
         {
@@ -86,20 +86,20 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
             if (CurrentHealth.Value <= 0)
             {
                 IsDead = true;
-                HandleDeathClientRpc(clientId);
+                HandleDeathClientRpc(networkObjectId);
             }
         }
     }
 
 
     [ClientRpc]
-    public void HandleDeathClientRpc(ulong clientId)
+    public void HandleDeathClientRpc(ulong networkObjectId)
     {
-        HandleDeath(clientId);
+        HandleDeath(networkObjectId);
     }
-    public void HandleDeath(ulong clientId)
+    public void HandleDeath(ulong networkObjectId)
     {
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(clientId, out var networkObject))
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out var networkObject))
         {
             var playerLevel = networkObject.GetComponent<PlayerNetworkLevel>();
             if (playerLevel != null)

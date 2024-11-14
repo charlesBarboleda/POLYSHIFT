@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47a911e7700ab4540b08f3ceb1983b9a, type: 3}
+  m_Name: LifeSurgePlus 4
+  m_EditorClassIdentifier: 
+  skillName: Life Surge Plus
+  skillDescription: Increase Health by 5, increase Life Surge radius by 2 and increase
+    Life Surge Heal Strength by 5%.
+  skillIcon: {fileID: 21300000, guid: cdbe0fe83d899f84aa322d1150101b04, type: 3}

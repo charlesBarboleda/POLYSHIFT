@@ -2440,6 +2440,7 @@ GameObject:
   - component: {fileID: 2321406593086584609}
   - component: {fileID: 625233265264514091}
   - component: {fileID: 988235309840196976}
+  - component: {fileID: 8032311289525923334}
   m_Layer: 0
   m_Name: PlayerFixed
   m_TagString: Untagged
@@ -3392,6 +3393,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpawnedGolems: []
+--- !u!114 &8032311289525923334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8813290314573825519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 187b8d03056cc814f912c118aa07f53f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &8981931978188997259
 GameObject:
   m_ObjectHideFlags: 0
@@ -3843,7 +3857,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: skillNodes.Array.size
-      value: 112
+      value: 119
       objectReference: {fileID: 0}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[0]'
@@ -3908,389 +3922,417 @@ PrefabInstance:
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[15]'
       value: 
-      objectReference: {fileID: 6161185665591548993}
+      objectReference: {fileID: 3900664934081713397}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[16]'
       value: 
-      objectReference: {fileID: 4303565003877425153}
+      objectReference: {fileID: 6161185665591548993}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[17]'
       value: 
-      objectReference: {fileID: 7491009403480122734}
+      objectReference: {fileID: 4303565003877425153}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[18]'
       value: 
-      objectReference: {fileID: 4208273420164617519}
+      objectReference: {fileID: 140531655800654234}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[19]'
       value: 
-      objectReference: {fileID: 2095483771138378173}
+      objectReference: {fileID: 809905083812375570}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[20]'
       value: 
-      objectReference: {fileID: 7512091482262025275}
+      objectReference: {fileID: 2955531304976546440}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[21]'
       value: 
-      objectReference: {fileID: 4751053640844810266}
+      objectReference: {fileID: 5612308675959467992}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[22]'
       value: 
-      objectReference: {fileID: 9037763465157400224}
+      objectReference: {fileID: 3990008913245987062}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[23]'
       value: 
-      objectReference: {fileID: 750065816583189639}
+      objectReference: {fileID: 8200115063081894194}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[24]'
       value: 
-      objectReference: {fileID: 7828630695472202811}
+      objectReference: {fileID: 7491009403480122734}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[25]'
       value: 
-      objectReference: {fileID: 2435524032842898672}
+      objectReference: {fileID: 4208273420164617519}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[26]'
       value: 
-      objectReference: {fileID: 576920342853903344}
+      objectReference: {fileID: 2095483771138378173}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[27]'
       value: 
-      objectReference: {fileID: 6115292464610637736}
+      objectReference: {fileID: 7512091482262025275}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[28]'
       value: 
-      objectReference: {fileID: 5480658086771377232}
+      objectReference: {fileID: 4751053640844810266}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[29]'
       value: 
-      objectReference: {fileID: 4852978718386472810}
+      objectReference: {fileID: 9037763465157400224}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[30]'
       value: 
-      objectReference: {fileID: 4043644481283973628}
+      objectReference: {fileID: 750065816583189639}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[31]'
       value: 
-      objectReference: {fileID: 7345374417906005020}
+      objectReference: {fileID: 7828630695472202811}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[32]'
       value: 
-      objectReference: {fileID: 1494687065074072049}
+      objectReference: {fileID: 2435524032842898672}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[33]'
       value: 
-      objectReference: {fileID: 4083182898527674842}
+      objectReference: {fileID: 576920342853903344}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[34]'
       value: 
-      objectReference: {fileID: 306817013895773896}
+      objectReference: {fileID: 6115292464610637736}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[35]'
       value: 
-      objectReference: {fileID: 652007446116765437}
+      objectReference: {fileID: 5480658086771377232}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[36]'
       value: 
-      objectReference: {fileID: 187312907653553231}
+      objectReference: {fileID: 4852978718386472810}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[37]'
       value: 
-      objectReference: {fileID: 8583555808830245856}
+      objectReference: {fileID: 4043644481283973628}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[38]'
       value: 
-      objectReference: {fileID: 5735407498801753866}
+      objectReference: {fileID: 7345374417906005020}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[39]'
       value: 
-      objectReference: {fileID: 2244192712335954773}
+      objectReference: {fileID: 1494687065074072049}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[40]'
       value: 
-      objectReference: {fileID: 8069349501858220718}
+      objectReference: {fileID: 4083182898527674842}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[41]'
       value: 
-      objectReference: {fileID: 4041697160055348421}
+      objectReference: {fileID: 306817013895773896}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[42]'
       value: 
-      objectReference: {fileID: 3735914960992541731}
+      objectReference: {fileID: 652007446116765437}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[43]'
       value: 
-      objectReference: {fileID: 2483701002489240634}
+      objectReference: {fileID: 187312907653553231}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[44]'
       value: 
-      objectReference: {fileID: 4041344141135565379}
+      objectReference: {fileID: 8583555808830245856}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[45]'
       value: 
-      objectReference: {fileID: 6349438940532430408}
+      objectReference: {fileID: 5735407498801753866}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[46]'
       value: 
-      objectReference: {fileID: 924586343297801084}
+      objectReference: {fileID: 2244192712335954773}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[47]'
       value: 
-      objectReference: {fileID: 4832691918214196460}
+      objectReference: {fileID: 8069349501858220718}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[48]'
       value: 
-      objectReference: {fileID: 6573916538474952743}
+      objectReference: {fileID: 4041697160055348421}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[49]'
       value: 
-      objectReference: {fileID: 405526332284628939}
+      objectReference: {fileID: 3735914960992541731}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[50]'
       value: 
-      objectReference: {fileID: 1790937678905579598}
+      objectReference: {fileID: 2483701002489240634}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[51]'
       value: 
-      objectReference: {fileID: 8631991400612534455}
+      objectReference: {fileID: 4041344141135565379}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[52]'
       value: 
-      objectReference: {fileID: 7450617476749787280}
+      objectReference: {fileID: 6349438940532430408}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[53]'
       value: 
-      objectReference: {fileID: 4012583503679587143}
+      objectReference: {fileID: 924586343297801084}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[54]'
       value: 
-      objectReference: {fileID: 6104919588658108129}
+      objectReference: {fileID: 4832691918214196460}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[55]'
       value: 
-      objectReference: {fileID: 8528885097288430722}
+      objectReference: {fileID: 6573916538474952743}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[56]'
       value: 
-      objectReference: {fileID: 8596814771337797665}
+      objectReference: {fileID: 405526332284628939}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[57]'
       value: 
-      objectReference: {fileID: 1713069796149472516}
+      objectReference: {fileID: 1790937678905579598}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[58]'
       value: 
-      objectReference: {fileID: 2524936982459141240}
+      objectReference: {fileID: 8631991400612534455}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[59]'
       value: 
-      objectReference: {fileID: 5360649390341311366}
+      objectReference: {fileID: 7450617476749787280}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[60]'
       value: 
-      objectReference: {fileID: 566144209294657664}
+      objectReference: {fileID: 4012583503679587143}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[61]'
       value: 
-      objectReference: {fileID: 7923519825574202846}
+      objectReference: {fileID: 6104919588658108129}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[62]'
       value: 
-      objectReference: {fileID: 6301423941001300180}
+      objectReference: {fileID: 8528885097288430722}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[63]'
       value: 
-      objectReference: {fileID: 7995719408193384239}
+      objectReference: {fileID: 8596814771337797665}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[64]'
       value: 
-      objectReference: {fileID: 15991776734963763}
+      objectReference: {fileID: 1713069796149472516}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[65]'
       value: 
-      objectReference: {fileID: 2714508950715547187}
+      objectReference: {fileID: 2524936982459141240}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[66]'
       value: 
-      objectReference: {fileID: 7924637772778249299}
+      objectReference: {fileID: 5360649390341311366}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[67]'
       value: 
-      objectReference: {fileID: 7603202327206495657}
+      objectReference: {fileID: 566144209294657664}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[68]'
       value: 
-      objectReference: {fileID: 2121261595051028276}
+      objectReference: {fileID: 7923519825574202846}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[69]'
       value: 
-      objectReference: {fileID: 2075324104129360711}
+      objectReference: {fileID: 6301423941001300180}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[70]'
       value: 
-      objectReference: {fileID: 4348977424366668555}
+      objectReference: {fileID: 7995719408193384239}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[71]'
       value: 
-      objectReference: {fileID: 4560782342684382365}
+      objectReference: {fileID: 15991776734963763}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[72]'
       value: 
-      objectReference: {fileID: 8569747683351836087}
+      objectReference: {fileID: 2714508950715547187}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[73]'
       value: 
-      objectReference: {fileID: 2544841394263501956}
+      objectReference: {fileID: 7924637772778249299}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[74]'
       value: 
-      objectReference: {fileID: 3672571829395109878}
+      objectReference: {fileID: 7603202327206495657}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[75]'
       value: 
-      objectReference: {fileID: 8294062109739947634}
+      objectReference: {fileID: 2121261595051028276}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[76]'
       value: 
-      objectReference: {fileID: 2666850066708741934}
+      objectReference: {fileID: 2075324104129360711}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[77]'
       value: 
-      objectReference: {fileID: 6118526233302059499}
+      objectReference: {fileID: 4348977424366668555}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[78]'
       value: 
-      objectReference: {fileID: 3968073976175317589}
+      objectReference: {fileID: 4560782342684382365}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[79]'
       value: 
-      objectReference: {fileID: 4450041118108499855}
+      objectReference: {fileID: 8569747683351836087}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[80]'
       value: 
-      objectReference: {fileID: 6107567642536230418}
+      objectReference: {fileID: 2544841394263501956}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[81]'
       value: 
-      objectReference: {fileID: 1598873558237565279}
+      objectReference: {fileID: 3672571829395109878}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[82]'
       value: 
-      objectReference: {fileID: 4203294084905136250}
+      objectReference: {fileID: 8294062109739947634}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[83]'
       value: 
-      objectReference: {fileID: 2765866705720302415}
+      objectReference: {fileID: 2666850066708741934}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[84]'
       value: 
-      objectReference: {fileID: 4863363589126258357}
+      objectReference: {fileID: 6118526233302059499}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[85]'
       value: 
-      objectReference: {fileID: 560327614771101966}
+      objectReference: {fileID: 3968073976175317589}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[86]'
       value: 
-      objectReference: {fileID: 4355366719774681199}
+      objectReference: {fileID: 4450041118108499855}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[87]'
       value: 
-      objectReference: {fileID: 3591770030295082484}
+      objectReference: {fileID: 6107567642536230418}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[88]'
       value: 
-      objectReference: {fileID: 1884384619739199930}
+      objectReference: {fileID: 1598873558237565279}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[89]'
       value: 
-      objectReference: {fileID: 5831083700048445549}
+      objectReference: {fileID: 4203294084905136250}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[90]'
       value: 
-      objectReference: {fileID: 8185784481324487784}
+      objectReference: {fileID: 2765866705720302415}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[91]'
       value: 
-      objectReference: {fileID: 6717471549430222566}
+      objectReference: {fileID: 4863363589126258357}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[92]'
       value: 
-      objectReference: {fileID: 4144366356272760032}
+      objectReference: {fileID: 560327614771101966}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[93]'
       value: 
-      objectReference: {fileID: 6217788785067038152}
+      objectReference: {fileID: 4355366719774681199}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[94]'
       value: 
-      objectReference: {fileID: 5656917832687198044}
+      objectReference: {fileID: 3591770030295082484}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[95]'
       value: 
-      objectReference: {fileID: 1000983094742992257}
+      objectReference: {fileID: 1884384619739199930}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[96]'
       value: 
-      objectReference: {fileID: 7416550729086543370}
+      objectReference: {fileID: 5831083700048445549}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[97]'
       value: 
-      objectReference: {fileID: 8543081747986328030}
+      objectReference: {fileID: 8185784481324487784}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[98]'
       value: 
-      objectReference: {fileID: 4436024167797690524}
+      objectReference: {fileID: 6717471549430222566}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[99]'
       value: 
-      objectReference: {fileID: 3119679427760527548}
+      objectReference: {fileID: 4144366356272760032}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[100]'
       value: 
-      objectReference: {fileID: 1630740588073418504}
+      objectReference: {fileID: 6217788785067038152}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[101]'
       value: 
-      objectReference: {fileID: 5890129263220990793}
+      objectReference: {fileID: 5656917832687198044}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[102]'
       value: 
-      objectReference: {fileID: 4013712491665901768}
+      objectReference: {fileID: 1000983094742992257}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[103]'
       value: 
-      objectReference: {fileID: 5738321417005403740}
+      objectReference: {fileID: 7416550729086543370}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[104]'
       value: 
-      objectReference: {fileID: 576417772237127052}
+      objectReference: {fileID: 8543081747986328030}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[105]'
       value: 
-      objectReference: {fileID: 7819653404061651292}
+      objectReference: {fileID: 4436024167797690524}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[106]'
       value: 
-      objectReference: {fileID: 3759049501509419251}
+      objectReference: {fileID: 3119679427760527548}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[107]'
       value: 
-      objectReference: {fileID: 2163525688015913535}
+      objectReference: {fileID: 1630740588073418504}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[108]'
       value: 
-      objectReference: {fileID: 246158861132031083}
+      objectReference: {fileID: 5890129263220990793}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[109]'
       value: 
-      objectReference: {fileID: 989662941532724350}
+      objectReference: {fileID: 4013712491665901768}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[110]'
       value: 
-      objectReference: {fileID: 4828496967797333684}
+      objectReference: {fileID: 5738321417005403740}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: 'skillNodes.Array.data[111]'
+      value: 
+      objectReference: {fileID: 576417772237127052}
+    - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: 'skillNodes.Array.data[112]'
+      value: 
+      objectReference: {fileID: 7819653404061651292}
+    - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: 'skillNodes.Array.data[113]'
+      value: 
+      objectReference: {fileID: 3759049501509419251}
+    - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: 'skillNodes.Array.data[114]'
+      value: 
+      objectReference: {fileID: 2163525688015913535}
+    - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: 'skillNodes.Array.data[115]'
+      value: 
+      objectReference: {fileID: 246158861132031083}
+    - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: 'skillNodes.Array.data[116]'
+      value: 
+      objectReference: {fileID: 989662941532724350}
+    - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: 'skillNodes.Array.data[117]'
+      value: 
+      objectReference: {fileID: 4828496967797333684}
+    - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: 'skillNodes.Array.data[118]'
       value: 
       objectReference: {fileID: 4547332694632279729}
     m_RemovedComponents: []
@@ -4301,6 +4343,11 @@ PrefabInstance:
 --- !u!224 &15991776734963763 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1021129864229952469, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+  m_PrefabInstance: {fileID: 1014181125064848358}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &140531655800654234 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1144016113237457532, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &187312907653553231 stripped
@@ -4366,6 +4413,11 @@ RectTransform:
 --- !u!224 &750065816583189639 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 323094511100086113, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+  m_PrefabInstance: {fileID: 1014181125064848358}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &809905083812375570 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 373310851510050804, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &924586343297801084 stripped
@@ -4493,6 +4545,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2921944259961727518, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &2955531304976546440 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2816773195771218286, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+  m_PrefabInstance: {fileID: 1014181125064848358}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2981038473228019617 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2832164856011035719, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
@@ -4533,9 +4590,19 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4195608582759215893, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &3900664934081713397 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4049556624525109011, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+  m_PrefabInstance: {fileID: 1014181125064848358}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3968073976175317589 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4107975680548118963, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+  m_PrefabInstance: {fileID: 1014181125064848358}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &3990008913245987062 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4128749361549939472, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &4012583503679587143 stripped
@@ -4676,6 +4743,11 @@ RectTransform:
 --- !u!224 &5480658086771377232 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4763732129299576758, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+  m_PrefabInstance: {fileID: 1014181125064848358}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &5612308675959467992 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4895964050934815806, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &5656917832687198044 stripped
@@ -4827,6 +4899,11 @@ RectTransform:
 --- !u!224 &8185784481324487784 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9190342440062887822, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+  m_PrefabInstance: {fileID: 1014181125064848358}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &8200115063081894194 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 9214278423079744212, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &8294062109739947634 stripped

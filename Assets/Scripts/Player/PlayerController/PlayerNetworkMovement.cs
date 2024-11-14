@@ -79,6 +79,11 @@ public class PlayerNetworkMovement : NetworkBehaviour
         }
     }
 
+    public void MoveSpeedIncreaseBy(float amount)
+    {
+        MoveSpeed += amount;
+    }
+
 
     private Vector3 GetFirstPersonMoveDirection(Vector2 inputDirection)
     {

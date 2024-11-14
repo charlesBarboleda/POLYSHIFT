@@ -93,7 +93,10 @@ public class AIKinematics : NetworkBehaviour
         }
         ClosestPlayer = closestTarget;
 
+    }
 
-
+    public void MoveSpeedIncreaseBy(float amount)
+    {
+        MoveSpeed += amount;
     }
 }

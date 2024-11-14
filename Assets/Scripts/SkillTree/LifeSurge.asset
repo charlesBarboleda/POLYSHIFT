@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670fb2e5e512623439b5625948e9655d, type: 3}
+  m_Name: LifeSurge
+  m_EditorClassIdentifier: 
+  skillName: Life Surge
+  skillDescription: Increase nearby Allies' Current Health by a percentage of your
+    Maximum Health
+  skillIcon: {fileID: 21300000, guid: 398ff334c790468408697fdb295656e9, type: 3}
+  Cooldown: 60
+  <OnCooldown>k__BackingField: 1
