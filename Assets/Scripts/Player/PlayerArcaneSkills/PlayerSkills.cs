@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerSkills : NetworkBehaviour
 {
     public List<Skill> unlockedSkills = new List<Skill>();
     public List<ActiveSkill> hotbarSkills = new List<ActiveSkill>(10); // Fixed-size hotbar
+    [SerializeField] HotbarUIManager hotbarUIManager;
     [SerializeField] SkillTreeManager skillTreeManager;
     ISkillManager[] skillManagers;
     ActiveSkill currentAttack;
@@ -41,6 +43,7 @@ public class PlayerSkills : NetworkBehaviour
         playerRotation = GetComponent<PlayerNetworkRotation>();
         golemManager = GetComponent<GolemManager>();
         skillManagers = GetComponents<ISkillManager>();
+        Debug.Log($"SkillManagers count: {skillManagers.Length}");
         skillTreeManager.SetPlayerSkills(this);
 
     }
@@ -57,30 +60,15 @@ public class PlayerSkills : NetworkBehaviour
             {
                 UseSkill(attackIndex);
             }
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-                attackIndex = 0;
-            if (Input.GetKeyDown(KeyCode.Alpha2))
 
-                attackIndex = 1;
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-                attackIndex = 2;
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-                attackIndex = 3;
-            if (Input.GetKeyDown(KeyCode.Alpha5))
-
-                attackIndex = 4;
-            if (Input.GetKeyDown(KeyCode.Alpha6))
-                attackIndex = 5;
-            if (Input.GetKeyDown(KeyCode.Alpha7))
-                attackIndex = 6;
-            if (Input.GetKeyDown(KeyCode.Alpha8))
-                attackIndex = 7;
-            if (Input.GetKeyDown(KeyCode.Alpha9))
-
-                attackIndex = 8;
-            if (Input.GetKeyDown(KeyCode.Alpha0))
-
-                attackIndex = 9;
+            for (int i = 0; i < hotbarSkills.Count; i++)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+                {
+                    attackIndex = i;
+                    break;
+                }
+            }
 
             foreach (var skill in hotbarSkills)
             {
@@ -149,6 +137,7 @@ public class PlayerSkills : NetworkBehaviour
             {
                 AddToHotbar((ActiveSkill)skill);
                 ((ActiveSkill)skill).Initialize(animator);
+                hotbarUIManager.AssignHotbarIcon();
             }
             else if (skill is PassiveSkill)
             {
@@ -311,7 +300,6 @@ public class PlayerSkills : NetworkBehaviour
             script.AttackCooldown = attackSpeed;
             script.DamageReduction = damageReduction;
             script.ReviveTime = reviveTime;
-
             // Register the golem in game manager if needed
             Golem.GetComponent<NetworkObject>().Spawn();
             Debug.Log($"Golem spawned on {(IsServer ? "Server" : "Client")} with ClientID: {NetworkManager.Singleton.LocalClientId}. Owner: {GetComponent<NetworkObject>().OwnerClientId}");
@@ -532,9 +520,17 @@ public class PlayerSkills : NetworkBehaviour
     {
         foreach (var skillManager in skillManagers)
         {
-            skillManager.AttackSpeedMultiplier.Value += attackSpeedIncrease;
+            if (skillManager != null)
+            {
+                skillManager.AttackSpeedMultiplier.Value += attackSpeedIncrease;
+            }
+            else
+            {
+                Debug.LogWarning("Null skill manager encountered.");
+            }
         }
     }
+
     public void PermanentMeleeDamageIncreaseBy(float damageIncrease)
     {
         foreach (var skillManager in skillManagers)

@@ -4,16 +4,14 @@ public class LifeSurgeManager : NetworkBehaviour, ISkillManager
 {
     public float Damage { get; set; }
     public float KnockbackForce { get; set; }
-    public VariableWithEvent<float> AttackSpeedMultiplier { get; set; }
+    public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>();
     public float AttackRange { get; set; }
     public Animator animator { get; set; }
     float healRadius = 10f;
     float healStrength = 0.5f;
-    PlayerNetworkHealth playerNetworkHealth;
 
     public override void OnNetworkSpawn()
     {
-        playerNetworkHealth = GetComponent<PlayerNetworkHealth>();
         animator = GetComponent<Animator>();
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
     }

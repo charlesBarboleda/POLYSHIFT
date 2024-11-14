@@ -16,3 +16,4 @@ MonoBehaviour:
   skillDescription: Create a damaging vortex around you, dealing damage periodically.
   skillIcon: {fileID: 21300000, guid: 912d3ca3f92c3d84ebe1e657d91a160f, type: 3}
   Cooldown: 60
+  <OnCooldown>k__BackingField: 1

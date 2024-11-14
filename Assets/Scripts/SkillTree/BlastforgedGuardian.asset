@@ -15,4 +15,4 @@ MonoBehaviour:
   skillName: Blastforged Guardian
   skillDescription: 'Summon an Exploding Golem to battle. Exploding Golem: On death,
     explode and deal damage equal to 50% of its Maximum Health to nearby enemies. '
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: d9bce34450e97a84abe48c3ac9d43a81, type: 3}

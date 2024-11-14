@@ -10,7 +10,7 @@ public class SkillTooltip : MonoBehaviour
 
     private RectTransform tooltipTransform;
 
-    private void Awake()
+    private void Start()
     {
         tooltipTransform = GetComponent<RectTransform>();
         gameObject.SetActive(false);  // Start hidden
