@@ -17,4 +17,4 @@ MonoBehaviour:
     taken by 50%
   skillIcon: {fileID: 21300000, guid: 76c3166313c10e94e9bdbd2b393a60cb, type: 3}
   Cooldown: 180
-  <OnCooldown>k__BackingField: 0
+  <OnCooldown>k__BackingField: 1

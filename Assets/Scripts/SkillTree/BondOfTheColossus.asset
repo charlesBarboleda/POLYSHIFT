@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56cedb6a6c6157742b66e758f7e9d6ad, type: 3}
+  m_Name: BondOfTheColossus
+  m_EditorClassIdentifier: 
+  skillName: Bond Of The Colossus
+  skillDescription: 'Heal all your Allies to Maximum Health and recall all your Golems
+    back to your side. You and your Golems gain the "50/50" buff for 15 seconds.
+    50/50: While above 50% Health, double your Melee Damage, Weapon Damage, and Movement
+    Speed. While below 50% Health, triple your Health Regen Rate and gain 50% increased
+    Damage Reduction.'
+  skillIcon: {fileID: 21300000, guid: 7481001f6304db34981ce3a60d78d75b, type: 3}
+  Cooldown: 300
+  <OnCooldown>k__BackingField: 1
+  cooldownTimer: 287.66684

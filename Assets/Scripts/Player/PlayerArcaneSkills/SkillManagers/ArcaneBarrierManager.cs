@@ -10,6 +10,7 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
     public float AttackRange { get; set; }
     public float Duration { get; set; }
     private GameObject arcaneBarrierInstance;
+
     private PlayerSkills PlayerSkills;
     private PlayerNetworkHealth playerNetworkHealth;
     public Animator animator { get; set; }
@@ -64,15 +65,10 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
     {
         if (NetworkManager.Singleton.LocalClientId == targetClientId)
         {
-            playerNetworkHealth.ReduceDamageTakenBy(damageReduction, duration);
+            playerNetworkHealth.ReduceDamageTakenByServerRpc(damageReduction, duration);
         }
     }
 
-    [ClientRpc]
-    private void StartBarrierDespawnClientRpc(float duration)
-    {
-        StartCoroutine(DestroyArcaneBarrierAfterDuration(duration));
-    }
 
     private void SpawnBarrierEffects()
     {
@@ -81,6 +77,11 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
 
         arcaneEnchant.GetComponent<NetworkObject>().Spawn();
         arcaneMuzzle.GetComponent<NetworkObject>().Spawn();
+    }
+    [ClientRpc]
+    private void StartBarrierDespawnClientRpc(float duration)
+    {
+        StartCoroutine(DestroyArcaneBarrierAfterDuration(duration));
     }
 
     private IEnumerator DestroyArcaneBarrierAfterDuration(float duration)

@@ -11,7 +11,7 @@ public class MeleeAttackSpeed : PassiveSkill
             return;
         }
         Debug.Log("Applying MeleeAttackSpeed skill effect.");
-        user.GetComponent<PlayerSkills>().PermanentAttackSpeedIncreaseBy(0.1f);
+        user.GetComponent<PlayerSkills>().PermanentAttackSpeedIncreaseByServerRpc(0.1f);
     }
 }
 

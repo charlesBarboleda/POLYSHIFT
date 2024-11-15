@@ -5,12 +5,13 @@ public abstract class ActiveSkill : Skill
 {
     public float Cooldown = 5f;
     [field: SerializeField] public bool OnCooldown { get; private set; } = false;
-    private float cooldownTimer;
+    [SerializeField] float cooldownTimer;
     protected Animator animator;
 
     public virtual void Initialize(Animator animator)
     {
         this.animator = animator;
+        cooldownTimer = 0;
     }
 
     public override void ApplySkillEffect(GameObject user)

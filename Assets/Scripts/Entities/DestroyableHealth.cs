@@ -14,6 +14,11 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     public DestroyableSize destroyableSize;
     public float health = 1f;
 
+    [ServerRpc(RequireOwnership = false)]
+    public void HealServerRpc(float healAmount)
+    {
+        health += healAmount;
+    }
     public void TakeDamage(float damage, ulong instigator)
     {
         health -= 1;

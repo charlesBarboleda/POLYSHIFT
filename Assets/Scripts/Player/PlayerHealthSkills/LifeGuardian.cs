@@ -12,6 +12,6 @@ public class LifeGuardian : PassiveSkill
         }
         Debug.Log("Applying LifeGuardian skill effect.");
         user.GetComponent<PlayerSkills>().SummonGolemServerRpc("GuardianGolem", 1000, 30, 6, 6, 3, 0.5f, 30f);
-        user.GetComponent<PlayerNetworkHealth>().PermanentDamageReductionIncreaseBy(0.1f);
+        user.GetComponent<PlayerNetworkHealth>().PermanentDamageReductionIncreaseByServerRpc(0.1f);
     }
 }

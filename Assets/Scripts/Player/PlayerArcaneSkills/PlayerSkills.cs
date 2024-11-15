@@ -108,7 +108,7 @@ public class PlayerSkills : NetworkBehaviour
                     // If this is a new enemy within range, increase health regen
                     if (!enemiesInRange.Contains(enemy))
                     {
-                        playerHealth.PermanentHealthRegenIncreaseBy(0.5f);
+                        playerHealth.PermanentHealthRegenIncreaseByServerRpc(0.5f);
                     }
                 }
             }
@@ -119,7 +119,7 @@ public class PlayerSkills : NetworkBehaviour
         {
             if (!currentEnemiesInRange.Contains(enemy))
             {
-                playerHealth.PermanentHealthRegenIncreaseBy(-0.5f);
+                playerHealth.PermanentHealthRegenIncreaseByServerRpc(-0.5f);
             }
         }
 
@@ -308,8 +308,136 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
+    public void VitalityPlus()
+    {
+        var vitality = unlockedSkills.Find(skill => skill is Vitality) as Vitality;
+        if (vitality != null)
+        {
+            PermanentHealthIncreaseByServerRpc(5f);
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void BloodBondPlus()
+    {
+        var bloodBond = unlockedSkills.Find(skill => skill is BloodBond) as BloodBond;
+        if (bloodBond != null)
+        {
+            IncreaseBloodBondRange(3f);
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void BlastforgedGuardianPlus()
+    {
+        var blastforgedGuardian = unlockedSkills.Find(skill => skill is BlastforgedGuardian) as BlastforgedGuardian;
+        if (blastforgedGuardian != null)
+        {
+            var golemManager = GetComponent<GolemManager>();
+            golemManager.IncreaseGolemHealth(50f);
+            golemManager.IncreaseGolemDamage(5f);
+            golemManager.IncreaseGolemAttackRange(0.5f);
+            golemManager.IncreaseGolemMovementSpeed(0.5f);
+            golemManager.IncreaseBuffRadius(2f);
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void TempestGuardianPlus()
+    {
+        var tempestGuardian = unlockedSkills.Find(skill => skill is TempestGuardian) as TempestGuardian;
+        if (tempestGuardian != null)
+        {
+            var golemManager = GetComponent<GolemManager>();
+            golemManager.IncreaseGolemHealth(50f);
+            golemManager.IncreaseGolemDamage(5f);
+            golemManager.IncreaseGolemAttackRange(0.5f);
+            golemManager.IncreaseBuffRadius(1f);
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void RegenerativeAuraPlus()
+    {
+        var regenerativeAura = unlockedSkills.Find(skill => skill is RegenerativeAura) as RegenerativeAura;
+        if (regenerativeAura != null)
+        {
+            playerHealth.PermanentHealthRegenIncreaseByServerRpc(1f);
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void IronResolvePlus()
+    {
+        var ironResolve = unlockedSkills.Find(skill => skill is IronResolve) as IronResolve;
+        if (ironResolve != null)
+        {
+            playerHealth.IncreaseIronResolveDamageReductionServerRpc(0.15f);
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void LifeGuardianPlus()
+    {
+        var lifeGuardian = unlockedSkills.Find(skill => skill is LifeGuardian) as LifeGuardian;
+        if (lifeGuardian != null)
+        {
+            var golemManager = GetComponent<GolemManager>();
+            golemManager.IncreaseGolemDamageReduction(0.025f);
+            golemManager.IncreaseGolemHealth(50f);
+            golemManager.IncreaseGolemDamage(5f);
+            golemManager.IncreaseGolemAttackRange(0.5f);
+            golemManager.IncreaseGolemMovementSpeed(0.5f);
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
 
 
+    public void LifeSurgePlus()
+    {
+        var lifeSurge = unlockedSkills.Find(skill => skill is LifeSurge) as LifeSurge;
+        if (lifeSurge != null)
+        {
+            LifeSurgeManager script = GetComponent<LifeSurgeManager>();
+            script.IncreaseHealRadius(2f);
+            script.IncreaseHealStrength(0.05f);
+            playerHealth.PermanentHealthIncreaseByServerRpc(5f);
+
+            foreach (Skill skill in unlockedSkills)
+            {
+                if (skill is LifeSurge lifeSurgeSkill)
+                {
+                    lifeSurgeSkill.Cooldown -= 3f;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            PermanentTravelNodeStatIncrease();
+        }
+    }
 
     public void BladeVortexPlus()
     {
@@ -332,10 +460,7 @@ public class PlayerSkills : NetworkBehaviour
         }
         else
         {
-            PermanentMeleeDamageIncreaseBy(2f);
-            PermanentWeaponDamageIncreaseBy(0.5f);
-            PermanentHealthIncreaseBy(2.5f);
-            PermanentMovementSpeedIncreaseBy(0.1f);
+            PermanentTravelNodeStatIncrease();
         }
 
     }
@@ -355,15 +480,12 @@ public class PlayerSkills : NetworkBehaviour
                     break;
                 }
             }
-            playerWeapon.PermanentWeaponDamageIncreaseBy(0.5f);
+            playerWeapon.Damage += 2f;
         }
         else
         {
             // If arcanePlague is not unlocked, apply the stat increases
-            PermanentMeleeDamageIncreaseBy(2f);
-            PermanentWeaponDamageIncreaseBy(0.5f);
-            PermanentHealthIncreaseBy(2.5f);
-            PermanentMovementSpeedIncreaseBy(0.1f);
+            PermanentTravelNodeStatIncrease();
 
         }
     }
@@ -389,10 +511,7 @@ public class PlayerSkills : NetworkBehaviour
         }
         else
         {
-            PermanentMeleeDamageIncreaseBy(2f);
-            PermanentWeaponDamageIncreaseBy(0.5f);
-            PermanentHealthIncreaseBy(2.5f);
-            PermanentMovementSpeedIncreaseBy(0.1f);
+            PermanentTravelNodeStatIncrease();
 
         }
     }
@@ -420,12 +539,10 @@ public class PlayerSkills : NetworkBehaviour
         }
         else
         {
-            PermanentMeleeDamageIncreaseBy(2f);
-            PermanentWeaponDamageIncreaseBy(0.25f);
-            PermanentHealthIncreaseBy(2.5f);
-            PermanentMovementSpeedIncreaseBy(0.1f);
+            PermanentTravelNodeStatIncrease();
         }
     }
+
 
 
     public void DoubleCrescentSlashPlus()
@@ -451,10 +568,7 @@ public class PlayerSkills : NetworkBehaviour
         }
         else
         {
-            PermanentMeleeDamageIncreaseBy(2f);
-            PermanentWeaponDamageIncreaseBy(0.5f);
-            PermanentHealthIncreaseBy(2.5f);
-            PermanentMovementSpeedIncreaseBy(0.1f);
+            PermanentTravelNodeStatIncrease();
         }
     }
 
@@ -478,45 +592,53 @@ public class PlayerSkills : NetworkBehaviour
         }
         else
         {
-            PermanentMeleeDamageIncreaseBy(2f);
-            PermanentWeaponDamageIncreaseBy(0.5f);
-            PermanentHealthIncreaseBy(2.5f);
-            PermanentMovementSpeedIncreaseBy(0.1f);
+            PermanentTravelNodeStatIncrease();
         }
 
     }
-
-
-    public void PermanentHealthIncreaseBy(float healthIncrease)
+    void PermanentTravelNodeStatIncrease()
     {
-        playerHealth.maxHealth.Value += healthIncrease;
-        playerHealth.currentHealth.Value += healthIncrease;
+        PermanentMeleeDamageIncreaseByServerRpc(2f);
+        playerWeapon.Damage += 0.5f;
+        PermanentHealthIncreaseByServerRpc(2.5f);
+        playerMovement.MoveSpeed += 0.1f;
     }
 
-    public void PermanentMovementSpeedIncreaseBy(float speedIncrease)
+    public void MultiplyMeleeDamageBy(float multiplier)
     {
-        playerMovement.MoveSpeed += speedIncrease;
+        foreach (var skillManager in skillManagers)
+        {
+            skillManager.Damage *= multiplier;
+        }
+    }
+
+    public void DivideMeleeDamageBy(float divisor)
+    {
+        foreach (var skillManager in skillManagers)
+        {
+            skillManager.Damage /= divisor;
+        }
     }
 
 
-    public void PermanentWeaponFireRateIncreaseBy(float fireRateIncrease)
+    [ServerRpc]
+    public void PermanentHealthIncreaseByServerRpc(float healthIncrease)
     {
-        playerWeapon.ShootRate += fireRateIncrease;
+        playerHealth.PermanentHealthIncreaseByServerRpc(healthIncrease);
     }
 
-    public void PermanentWeaponDamageIncreaseBy(float damageIncrease)
-    {
-        playerWeapon.Damage += damageIncrease;
-    }
 
-    public void PermanentMeleeRangeIncreaseBy(float rangeIncrease)
+    [ServerRpc]
+    public void PermanentMeleeRangeIncreaseByServerRpc(float rangeIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
             skillManager.AttackRange += rangeIncrease;
         }
     }
-    public void PermanentAttackSpeedIncreaseBy(float attackSpeedIncrease)
+
+    [ServerRpc]
+    public void PermanentAttackSpeedIncreaseByServerRpc(float attackSpeedIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -531,7 +653,8 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    public void PermanentMeleeDamageIncreaseBy(float damageIncrease)
+    [ServerRpc]
+    public void PermanentMeleeDamageIncreaseByServerRpc(float damageIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -539,7 +662,8 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    public void IncreaseMeleeDamageBy(float multiplier, float duration)
+    [ServerRpc]
+    public void IncreaseMeleeDamageByServerRpc(float multiplier, float duration)
     {
         StartCoroutine(IncreaseMeleeDamageCoroutine(multiplier, duration));
     }
@@ -557,7 +681,8 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    public void IncreaseAttackSpeedBy(float multiplier, float duration)
+    [ServerRpc]
+    public void IncreaseAttackSpeedByServerRpc(float multiplier, float duration)
     {
         StartCoroutine(IncreaseAttackSpeedCoroutine(multiplier, duration));
     }
@@ -575,7 +700,8 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    public void ReduceCooldownsBy(float multiplier, float duration)
+    [ServerRpc]
+    public void ReduceCooldownsByServerRpc(float multiplier, float duration)
     {
         StartCoroutine(ReduceCooldownCoroutine(multiplier, duration));
     }

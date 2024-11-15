@@ -10,7 +10,7 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     [field: SerializeField] public GameObject Owner { get; private set; }
     public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(1000f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> MaxHealth = new NetworkVariable<float>(1000f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
+    public float HealthRegenRate;
     public float Damage = 50f;
     public float AttackRange = 3f;
     public float MovementSpeed = 6f;
@@ -69,6 +69,13 @@ public abstract class Golem : NetworkBehaviour, IDamageable
         if (IsDead) return;
         if (IsServer) // Only run on server
         {
+
+            // Regenerate health
+            if (CurrentHealth.Value < MaxHealth.Value)
+            {
+                CurrentHealth.Value += HealthRegenRate * Time.deltaTime;
+            }
+
             if (Animator != null)
                 Animator.SetBool("IsMoving", Agent.velocity.magnitude > 0.2f);
 
@@ -137,6 +144,14 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     }
 
 
+    [ServerRpc(RequireOwnership = false)]
+    public void HealServerRpc(float amount)
+    {
+        if (IsServer)
+        {
+            CurrentHealth.Value += amount;
+        }
+    }
     protected virtual void Attack()
     {
         if (IsServer)
@@ -200,12 +215,13 @@ public abstract class Golem : NetworkBehaviour, IDamageable
         healthFill.fillAmount = cur / MaxHealth.Value;
     }
 
-    public virtual void IncreaseDamageReduction(float amount)
+    [ServerRpc]
+    public virtual void IncreaseIronResolveDamageReductionServerRpc(float amount)
     {
         DamageReduction += amount;
     }
-
-    public virtual void IncreaseHealth(float amount)
+    [ServerRpc]
+    public virtual void IncreaseHealthServerRpc(float amount)
     {
         MaxHealth.Value += amount;
         CurrentHealth.Value += amount;
@@ -229,6 +245,51 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     public virtual void IncreaseBuffRadius(float amount)
     {
         BuffRadius += amount;
+    }
+
+    public virtual void MultiplyDamageBy(float multiplier)
+    {
+        Damage *= multiplier;
+    }
+
+    public virtual void DivideDamageBy(float divisor)
+    {
+        Damage /= divisor;
+    }
+
+    public virtual void MultiplyMovementSpeedBy(float multiplier)
+    {
+        MovementSpeed *= multiplier;
+    }
+
+    public virtual void DivideMovementSpeedBy(float divisor)
+    {
+        MovementSpeed /= divisor;
+    }
+
+    public virtual void MultiplyHealthRegenRateBy(float multiplier)
+    {
+        HealthRegenRate *= multiplier;
+    }
+
+    public virtual void DivideHealthRegenRateBy(float divisor)
+    {
+        HealthRegenRate /= divisor;
+    }
+
+    public virtual void IncreaseDamageReduction(float damageReductionIncrease)
+    {
+        if (damageReductionIncrease > 0)
+        {
+            // Increase damage reduction with diminishing returns
+            DamageReduction = 1 - (1 - DamageReduction) * (1 - damageReductionIncrease);
+        }
+        else
+        {
+            // Decrease damage reduction by reversing the formula
+            float reductionFactor = 1 + damageReductionIncrease; // Note: damageReductionIncrease is negative here
+            DamageReduction = 1 - (1 - DamageReduction) / reductionFactor;
+        }
     }
 
 }

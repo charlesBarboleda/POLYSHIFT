@@ -76,11 +76,13 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
+
     public void IncreaseWeaponDamageBy(float multiplier, float duration)
     {
         Damage *= multiplier;
         StartCoroutine(ReduceDamageAfterDuration(multiplier, duration));
     }
+
 
     IEnumerator ReduceDamageAfterDuration(float multiplier, float duration)
     {
@@ -120,10 +122,6 @@ public class PlayerWeapon : NetworkBehaviour
 
 
 
-    public void PermanentWeaponDamageIncreaseBy(float damageIncrease)
-    {
-        Damage += damageIncrease;
-    }
 
     [ServerRpc]
     public void FireSingleShotServerRpc(Vector3 startPoint, Vector3 hitPoint)

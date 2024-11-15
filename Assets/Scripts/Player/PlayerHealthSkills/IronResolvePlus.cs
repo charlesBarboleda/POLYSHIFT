@@ -11,6 +11,6 @@ public class IronResolvePlus : PassiveSkill
             return;
         }
         Debug.Log("Applying IronResolvePlus skill effect.");
-        user.GetComponent<PlayerNetworkHealth>().IncreaseIronResolveDamageReduction(0.15f);
+        user.GetComponent<PlayerSkills>().IronResolvePlus();
     }
 }

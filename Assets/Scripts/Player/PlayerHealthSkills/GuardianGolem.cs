@@ -21,8 +21,8 @@ public class GuardianGolem : Golem
             {
                 // Apply the buff
                 var health = player.GetComponent<PlayerNetworkHealth>();
-                health.PermanentDamageReductionIncreaseBy(0.15f);
-                health.PermanentHealthRegenIncreaseBy(5f);
+                health.PermanentDamageReductionIncreaseByServerRpc(0.15f);
+                health.PermanentHealthRegenIncreaseByServerRpc(5f);
 
                 playersWithBuff.Add(networkClient); // Track this player as having the buff
             }
@@ -30,8 +30,8 @@ public class GuardianGolem : Golem
             {
                 // Remove the buff
                 var health = player.GetComponent<PlayerNetworkHealth>();
-                health.PermanentDamageReductionIncreaseBy(-0.15f);
-                health.PermanentHealthRegenIncreaseBy(-5f);
+                health.PermanentDamageReductionIncreaseByServerRpc(-0.15f);
+                health.PermanentHealthRegenIncreaseByServerRpc(-5f);
 
                 playersWithBuff.Remove(networkClient); // Stop tracking this player
             }

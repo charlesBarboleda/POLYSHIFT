@@ -91,6 +91,12 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         }
     }
 
+    [ServerRpc]
+    public void HealServerRpc(float healAmount)
+    {
+        CurrentHealth.Value += healAmount;
+    }
+
 
     [ClientRpc]
     public void HandleDeathClientRpc(ulong networkObjectId)

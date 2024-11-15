@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,12 +17,23 @@ public class GolemManager : MonoBehaviour
         }
     }
 
+    public void MassRecall()
+    {
+        foreach (var golem in SpawnedGolems)
+        {
+            golem.transform.position = transform.position + Random.insideUnitSphere * 10;
+        }
+    }
+
+
+
+
 
     public void IncreaseGolemHealth(float amount)
     {
         foreach (var golem in SpawnedGolems)
         {
-            golem.IncreaseHealth(amount);
+            golem.IncreaseHealthServerRpc(amount);
         }
     }
 

@@ -11,6 +11,6 @@ public class BloodBondPlus : PassiveSkill
             return;
         }
         Debug.Log("Applying BloodBondPlus skill effect.");
-        user.GetComponent<PlayerSkills>().IncreaseBloodBondRange(3f);
+        user.GetComponent<PlayerSkills>().BloodBondPlus();
     }
 }

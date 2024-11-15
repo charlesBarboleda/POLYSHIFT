@@ -6,20 +6,14 @@ public class LifeSurgePlus : PassiveSkill
 
     public override void ApplySkillEffect(GameObject user)
     {
-        PlayerNetworkHealth playerHealth = user.GetComponent<PlayerNetworkHealth>();
-        if (playerHealth == null)
+        if (user == null)
         {
-            Debug.LogError("PlayerNetworkHealth not found in LifeSurgePlus.");
+            Debug.LogError("User is null in LifeSurgePlus.");
             return;
         }
-        LifeSurgeManager lifeSurge = user.GetComponent<LifeSurgeManager>();
-        if (lifeSurge == null)
-        {
-            Debug.LogError("LifeSurgeManager not found in LifeSurgePlus.");
-            return;
-        }
-        lifeSurge.IncreaseHealRadius(2f);
-        lifeSurge.IncreaseHealStrength(0.05f);
-        playerHealth.PermanentHealthIncreaseBy(5f);
+        Debug.Log("Applying LifeSurgePlus skill effect.");
+        user.GetComponent<PlayerSkills>().LifeSurgePlus();
+
+
     }
 }

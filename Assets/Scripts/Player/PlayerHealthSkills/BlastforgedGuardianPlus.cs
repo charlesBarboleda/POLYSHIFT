@@ -11,11 +11,6 @@ public class BlastforgedGuardianPlus : PassiveSkill
             return;
         }
         Debug.Log("Applying BlastforgedGuardianPlus skill effect.");
-        var golemManager = user.GetComponent<GolemManager>();
-        golemManager.IncreaseGolemHealth(50f);
-        golemManager.IncreaseGolemDamage(5f);
-        golemManager.IncreaseGolemAttackRange(0.5f);
-        golemManager.IncreaseGolemMovementSpeed(0.5f);
-        golemManager.IncreaseBuffRadius(2f);
+        user.GetComponent<PlayerSkills>().BlastforgedGuardianPlus();
     }
 }

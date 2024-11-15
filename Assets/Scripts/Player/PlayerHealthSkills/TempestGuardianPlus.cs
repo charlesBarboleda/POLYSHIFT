@@ -11,10 +11,6 @@ public class TempestGuardianPlus : PassiveSkill
             return;
         }
         Debug.Log("Applying BlastforgedGuardianPlus skill effect.");
-        var golemManager = user.GetComponent<GolemManager>();
-        golemManager.IncreaseGolemHealth(50f);
-        golemManager.IncreaseGolemDamage(5f);
-        golemManager.IncreaseGolemAttackRange(0.5f);
-        golemManager.IncreaseBuffRadius(1f);
+        user.GetComponent<PlayerSkills>().TempestGuardianPlus();
     }
 }

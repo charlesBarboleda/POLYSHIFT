@@ -40,15 +40,36 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     }
 
-    public void PermanentHealthIncreaseBy(float healthIncrease)
+    [ServerRpc]
+    public void HealServerRpc(float amount)
     {
+        currentHealth.Value += amount;
+    }
+
+    [ServerRpc]
+    public void PermanentHealthIncreaseByServerRpc(float healthIncrease)
+    {
+        Debug.Log($"PermanentHealthIncreaseByServerRpc called with healthIncrease: {healthIncrease}");
         maxHealth.Value += healthIncrease;
         currentHealth.Value += healthIncrease;
     }
 
-    public void PermanentHealthRegenIncreaseBy(float regenIncrease)
+    [ServerRpc]
+    public void PermanentHealthRegenIncreaseByServerRpc(float regenIncrease)
     {
         healthRegenRate.Value += regenIncrease;
+    }
+
+    [ServerRpc]
+    public void MultiplyHealthRegenByServerRpc(float multiplier)
+    {
+        healthRegenRate.Value *= multiplier;
+    }
+
+    [ServerRpc]
+    public void DivideHealthRegenRateByServerRpc(float divisor)
+    {
+        healthRegenRate.Value /= divisor;
     }
 
     public void UnlockIronResolve()
@@ -56,12 +77,14 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         ironResolve = true;
     }
 
-    public void IncreaseIronResolveDamageReduction(float amount)
+    [ServerRpc]
+    public void IncreaseIronResolveDamageReductionServerRpc(float amount)
     {
         ironResolveDamageReduction += amount;
     }
 
-    public void PermanentDamageReductionIncreaseBy(float damageReductionIncrease)
+    [ServerRpc]
+    public void PermanentDamageReductionIncreaseByServerRpc(float damageReductionIncrease)
     {
         if (damageReductionIncrease > 0)
         {
@@ -84,33 +107,26 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         currentHealth.Value += regenAmount * Time.deltaTime;
     }
 
-    public void ReduceDamageTakenBy(float damageReduction, float duration)
+    [ServerRpc]
+    public void ReduceDamageTakenByServerRpc(float damageReduction, float duration)
     {
         StartCoroutine(ReduceDamageTakenCoroutine(damageReduction, duration));
     }
 
     IEnumerator ReduceDamageTakenCoroutine(float damageReduction, float duration)
     {
+        // Store the original DamageReduction to revert back to it later
         float originalDamageReduction = DamageReduction;
 
-        // Apply the modification with diminishing returns, accounting for both positive and negative values.
-        if (damageReduction > 0)
-        {
-            // Increase damage reduction
-            DamageReduction = 1 - (1 - DamageReduction) * (1 - damageReduction);
-        }
-        else
-        {
-            // Decrease damage reduction by effectively reversing the formula.
-            float reductionFactor = 1 + damageReduction; // Note: damageReduction is negative here
-            DamageReduction = 1 - (1 - DamageReduction) / reductionFactor;
-        }
+        // Apply the damage reduction modification with diminishing returns
+        DamageReduction = 1 - (1 - originalDamageReduction) * (1 - damageReduction);
 
         yield return new WaitForSeconds(duration);
 
-        // Restore the original DamageReduction value after the duration.
+        // Revert to the original DamageReduction
         DamageReduction = originalDamageReduction;
     }
+
 
 
 

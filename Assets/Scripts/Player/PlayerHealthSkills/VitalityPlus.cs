@@ -11,6 +11,6 @@ public class VitalityPlus : PassiveSkill
             return;
         }
         Debug.Log("Applying VitalityPlus skill effect.");
-        user.GetComponent<PlayerNetworkHealth>().PermanentHealthIncreaseBy(5f);
+        user.GetComponent<PlayerSkills>().VitalityPlus();
     }
 }
