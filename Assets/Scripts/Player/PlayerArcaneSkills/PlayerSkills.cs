@@ -596,7 +596,7 @@ public class PlayerSkills : NetworkBehaviour
         }
 
     }
-    void PermanentTravelNodeStatIncrease()
+    public void PermanentTravelNodeStatIncrease()
     {
         PermanentMeleeDamageIncreaseByServerRpc(2f);
         playerWeapon.Damage += 0.5f;

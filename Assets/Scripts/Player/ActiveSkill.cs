@@ -7,6 +7,7 @@ public abstract class ActiveSkill : Skill
     [field: SerializeField] public bool OnCooldown { get; private set; } = false;
     [SerializeField] float cooldownTimer;
     protected Animator animator;
+    public abstract void ExecuteAttack();
 
     public virtual void Initialize(Animator animator)
     {
@@ -26,10 +27,7 @@ public abstract class ActiveSkill : Skill
     }
 
 
-    public virtual void ExecuteAttack()
-    {
-        // Implement in child classes
-    }
+
 
     public void StartCooldown()
     {

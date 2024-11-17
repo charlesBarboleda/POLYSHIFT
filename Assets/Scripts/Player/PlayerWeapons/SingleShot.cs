@@ -5,79 +5,128 @@ public class SingleShot : IWeaponBehavior
 {
     public void FireFirstPerson(PlayerWeapon weapon)
     {
-        RaycastHit hit;
         Vector3 startPoint = weapon.bulletSpawnPoint.position;
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         Ray ray = weapon.Camera.ScreenPointToRay(screenCenter);
 
-        if (Physics.Raycast(ray, out hit))
+        // Perform a RaycastAll to detect all objects along the bullet's path
+        RaycastHit[] hits = Physics.RaycastAll(ray);
+
+        // Pierce Logic
+        if (hits.Length > 0)
         {
-            // Spawn the blood splatter effect if the hit object is an enemy
-            Enemy enemy = hit.collider.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.OnRaycastHitServerRpc(hit.point, hit.normal);
-            }
+            // Sort hits by distance from the starting point
+            System.Array.Sort(hits, (h1, h2) => h1.distance.CompareTo(h2.distance));
 
-            if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
-            {
-                weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
-            }
+            int pierceCount = 0;
 
-            weapon.FireSingleShotServerRpc(startPoint, hit.point); // Server handles visual spawning
+            foreach (var hit in hits)
+            {
+                // Always apply damage to the first target, regardless of piercing
+                if (pierceCount == 0 || pierceCount < weapon.maxPierceTargets)
+                {
+                    // Apply damage to the hit object
+                    if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
+                    {
+                        weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
+
+                        // Spawn the blood splatter effect if the hit object is an enemy
+                        Enemy enemy = hit.collider.GetComponent<Enemy>();
+                        if (enemy != null)
+                        {
+                            enemy.OnRaycastHitServerRpc(hit.point, hit.normal);
+                        }
+                    }
+
+                    // Spawn visual effects for the shot
+                    weapon.FireSingleShotServerRpc(startPoint, hit.point);
+
+                    pierceCount++;
+                }
+                else
+                {
+                    // Stop processing further hits if maxPierceTargets is reached
+                    break;
+                }
+            }
         }
-
     }
+
+
 
     public void FireIsometric(PlayerWeapon weapon)
     {
-        RaycastHit hit;
         Vector3 startPoint = weapon.bulletSpawnPoint.position;
         Vector3 mouseScreenPos = Input.mousePosition;
         Ray ray = weapon.Camera.ScreenPointToRay(mouseScreenPos);
 
-        if (Physics.Raycast(ray, out hit))
+        // Perform a raycast from the camera to detect what the mouse is pointing at
+        if (Physics.Raycast(ray, out RaycastHit targetHit))
         {
-            // Spawn the blood splatter effect if the hit object is an enemy
-            Enemy enemy = hit.collider.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.OnRaycastHitServerRpc(hit.point, hit.normal);
-            }
+            // Calculate direction from bullet spawn point to the target hit point
+            Vector3 direction = (targetHit.point - startPoint).normalized;
 
-            // Check for nearby enemies within a certain radius
-            Collider[] nearbyEnemies = Physics.OverlapSphere(hit.point, 0.5f); // adjust radius as needed
-            NetworkObject targetNetworkObject = null;
-
-            foreach (var col in nearbyEnemies)
+            // Perform a RaycastAll from the bullet spawn point in the calculated direction
+            RaycastHit[] hits = Physics.RaycastAll(startPoint, direction);
+            if (hits.Length > 0)
             {
-                if (col.CompareTag("Enemy"))
+                // Sort hits by distance from the starting point
+                System.Array.Sort(hits, (h1, h2) => h1.distance.CompareTo(h2.distance));
+
+                int pierceCount = 0;
+
+                foreach (var hit in hits)
                 {
-                    if (col.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
+                    if (hit.collider.CompareTag("Player")) continue; // Skip the player object
+
+                    // Always apply damage to the first target, regardless of piercing
+                    if (pierceCount == 0 || pierceCount < weapon.maxPierceTargets)
                     {
-                        targetNetworkObject = networkObject;
+                        // Apply damage to the hit object
+                        if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
+                        {
+                            // Aim assist: check for nearby enemies
+                            Collider[] nearbyEnemies = Physics.OverlapSphere(hit.point, 0.5f); // Adjust radius for aim assist
+                            NetworkObject targetNetworkObject = null;
+
+                            foreach (var col in nearbyEnemies)
+                            {
+                                if (col.CompareTag("Enemy"))
+                                {
+                                    if (col.TryGetComponent<NetworkObject>(out NetworkObject nearbyNetworkObject))
+                                    {
+                                        targetNetworkObject = nearbyNetworkObject;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Apply damage to the nearby enemy (if found) or the directly hit target
+                            if (targetNetworkObject != null)
+                            {
+                                weapon.ApplyDamageServerRpc(targetNetworkObject.NetworkObjectId);
+                            }
+                            else
+                            {
+                                weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
+                            }
+                        }
+
+                        // Spawn impact visual at the hit point
+                        weapon.FireSingleShotServerRpc(startPoint, hit.point);
+
+                        pierceCount++;
+                    }
+                    else
+                    {
+                        // Stop processing further hits if maxPierceTargets is reached
                         break;
                     }
                 }
             }
-
-            if (targetNetworkObject != null)
-            {
-                // If a nearby enemy is found, apply damage to it using NetworkObjectId and hit position
-                weapon.ApplyDamageServerRpc(targetNetworkObject.NetworkObjectId);
-            }
-            else
-            {
-                // If no nearby enemy is found, apply damage to the direct hit target
-                if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject directHitNetworkObject))
-                {
-                    weapon.ApplyDamageServerRpc(directHitNetworkObject.NetworkObjectId);
-                }
-            }
-
-            // Call the RPC to spawn the visual effect for the shot
-            weapon.FireSingleShotServerRpc(startPoint, hit.point);
         }
     }
+
+
 
 }

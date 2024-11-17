@@ -18,14 +18,13 @@ public class PlayerWeapon : NetworkBehaviour
 {
     public float Damage = 10f;
     public float ReloadTime = 1f;
-    public float ShootRate = 0.5f;
+    public float ShootRate = 2f;
     public int currentAmmoCount;
     public int maxAmmoCount = 30;
-    public int addedAmmoCount = 0;
-    public float shootRateReduction = 1f;
-    public float reloadTimeReduction = 1f;
+    public int maxPierceTargets = 0;
     public Transform bulletSpawnPoint;
     public PlayerNetworkMovement playerNetworkMovement;
+    public PlayerSkills playerSkills;
     public Camera Camera;
     public List<Debuff> weaponDebuffs = new List<Debuff>();
     PlayerAudioManager audioManager;
@@ -37,9 +36,13 @@ public class PlayerWeapon : NetworkBehaviour
     {
         TryGetComponent(out playerNetworkMovement);
         TryGetComponent(out audioManager);
+        TryGetComponent(out playerSkills);
         currentAmmoCount = maxAmmoCount;
         SetWeaponBehavior(WeaponType.SingleShot);
         Camera = Camera.main;
+        ShootRate = 1.5f;
+        ReloadTime = 3f;
+
 
     }
 
@@ -76,6 +79,108 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
+    public void ExtendedCapacityPlus()
+    {
+        var extendedCapacity = playerSkills.unlockedSkills.Find(skill => skill is ExtendedCapacity) as ExtendedCapacity;
+
+        if (extendedCapacity != null)
+        {
+            maxAmmoCount += 2;
+            DecreaseFireRateBy(0.05f);
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void PiercingBulletsPlus()
+    {
+        var piercingBullets = playerSkills.unlockedSkills.Find(skill => skill is PiercingBullets) as PiercingBullets;
+
+        if (piercingBullets != null)
+        {
+            maxPierceTargets += 1;
+            Damage += 3f;
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void OverloadPlus()
+    {
+        var overload = playerSkills.unlockedSkills.Find(skill => skill is Overload) as Overload;
+
+        if (overload != null)
+        {
+            var script = GetComponent<OverloadManager>();
+            script.Duration += 1f;
+            DecreaseReloadTimeBy(0.05f);
+            DecreaseFireRateBy(0.05f);
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void WeaponMasteryPlus()
+    {
+        var weaponMastery = playerSkills.unlockedSkills.Find(skill => skill is WeaponMastery) as WeaponMastery;
+
+        if (weaponMastery != null)
+        {
+            Damage += 2f;
+            DecreaseReloadTimeBy(0.05f);
+            DecreaseFireRateBy(0.05f);
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
+        }
+    }
+
+
+    public void DecreaseFireRateBy(float multiplier)
+    {
+        if (multiplier <= 0 || multiplier >= 1)
+        {
+            Debug.LogWarning("Multiplier must be between 0 and 1 (e.g., 0.2 for 20%). No changes applied.");
+            return;
+        }
+
+        // Calculate the new fire rate
+        float newFireRate = ShootRate * (1f - multiplier);
+
+        // Ensure the fire rate doesn't go below a reasonable minimum (e.g., 0.1 seconds)
+        float minimumFireRate = 0.01f; // Adjust this as necessary
+        ShootRate = Mathf.Max(newFireRate, minimumFireRate);
+
+        Debug.Log($"Fire rate decreased by {multiplier * 100}% to {ShootRate} seconds per shot.");
+    }
+
+    public void DecreaseReloadTimeBy(float multiplier)
+    {
+        if (multiplier <= 0 || multiplier >= 1)
+        {
+            Debug.LogWarning("Multiplier must be between 0 and 1 (e.g., 0.2 for 20%). No changes applied.");
+            return;
+        }
+
+        // Calculate the new reload time
+        float newReloadTime = ReloadTime * (1f - multiplier);
+
+        // Ensure the reload time doesn't go below a reasonable minimum (e.g., 0.1 seconds)
+        float minimumReloadTime = 0.01f; // Adjust this as necessary
+        ReloadTime = Mathf.Max(newReloadTime, minimumReloadTime);
+
+        Debug.Log($"Reload time decreased by {multiplier * 100}% to {ReloadTime} seconds.");
+    }
+
+
+
 
     public void IncreaseWeaponDamageBy(float multiplier, float duration)
     {
@@ -103,22 +208,27 @@ public class PlayerWeapon : NetworkBehaviour
         if (targetObject != null && targetObject.TryGetComponent(out IDamageable iDamageable))
         {
             iDamageable.RequestTakeDamageServerRpc(Damage, NetworkObjectId); // Pass NetworkObjectId instead of clientId
-            ApplyDebuffsOnHit(targetObject);
+            ApplyDebuffsOnHitServerRpc(targetNetworkObjectId);
         }
     }
 
-
-    void ApplyDebuffsOnHit(NetworkObject targetObject)
+    [ServerRpc]
+    void ApplyDebuffsOnHitServerRpc(ulong networkObjectID)
     {
-        if (targetObject.TryGetComponent(out DebuffManager debuffManager))
+        if (weaponDebuffs.Count > 0)
         {
-            foreach (Debuff debuff in weaponDebuffs)
+            NetworkObject targetObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectID];
+            if (targetObject != null && targetObject.TryGetComponent(out DebuffManager debuffManager))
             {
-                Debuff debuffInstance = Instantiate(debuff);
-                debuffManager.AddDebuff(debuffInstance);
+                foreach (Debuff debuff in weaponDebuffs)
+                {
+                    Debuff debuffInstance = Instantiate(debuff);
+                    debuffManager.AddDebuff(debuffInstance);
+                }
             }
         }
     }
+
 
 
 
@@ -191,9 +301,6 @@ public class PlayerWeapon : NetworkBehaviour
         {
             case WeaponType.SingleShot:
                 currentWeaponBehavior = new SingleShot();
-                ShootRate = 2f * shootRateReduction;
-                ReloadTime = 1f * reloadTimeReduction;
-                maxAmmoCount = 10 + addedAmmoCount;
                 currentAmmoCount = maxAmmoCount;
                 break;
                 // Add cases for other weapon types...

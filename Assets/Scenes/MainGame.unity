@@ -46284,7 +46284,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0.356678, w: 23.530228}
+  m_margin: {x: 0, y: 0, z: -39.235073, w: 14.154885}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -57211,6 +57211,18 @@ MonoBehaviour:
     autoExpand: 1
   - itemName: FireSphereBlast
     prefab: {fileID: 118354, guid: deddf22d4e65a7447b851e66ff6c334c, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: WaterCast
+    prefab: {fileID: 9191573578699327895, guid: 6f780824ab239284d8fc4bb2896481f6, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: WaterCircling
+    prefab: {fileID: 1525039324164344074, guid: 2a855bf67eea0da48b11366549721afd, type: 3}
+    initialSize: 10
+    autoExpand: 1
+  - itemName: WaterSpinning
+    prefab: {fileID: 169260, guid: 61efad8215cd8a2469d3b566dfd8d56d, type: 3}
     initialSize: 10
     autoExpand: 1
 --- !u!1001 &1448542732
@@ -83989,31 +84001,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.602
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.085
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.8723914
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.33253616
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.33476806
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.12760612
       objectReference: {fileID: 0}
     - target: {fileID: 1562628817163653635, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
