@@ -15,6 +15,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
     PlayerWeapon playerWeapon;
     ISkillManager[] meleeSkillsManager;
     PlayerAudioManager audioManager;
+    PlayerSkills playerSkills;
 
     public override void OnNetworkSpawn()
     {
@@ -25,10 +26,11 @@ public class PlayerNetworkLevel : NetworkBehaviour
         playerWeapon = GetComponent<PlayerWeapon>();
         Level.OnValueChanged += OnLevelUp;
         meleeSkillsManager = GetComponentsInChildren<ISkillManager>();
+        playerSkills = GetComponent<PlayerSkills>();
         if (IsServer)
         {
 
-            Level.Value = LevelProgression.CurrentLevel;
+            Level.Value = 19;
             Experience.Value = LevelProgression.CurrentExperience;
             NeededExperience.Value = LevelProgression.NeededExperience;
         }
@@ -52,15 +54,20 @@ public class PlayerNetworkLevel : NetworkBehaviour
     void OnLevelUp(int prev, int current)
     {
         // Increase player stats & heal player back to full health
-        playerNetworkHealth.maxHealth.Value += (Level.Value ^ 2) + (Level.Value * 5);
+        playerNetworkHealth.maxHealth.Value += Level.Value;
         playerNetworkHealth.currentHealth.Value = playerNetworkHealth.maxHealth.Value;
         playerNetworkMovement.MoveSpeed += 0.05f;
         playerWeapon.Damage += 1;
+        playerWeapon.DecreaseFireRateByServerRpc(0.01f);
 
         foreach (ISkillManager skill in meleeSkillsManager)
         {
             skill.Damage += Level.Value;
+            skill.AttackSpeedMultiplier.Value += 0.01f;
         }
+
+
+
     }
 
 

@@ -338,6 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  inputDirection: {x: 0, y: 0}
   MoveSpeed: 5
   IsIsometric: 0
   canMove: 1
@@ -393,6 +394,7 @@ MonoBehaviour:
   healthRegenRate:
     m_InternalValue: 1
   DamageReduction: 0
+  IsDead: 0
 --- !u!114 &3601094521028987543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,15 +411,17 @@ MonoBehaviour:
   Damage: 10
   ReloadTime: 1
   ShootRate: 0.1
-  currentAmmoCount: 30
   maxAmmoCount: 30
-  addedAmmoCount: 0
-  shootRateReduction: 1
-  reloadTimeReduction: 1
+  currentAmmoCount: 30
+  maxPierceTargets: 0
   bulletSpawnPoint: {fileID: 1256900458896006851}
   playerNetworkMovement: {fileID: 0}
+  playerSkills: {fileID: 0}
   Camera: {fileID: 0}
   weaponDebuffs: []
+  kineticBurstKnockbackForce: 10
+  kineticBurstDamageMultiplier: 2
+  kineticBurstRange: 5
 --- !u!114 &7554751333955013019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1125,7 +1129,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   unlockedSkills: []
   hotbarSkills: []
+  hotbarUIManager: {fileID: 0}
   skillTreeManager: {fileID: 0}
+  SingleCrescentSlashInstance: {fileID: 0}
   attackIndex: 1
 --- !u!114 &1251221556363403061
 MonoBehaviour:

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ public class PlayerSkills : NetworkBehaviour
     PlayerNetworkMovement playerMovement;
     PlayerNetworkRotation playerRotation;
     GolemManager golemManager;
+    [SerializeField] Skill SingleCrescentSlashInstance;
 
     HashSet<Enemy> enemiesInRange = new HashSet<Enemy>();
 
@@ -45,6 +47,7 @@ public class PlayerSkills : NetworkBehaviour
         skillManagers = GetComponents<ISkillManager>();
         Debug.Log($"SkillManagers count: {skillManagers.Length}");
         skillTreeManager.SetPlayerSkills(this);
+        UnlockSkill(SingleCrescentSlashInstance);
 
     }
 
@@ -61,11 +64,19 @@ public class PlayerSkills : NetworkBehaviour
                 UseSkill(attackIndex);
             }
 
-            for (int i = 0; i < hotbarSkills.Count; i++)
+            for (int i = 0; i < hotbarSkills.Count && i < 9; i++) // Limit to 1-9 keys
             {
                 if (Input.GetKeyDown(KeyCode.Alpha1 + i))
                 {
-                    attackIndex = i;
+                    if (hotbarSkills[i] != null) // Ensure slot is not empty
+                    {
+                        attackIndex = i;
+                        Debug.Log($"Attack index changed to {attackIndex}.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Hotbar slot {i} is empty. Cannot change attack index.");
+                    }
                     break;
                 }
             }
@@ -141,7 +152,8 @@ public class PlayerSkills : NetworkBehaviour
             }
             else if (skill is PassiveSkill)
             {
-                skill.ApplySkillEffect(gameObject);
+                if (IsLocalPlayer)
+                    skill.ApplySkillEffect(gameObject);
             }
         }
     }
@@ -624,12 +636,25 @@ public class PlayerSkills : NetworkBehaviour
     [ServerRpc]
     public void PermanentHealthIncreaseByServerRpc(float healthIncrease)
     {
+        PermanentHealthIncreaseByClientRpc(healthIncrease);
+    }
+
+    [ClientRpc]
+    void PermanentHealthIncreaseByClientRpc(float healthIncrease)
+    {
         playerHealth.PermanentHealthIncreaseByServerRpc(healthIncrease);
+
     }
 
 
     [ServerRpc]
     public void PermanentMeleeRangeIncreaseByServerRpc(float rangeIncrease)
+    {
+        PermanentMeleeRangeIncreaseByClientRpc(rangeIncrease);
+    }
+
+    [ClientRpc]
+    void PermanentMeleeRangeIncreaseByClientRpc(float rangeIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -639,6 +664,12 @@ public class PlayerSkills : NetworkBehaviour
 
     [ServerRpc]
     public void PermanentAttackSpeedIncreaseByServerRpc(float attackSpeedIncrease)
+    {
+        PermanentAttackSpeedIncreaseByClientRpc(attackSpeedIncrease);
+    }
+
+    [ClientRpc]
+    void PermanentAttackSpeedIncreaseByClientRpc(float attackSpeedIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -653,8 +684,16 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
+
+
     [ServerRpc]
     public void PermanentMeleeDamageIncreaseByServerRpc(float damageIncrease)
+    {
+        PermanentMeleeDamageIncreaseByClientRpc(damageIncrease);
+    }
+
+    [ClientRpc]
+    public void PermanentMeleeDamageIncreaseByClientRpc(float damageIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -664,6 +703,12 @@ public class PlayerSkills : NetworkBehaviour
 
     [ServerRpc]
     public void IncreaseMeleeDamageByServerRpc(float multiplier, float duration)
+    {
+        IncreaseMeleeDamageByClientRpc(multiplier, duration);
+    }
+
+    [ClientRpc]
+    public void IncreaseMeleeDamageByClientRpc(float multiplier, float duration)
     {
         StartCoroutine(IncreaseMeleeDamageCoroutine(multiplier, duration));
     }
@@ -684,9 +729,14 @@ public class PlayerSkills : NetworkBehaviour
     [ServerRpc]
     public void IncreaseAttackSpeedByServerRpc(float multiplier, float duration)
     {
-        StartCoroutine(IncreaseAttackSpeedCoroutine(multiplier, duration));
+        IncreaseAttackSpeedByClientRpc(multiplier, duration);
     }
 
+    [ClientRpc]
+    public void IncreaseAttackSpeedByClientRpc(float multiplier, float duration)
+    {
+        StartCoroutine(IncreaseAttackSpeedCoroutine(multiplier, duration));
+    }
     IEnumerator IncreaseAttackSpeedCoroutine(float multiplier, float duration)
     {
         foreach (var skillManager in skillManagers)
@@ -702,6 +752,12 @@ public class PlayerSkills : NetworkBehaviour
 
     [ServerRpc]
     public void ReduceCooldownsByServerRpc(float multiplier, float duration)
+    {
+        ReduceCooldownsByClientRpc(multiplier, duration);
+    }
+
+    [ClientRpc]
+    public void ReduceCooldownsByClientRpc(float multiplier, float duration)
     {
         StartCoroutine(ReduceCooldownCoroutine(multiplier, duration));
     }

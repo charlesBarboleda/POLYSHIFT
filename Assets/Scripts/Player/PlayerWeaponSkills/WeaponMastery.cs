@@ -12,7 +12,7 @@ public class WeaponMastery : PassiveSkill
         }
         var weapon = user.GetComponent<PlayerWeapon>();
         weapon.Damage += 12;
-        weapon.DecreaseReloadTimeBy(0.3f);
-        weapon.DecreaseFireRateBy(0.3f);
+        weapon.DecreaseReloadTimeByServerRpc(0.3f);
+        weapon.DecreaseFireRateByServerRpc(0.3f);
     }
 }

@@ -1095,7 +1095,7 @@ MonoBehaviour:
   NetworkRigidbodyBaseExpanded: 0
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 0
-  AutoSetKinematicOnDespawn: 1
+  AutoSetKinematicOnDespawn: 0
 --- !u!114 &2040817860824287625
 MonoBehaviour:
   m_ObjectHideFlags: 0

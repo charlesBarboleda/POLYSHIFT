@@ -9,18 +9,6 @@ public class CameraController : NetworkBehaviour
     public CinemachineBasicMultiChannelPerlin isometricShakeSource;
     public CinemachineBasicMultiChannelPerlin firstPersonShakeSource;
 
-    public static CameraController Instance { get; private set; }
-
-    private void Awake()
-    {
-        // Singleton pattern to easily access this script from anywhere
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
-
-
     public void TriggerShake(float intensity = 1.0f, float duration = 0.6f)
     {
 

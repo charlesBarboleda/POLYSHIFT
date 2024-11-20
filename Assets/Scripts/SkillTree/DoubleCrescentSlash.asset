@@ -15,4 +15,6 @@ MonoBehaviour:
   skillName: Double Crescent Slash
   skillDescription: Summon forth two Arcane infused slashes in quick succession.
   skillIcon: {fileID: 21300000, guid: 190d8f13de3650f46a2817930667318a, type: 3}
-  Cooldown: 3
+  Cooldown: 6
+  <OnCooldown>k__BackingField: 0
+  cooldownTimer: 0

@@ -19,29 +19,40 @@ public class PlayerWeapon : NetworkBehaviour
     public float Damage = 10f;
     public float ReloadTime = 1f;
     public float ShootRate = 2f;
+    public int maxAmmoCount = 10;
     public int currentAmmoCount;
-    public int maxAmmoCount = 30;
     public int maxPierceTargets = 0;
     public Transform bulletSpawnPoint;
     public PlayerNetworkMovement playerNetworkMovement;
     public PlayerSkills playerSkills;
     public Camera Camera;
     public List<Debuff> weaponDebuffs = new List<Debuff>();
+    public float kineticBurstKnockbackForce = 10f;
+    public float kineticBurstDamageMultiplier = 2f;
+    public float kineticBurstRange = 5f;
+    PlayerNetworkLevel playerLevel;
     PlayerAudioManager audioManager;
     IWeaponBehavior currentWeaponBehavior;
     float _nextShotTime;
     bool _isReloading;
+    bool _kineticBurst;
+    bool _dualStance;
+    bool _isStandingStill = true; // Tracks if the player is standing still
+    bool _dualStanceBuffApplied = false;  // Tracks if movement buffs are applied
+
 
     public override void OnNetworkSpawn()
     {
         TryGetComponent(out playerNetworkMovement);
         TryGetComponent(out audioManager);
         TryGetComponent(out playerSkills);
+        TryGetComponent(out playerLevel);
         currentAmmoCount = maxAmmoCount;
         SetWeaponBehavior(WeaponType.SingleShot);
         Camera = Camera.main;
-        ShootRate = 1.5f;
-        ReloadTime = 3f;
+        ShootRate = 2f;
+        ReloadTime = 4f;
+        maxAmmoCount = 10;
 
 
     }
@@ -72,10 +83,141 @@ public class PlayerWeapon : NetworkBehaviour
             }
 
         }
+        if (currentAmmoCount <= 0 && !_isReloading)
+        {
+            Debug.Log("Out of ammo, reloading...");
+            StartCoroutine(Reload());
+        }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload();
+            StartCoroutine(Reload());
+        }
+
+        bool isMoving = playerNetworkMovement.inputDirection.x != 0 || playerNetworkMovement.inputDirection.y != 0;
+
+        if (_dualStance)
+        {
+            if (isMoving)
+            {
+                if (!_dualStanceBuffApplied)
+                {
+                    // Transition to moving: apply movement buffs, remove standing-still buffs
+                    DualStanceApplyMovementBuffs();
+                    DualStanceRemoveStandingStillBuffs();
+                    _dualStanceBuffApplied = true;
+                    _isStandingStill = false;
+                }
+            }
+            else // Player is standing still
+            {
+                if (!_isStandingStill)
+                {
+                    // Transition to standing still: apply standing-still buffs, remove movement buffs
+                    DualStanceApplyStandingStillBuffs();
+                    DualStanceRemoveMovementBuffs();
+                    _isStandingStill = true;
+                    _dualStanceBuffApplied = false;
+                }
+            }
+        }
+    }
+    private void DualStanceApplyMovementBuffs()
+    {
+        Damage *= 1.3f;
+        playerNetworkMovement.MoveSpeed *= 1.3f;
+        Debug.Log("Movement buffs applied.");
+    }
+
+    private void DualStanceRemoveMovementBuffs()
+    {
+        Damage /= 1.3f;
+        playerNetworkMovement.MoveSpeed /= 1.3f;
+        Debug.Log("Movement buffs removed.");
+    }
+
+    private void DualStanceApplyStandingStillBuffs()
+    {
+        ShootRate *= 0.7f;  // 50% decreased fire rate = 0.7 multiplier
+        ReloadTime *= 0.7f; // 50% decreased reload time = 0.7 multiplier
+        Debug.Log("Standing-still buffs applied.");
+    }
+
+    private void DualStanceRemoveStandingStillBuffs()
+    {
+        ShootRate /= 0.7f;  // Reset to original fire rate
+        ReloadTime /= 0.7f; // Reset to original reload time
+        Debug.Log("Standing-still buffs removed.");
+    }
+
+    public void DualStance()
+    {
+        _dualStance = true;
+    }
+    public void DualStancePlus()
+    {
+        var dualStance = playerSkills.unlockedSkills.Find(skill => skill is DualStance) as DualStance;
+
+        if (dualStance != null)
+        {
+            Damage += 5f;
+            DecreaseReloadTimeByServerRpc(0.05f);
+            DecreaseFireRateByServerRpc(0.05f);
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void BombardierSentryPlus()
+    {
+        var bombardierSentry = playerSkills.unlockedSkills.Find(skill => skill is BombardierSentry) as BombardierSentry;
+
+        if (bombardierSentry != null)
+        {
+            Damage += 6f;
+            DecreaseFireRateByServerRpc(0.025f);
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void MimicSentryPlus()
+    {
+        var mimicSentry = playerSkills.unlockedSkills.Find(skill => skill is MimicSentry) as MimicSentry;
+
+        if (mimicSentry != null)
+        {
+            Damage += 3f;
+            DecreaseFireRateByServerRpc(0.05f);
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
+        }
+    }
+
+    public void KineticBurst()
+    {
+        _kineticBurst = true;
+    }
+
+    public void KineticBurstPlus()
+    {
+        var kineticBurst = playerSkills.unlockedSkills.Find(skill => skill is KineticBurst) as KineticBurst;
+
+        if (kineticBurst != null)
+        {
+            kineticBurstKnockbackForce += 2f;
+            kineticBurstDamageMultiplier += 2f;
+            kineticBurstRange += 1f;
+        }
+        else
+        {
+            playerSkills.PermanentTravelNodeStatIncrease();
         }
     }
 
@@ -86,7 +228,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (extendedCapacity != null)
         {
             maxAmmoCount += 2;
-            DecreaseFireRateBy(0.05f);
+            DecreaseFireRateByServerRpc(0.05f);
         }
         else
         {
@@ -117,8 +259,8 @@ public class PlayerWeapon : NetworkBehaviour
         {
             var script = GetComponent<OverloadManager>();
             script.Duration += 1f;
-            DecreaseReloadTimeBy(0.05f);
-            DecreaseFireRateBy(0.05f);
+            DecreaseReloadTimeByServerRpc(0.05f);
+            DecreaseFireRateByServerRpc(0.05f);
         }
         else
         {
@@ -133,8 +275,8 @@ public class PlayerWeapon : NetworkBehaviour
         if (weaponMastery != null)
         {
             Damage += 2f;
-            DecreaseReloadTimeBy(0.05f);
-            DecreaseFireRateBy(0.05f);
+            DecreaseReloadTimeByServerRpc(0.05f);
+            DecreaseFireRateByServerRpc(0.05f);
         }
         else
         {
@@ -142,8 +284,14 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    public void DecreaseFireRateByServerRpc(float multiplier)
+    {
+        DecreaseFireRateByClientRpc(multiplier);
+    }
 
-    public void DecreaseFireRateBy(float multiplier)
+    [ClientRpc]
+    public void DecreaseFireRateByClientRpc(float multiplier)
     {
         if (multiplier <= 0 || multiplier >= 1)
         {
@@ -161,7 +309,14 @@ public class PlayerWeapon : NetworkBehaviour
         Debug.Log($"Fire rate decreased by {multiplier * 100}% to {ShootRate} seconds per shot.");
     }
 
-    public void DecreaseReloadTimeBy(float multiplier)
+    [ServerRpc]
+    public void DecreaseReloadTimeByServerRpc(float multiplier)
+    {
+        DecreaseReloadTimeByClientRpc(multiplier);
+    }
+
+    [ClientRpc]
+    public void DecreaseReloadTimeByClientRpc(float multiplier)
     {
         if (multiplier <= 0 || multiplier >= 1)
         {
@@ -181,20 +336,6 @@ public class PlayerWeapon : NetworkBehaviour
 
 
 
-
-    public void IncreaseWeaponDamageBy(float multiplier, float duration)
-    {
-        Damage *= multiplier;
-        StartCoroutine(ReduceDamageAfterDuration(multiplier, duration));
-    }
-
-
-    IEnumerator ReduceDamageAfterDuration(float multiplier, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        Damage /= multiplier;
-    }
-
     public void AddWeaponDebuff(Debuff debuff)
     {
         if (!weaponDebuffs.Contains(debuff))
@@ -212,7 +353,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     void ApplyDebuffsOnHitServerRpc(ulong networkObjectID)
     {
         if (weaponDebuffs.Count > 0)
@@ -254,7 +395,7 @@ public class PlayerWeapon : NetworkBehaviour
         {
             bullet.transform.position = startPoint;
             bullet.transform.rotation = Quaternion.LookRotation(direction);
-            StartCoroutine(MoveObject(bullet, direction, distance, 500f, () => ObjectPooler.Destroy(bullet)));
+            StartCoroutine(MoveObject(bullet, direction, distance, 200f, () => ObjectPooler.Destroy(bullet)));
         }
     }
 
@@ -264,9 +405,10 @@ public class PlayerWeapon : NetworkBehaviour
         if (impact != null)
         {
             impact.transform.position = position;
-            StartCoroutine(DelayedDestroy(impact, 1f));
+            impact.GetComponent<NetworkObject>().Spawn();
         }
     }
+
 
     IEnumerator MoveObject(GameObject obj, Vector3 direction, float distance, float speed, System.Action onComplete)
     {
@@ -281,14 +423,27 @@ public class PlayerWeapon : NetworkBehaviour
         onComplete?.Invoke();
     }
 
-    IEnumerator DelayedDestroy(GameObject obj, float delay)
+
+    [ServerRpc]
+    public void KineticBurstVisualEffectServerRpc()
     {
-        yield return new WaitForSeconds(delay);
-        ObjectPooler.Destroy(obj);
+        GameObject lightningNova = ObjectPooler.Instance.Spawn("LightningNova", bulletSpawnPoint.position, Quaternion.identity);
+        lightningNova.transform.localRotation = Quaternion.Euler(-90, 0, 90);
+        lightningNova.GetComponent<NetworkObject>().Spawn();
+
+        GameObject lightningSphereBlast = ObjectPooler.Instance.Spawn("LightningSphereBlast", bulletSpawnPoint.position, Quaternion.identity);
+        lightningSphereBlast.transform.localRotation = Quaternion.Euler(-90, 0, 90);
+        lightningSphereBlast.GetComponent<NetworkObject>().Spawn();
     }
 
     IEnumerator Reload()
     {
+        if (currentAmmoCount <= 0)
+        {
+            // Explode
+            KineticBurstVisualEffectServerRpc();
+            playerSkills.DealDamageInCircle(bulletSpawnPoint.position, kineticBurstRange, Damage * kineticBurstDamageMultiplier, kineticBurstKnockbackForce);
+        }
         _isReloading = true;
         yield return new WaitForSeconds(ReloadTime);
         currentAmmoCount = maxAmmoCount;
@@ -306,6 +461,4 @@ public class PlayerWeapon : NetworkBehaviour
                 // Add cases for other weapon types...
         }
     }
-
-
 }

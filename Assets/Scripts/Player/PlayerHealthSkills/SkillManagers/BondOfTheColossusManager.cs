@@ -48,7 +48,7 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
 
     void SetAttackSpeedMultiplier(float value)
     {
-        animator.SetFloat("MeleeAttackSpeedMultiplier", value);
+        animator.SetFloat("AttackSpeedMultiplier", value);
     }
 
     [ServerRpc]
@@ -176,13 +176,13 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
                     if (golemHasDamageReductionAndRegenBuff)
                     {
                         golem.DivideHealthRegenRateBy(3.0f);
-                        golem.IncreaseDamageReduction(-0.5f);
+                        golem.IncreaseDamageReduction(-0.9f);
                         golemHasDamageReductionAndRegenBuff = false;
                     }
                 }
                 else if (!golemIsAboveHalfHealth && !golemHasDamageReductionAndRegenBuff)
                 {
-                    golem.IncreaseDamageReduction(0.5f);
+                    golem.IncreaseDamageReduction(0.9f);
                     golem.MultiplyHealthRegenRateBy(3.0f);
                     golemHasDamageReductionAndRegenBuff = true;
 
@@ -210,14 +210,14 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
                 if (playerHasDamageReductionAndRegenBuff)
                 {
                     playerNetworkHealth.DivideHealthRegenRateByServerRpc(3f); // Normalize health regen
-                    playerNetworkHealth.PermanentDamageReductionIncreaseByServerRpc(-0.5f); // Remove damage reduction
+                    playerNetworkHealth.PermanentDamageReductionIncreaseByServerRpc(-0.9f); // Remove damage reduction
                     playerHasDamageReductionAndRegenBuff = false;
                 }
             }
             else if (!playerIsAboveHalfHealth && !playerHasDamageReductionAndRegenBuff)
             {
                 // Apply damage reduction and increased regen to player
-                playerNetworkHealth.PermanentDamageReductionIncreaseByServerRpc(0.5f);
+                playerNetworkHealth.PermanentDamageReductionIncreaseByServerRpc(0.9f);
                 playerNetworkHealth.MultiplyHealthRegenByServerRpc(3f);
                 playerHasDamageReductionAndRegenBuff = true;
 
@@ -243,7 +243,7 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
             }
             if (golemHasDamageReductionAndRegenBuff)
             {
-                golem.IncreaseDamageReduction(-0.5f);
+                golem.IncreaseDamageReduction(-0.9f);
                 golem.DivideHealthRegenRateBy(3.0f);
             }
         }

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e752741c76ebe649ac821870568325e, type: 3}
+  m_Name: SummonStarbreaker
+  m_EditorClassIdentifier: 
+  skillName: Summon Starbreaker
+  skillDescription: 'Summon the "Starbreaker". Starbreaker: Fire homing missiles
+    at nearby enemy targets. Two mounted turrets are infused with Mimic and Bombardier.'
+  skillIcon: {fileID: 21300000, guid: 76d2792e3a2c01c44a205369c97d3d00, type: 3}
+  Cooldown: 300
+  <OnCooldown>k__BackingField: 0
+  cooldownTimer: 0

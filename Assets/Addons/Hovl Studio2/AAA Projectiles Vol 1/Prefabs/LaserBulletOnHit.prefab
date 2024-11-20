@@ -9855,6 +9855,7 @@ GameObject:
   - component: {fileID: 199851861497556180}
   - component: {fileID: 6915651527271757601}
   - component: {fileID: -2064179947359627132}
+  - component: {fileID: 7087856569517179489}
   m_Layer: 0
   m_Name: LaserBulletOnHit
   m_TagString: Untagged
@@ -14780,7 +14781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 959077812
+  GlobalObjectIdHash: 2841654894
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -14829,6 +14830,22 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &7087856569517179489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795992203533318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b14331a3d029645bc7ae8a2ee7597d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  timeToReturn: 60
+  tagName: LaserBulletImpact
+  isNetworkedObject: 1
 --- !u!1 &1798305462694108
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,14 +5,14 @@ public abstract class ActiveSkill : Skill
 {
     public float Cooldown = 5f;
     [field: SerializeField] public bool OnCooldown { get; private set; } = false;
-    [SerializeField] float cooldownTimer;
+    public float cooldownTimer;
     protected Animator animator;
     public abstract void ExecuteAttack();
 
     public virtual void Initialize(Animator animator)
     {
         this.animator = animator;
-        cooldownTimer = 0;
+        cooldownTimer = Cooldown;
     }
 
     public override void ApplySkillEffect(GameObject user)
@@ -32,15 +32,15 @@ public abstract class ActiveSkill : Skill
     public void StartCooldown()
     {
         OnCooldown = true;
-        cooldownTimer = Cooldown;
+        cooldownTimer = 0;
     }
 
     private void CountdownCooldown()
     {
         if (OnCooldown)
         {
-            cooldownTimer -= Time.deltaTime;
-            if (cooldownTimer <= 0)
+            cooldownTimer += Time.deltaTime;
+            if (cooldownTimer >= Cooldown)
             {
                 OnCooldown = false;
                 cooldownTimer = 0;

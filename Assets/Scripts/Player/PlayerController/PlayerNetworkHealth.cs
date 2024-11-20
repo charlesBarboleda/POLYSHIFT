@@ -36,8 +36,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         {
             RegenerateHealth(healthRegenRate.Value);
         }
-
-
     }
 
     [ServerRpc]

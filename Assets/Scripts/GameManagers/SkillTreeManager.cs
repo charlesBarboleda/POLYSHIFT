@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkillTreeManager : MonoBehaviour
+public class SkillTreeManager : NetworkBehaviour
 {
     public int skillPoints = 0;
     [SerializeField] GameObject confirmationBox;
@@ -12,30 +13,30 @@ public class SkillTreeManager : MonoBehaviour
     [SerializeField] Button noButton;
     public Skill currentSkill;
     [SerializeField] List<RectTransform> skillNodes;
+    [SerializeField] List<Button> ultimateSkills;
+    [SerializeField] List<Skill> unlockedSkills;
     [SerializeField] float unlockRadius = 200f; // Radius for unlocking nearby skills
     Dictionary<Skill, RectTransform> skillNodeMap = new Dictionary<Skill, RectTransform>();
+    [SerializeField] PlayerNetworkLevel playerLevel;
+    [SerializeField] GameObject linePrefab;
+    [SerializeField] Transform lineParent;
     PlayerSkills playerSkills;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         confirmationBox.SetActive(false);
         noButton.onClick.AddListener(() => confirmationBox.SetActive(false));
+        InitializeSkillNodeMap();
+        playerLevel.Level.OnValueChanged += OnLevelUp;
 
-        for (int i = 0; i < skillNodes.Count; i++)
-        {
-            Skill skill = skillNodes[i].GetComponent<SkillNodeController>().skill; // Assuming each node has a Skill component or reference
-            if (skill != null)
-            {
-                skillNodeMap[skill] = skillNodes[i];
-            }
-        }
     }
 
     void UnlockSkill(Skill skill)
     {
         if (playerSkills == null)
         {
-            Debug.LogError("playerSkills is null in UnlockSkill. It may not have been assigned correctly.");
+            Debug.LogError("playerSkills is null in UnlockSkill.");
             return;
         }
 
@@ -44,6 +45,7 @@ public class SkillTreeManager : MonoBehaviour
             description.text = "Not enough skill points!";
             return;
         }
+
         if (playerSkills.unlockedSkills.Contains(skill))
         {
             description.text = "Skill already unlocked!";
@@ -53,16 +55,118 @@ public class SkillTreeManager : MonoBehaviour
         skillPoints--;
         playerSkills.UnlockSkill(skill);
         confirmationBox.SetActive(false);
+
         Debug.Log($"{skill.skillName} unlocked!");
 
-        // Use dictionary to retrieve RectTransform for the unlocked skill and unlock nearby nodes
-        if (skillNodeMap.TryGetValue(skill, out RectTransform unlockedNode))
+        // Find the RectTransform of the unlocked node
+        if (skillNodeMap.TryGetValue(skill, out RectTransform newNode))
         {
-            UnlockNearbySkills(unlockedNode);
+            // Find the closest already unlocked node
+            RectTransform closestNode = FindClosestUnlockedNode(newNode);
+
+            // Draw a line to the closest unlocked node
+            if (closestNode != null)
+            {
+                DrawLineBetweenNodes(closestNode, newNode);
+            }
+            else
+            {
+                Debug.LogWarning("No closest unlocked node found to connect.");
+            }
+
+            // Unlock nearby nodes
+            UnlockNearbySkills(newNode);
         }
         else
         {
             Debug.LogError("No UI node found for this skill.");
+        }
+    }
+
+    RectTransform FindClosestUnlockedNode(RectTransform targetNode)
+    {
+        float closestDistance = float.MaxValue;
+        RectTransform closestNode = null;
+
+        foreach (Skill unlockedSkill in playerSkills.unlockedSkills)
+        {
+            if (skillNodeMap.TryGetValue(unlockedSkill, out RectTransform unlockedNode))
+            {
+                // Skip the targetNode itself
+                if (unlockedNode == targetNode)
+                    continue;
+
+                // Calculate the distance
+                float distance = Vector2.Distance(targetNode.localPosition, unlockedNode.localPosition);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestNode = unlockedNode;
+                }
+            }
+        }
+
+        return closestNode;
+    }
+
+    void DrawLineBetweenNodes(RectTransform node1, RectTransform node2)
+    {
+        // Instantiate the line and parent it to the lineParent
+        GameObject line = Instantiate(linePrefab, lineParent);
+
+        // Get the RectTransform of the line
+        RectTransform lineRect = line.GetComponent<RectTransform>();
+
+        // Get the local positions of the nodes
+        Vector3 startLocalPos = node1.localPosition;
+        Vector3 endLocalPos = node2.localPosition;
+
+        // Calculate the midpoint to position the line
+        Vector3 midpoint = (startLocalPos + endLocalPos) / 2f;
+        lineRect.localPosition = midpoint;
+
+        // Calculate the direction and angle for rotation
+        Vector3 direction = endLocalPos - startLocalPos;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        lineRect.localRotation = Quaternion.Euler(0, 0, angle);
+
+        // Set the width of the line to be half of the distance between nodes
+        float distance = Vector3.Distance(startLocalPos, endLocalPos);
+        lineRect.sizeDelta = new Vector2(distance * 3, 60f); // Half the distance as width, height fixed at 60
+
+        // Debug logs for verification
+        Debug.Log($"Branch created: Start {node1.name}, End {node2.name}, Width {distance / 2f}, Height 60, Angle {angle}");
+    }
+
+
+
+
+
+
+
+
+
+    void OnLevelUp(int prev, int current)
+    {
+        skillPoints++;
+        if (current % 5 == 0)
+        {
+            foreach (var ultimateSkill in ultimateSkills)
+            {
+                ultimateSkill.interactable = true;
+            }
+        }
+    }
+
+    void InitializeSkillNodeMap()
+    {
+        for (int i = 0; i < skillNodes.Count; i++)
+        {
+            Skill skill = skillNodes[i].GetComponent<SkillNodeController>().skill; // Assuming each node has a Skill component or reference
+            if (skill != null)
+            {
+                skillNodeMap[skill] = skillNodes[i];
+            }
         }
     }
 
@@ -90,9 +194,6 @@ public class SkillTreeManager : MonoBehaviour
         }
     }
 
-
-
-
     public void AddSkillPoint()
     {
         skillPoints++;
@@ -107,6 +208,10 @@ public class SkillTreeManager : MonoBehaviour
     public void OnNodePressed()
     {
         confirmationBox.SetActive(true);
+        if (currentSkill.skillName == "Bond Of The Colossus" || currentSkill.skillName == "Devil Slam")
+        {
+            description.text = "Unlocking this skill will disable all other ultimate skills until the next level threshold. Continue?";
+        }
         description.text = "Unlock " + currentSkill.skillName + "?";
         yesButton.onClick.RemoveAllListeners();
         yesButton.onClick.AddListener(() =>

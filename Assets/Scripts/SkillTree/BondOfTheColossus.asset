@@ -16,7 +16,7 @@ MonoBehaviour:
   skillDescription: 'Heal all your Allies to Maximum Health and recall all your Golems
     back to your side. You and your Golems gain the "50/50" buff for 15 seconds.
     50/50: While above 50% Health, double your Melee Damage, Weapon Damage, and Movement
-    Speed. While below 50% Health, triple your Health Regen Rate and gain 50% increased
+    Speed. While below 50% Health, triple your Health Regen Rate and gain 90% increased
     Damage Reduction.'
   skillIcon: {fileID: 21300000, guid: 7481001f6304db34981ce3a60d78d75b, type: 3}
   Cooldown: 300

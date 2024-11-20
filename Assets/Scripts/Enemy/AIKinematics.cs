@@ -80,10 +80,10 @@ public class AIKinematics : NetworkBehaviour
         float closestDistance = Mathf.Infinity;
         Transform closestTarget = null;
 
-        // Iterate through all connected players in the game
+        // Iterate through all spawned allies
         foreach (GameObject unit in GameManager.Instance.SpawnedAllies)
         {
-            // if (unit == null) continue;
+            if (unit == null) continue; // Skip null units
             float distance = Vector3.Distance(transform.position, unit.transform.position);
             if (distance < closestDistance)
             {

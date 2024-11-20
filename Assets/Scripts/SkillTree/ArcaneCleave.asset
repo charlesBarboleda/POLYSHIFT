@@ -17,3 +17,5 @@ MonoBehaviour:
     massive damage.
   skillIcon: {fileID: 21300000, guid: a64a36202caeaa247ac08ac43fc6252b, type: 3}
   Cooldown: 12
+  <OnCooldown>k__BackingField: 0
+  cooldownTimer: 0

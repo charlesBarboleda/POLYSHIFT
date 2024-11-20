@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b89df5caf9e5e474ca85bfc46e869acd, type: 3}
+  m_Name: BombardierSentryPlus 1
+  m_EditorClassIdentifier: 
+  skillName: Bombardier Sentry Plus
+  skillDescription: Increase Weapon Damage by 6 and decrease Fire Rate by 2.5%.
+  skillIcon: {fileID: 21300000, guid: cdbe0fe83d899f84aa322d1150101b04, type: 3}

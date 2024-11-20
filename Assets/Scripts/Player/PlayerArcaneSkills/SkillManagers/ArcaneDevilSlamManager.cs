@@ -11,7 +11,7 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, ISkillManager
     public float AttackRange { get; set; } = 3f;
 
     public Animator animator { get; set; }
-
+    CameraController cameraController;
     GameObject Devil;
     GameObject DevilPortal;
     GameObject DevilPortal2;
@@ -26,6 +26,7 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, ISkillManager
         KnockbackForce = 5f;
         AttackSpeedMultiplier.Value = 1f;
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
+        cameraController = GetComponent<CameraController>();
         AttackRange = 3f;
         animator = GetComponent<Animator>();
     }
@@ -64,6 +65,12 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, ISkillManager
     {
         // Notify clients to disable portals
         DisablePortalsClientRpc();
+    }
+
+    [ClientRpc]
+    public void CameraShakeClientRpc()
+    {
+        cameraController.TriggerShake(10f, 1f);
     }
 
     [ClientRpc]

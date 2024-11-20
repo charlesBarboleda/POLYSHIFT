@@ -106834,6 +106834,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
+    functionName: PlayArcaneDevilSlamShoutSound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0
     functionName: DisableMovementAndRotation
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -106847,14 +106854,14 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0
-    functionName: PlayArcaneDevilSlamShoutSound
+  - time: 2.4833333
+    functionName: CameraShakeClientRpc
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.95
+  - time: 3.4
     functionName: EnableMovementAndRotation
     data: 
     objectReferenceParameter: {fileID: 0}

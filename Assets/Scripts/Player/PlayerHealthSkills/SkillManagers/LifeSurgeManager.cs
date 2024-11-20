@@ -56,6 +56,6 @@ public class LifeSurgeManager : NetworkBehaviour, ISkillManager
             Debug.LogError("Animator not initialized in Life Surge Manager.");
             return;
         }
-        animator.SetFloat("MeleeAttackSpeedMultiplier", current);
+        animator.SetFloat("AttackSpeedMultiplier", current);
     }
 }

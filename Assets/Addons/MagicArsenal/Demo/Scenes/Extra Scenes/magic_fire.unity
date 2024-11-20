@@ -159,6 +159,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8701443879000352871, guid: 0228f426819e88a4ea2775e8883e03fa, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3707414800
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -953,6 +957,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7473182054599890721, guid: 495b63906f5f3bb40bf58baeb0848011, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2828990515
+      objectReference: {fileID: 0}
     - target: {fileID: 433602, guid: 495b63906f5f3bb40bf58baeb0848011, type: 3}
       propertyPath: m_RootOrder
       value: 14

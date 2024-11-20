@@ -44,14 +44,9 @@ public class DevilManager : NetworkBehaviour
     {
         // Server handles spawning of the pillars and ground crack
         SpawnDevilSlam1Effects();
-        OnDevilSlam1ClientRpc(); // Notify clients to handle client-only effects
+
     }
 
-    [ClientRpc]
-    public void OnDevilSlam1ClientRpc()
-    {
-        CameraController.Instance.TriggerShake(10f, 0.4f); // Client-only camera shake
-    }
 
     void SpawnDevilSlam1Effects()
     {
@@ -74,16 +69,6 @@ public class DevilManager : NetworkBehaviour
     public void OnDevilSlam2ServerRpc()
     {
         SpawnDevilSlam2Effects();
-        OnDevilSlam2ClientRpc();
-    }
-
-    [ClientRpc]
-    public void OnDevilSlam2ClientRpc()
-    {
-        if (IsOwner)
-        {
-            CameraController.Instance.TriggerShake(12f, 0.6f);
-        }
     }
 
     void SpawnDevilSlam2Effects()
@@ -100,18 +85,8 @@ public class DevilManager : NetworkBehaviour
     public void OnDevilSlam3ServerRpc()
     {
         SpawnDevilSlam3Effects();
-        OnDevilSlam3ClientRpc();
-    }
 
-    [ClientRpc]
-    public void OnDevilSlam3ClientRpc()
-    {
-        if (IsOwner)
-        {
-            CameraController.Instance.TriggerShake(10f, 0.2f);
-        }
     }
-
     void SpawnDevilSlam3Effects()
     {
         for (int i = 0; i < 12; i++)

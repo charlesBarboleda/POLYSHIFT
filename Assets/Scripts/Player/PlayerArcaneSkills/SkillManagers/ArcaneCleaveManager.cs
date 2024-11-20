@@ -9,7 +9,7 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
     [field: SerializeField] public float Damage { get; set; } = 30f;
     [field: SerializeField] public float KnockbackForce { get; set; } = 1f;
     [field: SerializeField] public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>();
-    public float AttackRange { get; set; } = 2f;
+    [field: SerializeField] public float AttackRange { get; set; } = 2f;
     public Animator animator { get; set; }
     PlayerSkills PlayerSkills;
 

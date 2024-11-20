@@ -18741,12 +18741,12 @@ ParticleSystem:
     maxLights: 20
   TrailModule:
     enabled: 1
-    mode: 1
+    mode: 0
     ratio: 1
     lifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.04
+      scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -18797,7 +18797,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     minVertexDistance: 0.03
-    textureMode: 0
+    textureMode: 1
     textureScale: {x: 1, y: 1}
     ribbonCount: 1
     shadowBias: 0.5
@@ -18805,7 +18805,7 @@ ParticleSystem:
     dieWithParticles: 1
     sizeAffectsWidth: 1
     sizeAffectsLifetime: 0
-    inheritParticleColor: 1
+    inheritParticleColor: 0
     generateLightingData: 0
     splitSubEmitterRibbons: 0
     attachRibbonsToTransform: 1
@@ -19608,7 +19608,7 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 7db36d08f5482f24cb7034bb3d1353de, type: 2}
-  - {fileID: 2100000, guid: 49e8fa54d8b5d394d98a037964663ce5, type: 2}
+  - {fileID: 2100000, guid: 75be7a7b742586840beb0b9c8ce4b273, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
