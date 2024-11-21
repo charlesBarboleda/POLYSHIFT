@@ -53,6 +53,7 @@ public class PlayerWeapon : NetworkBehaviour
         ShootRate = 2f;
         ReloadTime = 4f;
         maxAmmoCount = 10;
+        currentAmmoCount = maxAmmoCount;
 
 
     }

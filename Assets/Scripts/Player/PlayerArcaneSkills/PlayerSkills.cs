@@ -10,6 +10,7 @@ public class PlayerSkills : NetworkBehaviour
 {
     public List<Skill> unlockedSkills = new List<Skill>();
     public List<ActiveSkill> hotbarSkills = new List<ActiveSkill>(10); // Fixed-size hotbar
+    [SerializeField] GameObject SkillTreeCanvas;
     [SerializeField] HotbarUIManager hotbarUIManager;
     [SerializeField] SkillTreeManager skillTreeManager;
     ISkillManager[] skillManagers;
@@ -48,6 +49,7 @@ public class PlayerSkills : NetworkBehaviour
         Debug.Log($"SkillManagers count: {skillManagers.Length}");
         skillTreeManager.SetPlayerSkills(this);
         UnlockSkill(SingleCrescentSlashInstance);
+        SkillTreeCanvas.SetActive(false);
 
     }
 

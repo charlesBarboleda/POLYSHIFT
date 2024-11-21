@@ -80,7 +80,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
     }
 
 
-    void EnableFirstPersonCamera()
+    public void EnableFirstPersonCamera()
     {
         firstPersonCamera.Priority = 1;
         isometricCamera.Priority = 0;
