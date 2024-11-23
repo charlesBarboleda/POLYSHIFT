@@ -431,7 +431,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3127593741244525772
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2058,6 +2058,7 @@ GameObject:
   - component: {fileID: 15464257201743308}
   - component: {fileID: 152715912655348160}
   - component: {fileID: 8469068968839451660}
+  - component: {fileID: 3708374961567473216}
   m_Layer: 5
   m_Name: HotbarCanvas
   m_TagString: Untagged
@@ -2196,6 +2197,18 @@ MonoBehaviour:
   - {fileID: 6723745386702233697}
   - {fileID: 1680440780354125499}
   - {fileID: 1366333943814858868}
+--- !u!225 &3708374961567473216
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3646876509908851425}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3657859116904821765
 GameObject:
   m_ObjectHideFlags: 0
@@ -6413,7 +6426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 1
-  AuthorityMode: 1
+  AuthorityMode: 0
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
   SyncPositionX: 1
@@ -7352,8 +7365,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  hotbarCanvas: {fileID: 3646876509908851425}
+  firstPersonCanvas: {fileID: 2448210542121795043}
   isometricCamera: {fileID: 7676355700152945330}
   firstPersonCamera: {fileID: 4638307437606044577}
+  infoCanvas: {fileID: 1276427289537575300}
 --- !u!1 &8981931978188997259
 GameObject:
   m_ObjectHideFlags: 0
@@ -7974,6 +7990,10 @@ PrefabInstance:
       propertyPath: skill
       value: 
       objectReference: {fileID: 11400000, guid: 69db0da57baedff45961d7e1d5777568, type: 2}
+    - target: {fileID: 4546449889000805096, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4557307896459321870, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: skill
       value: 
@@ -9026,8 +9046,7 @@ PrefabInstance:
       propertyPath: skill
       value: 
       objectReference: {fileID: 11400000, guid: 9e965d6946ea91b4bad15f406fc9694b, type: 2}
-    m_RemovedComponents:
-    - {fileID: 1962855953895804243, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 9173111586129854429, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
     m_AddedGameObjects:
@@ -10068,6 +10087,10 @@ PrefabInstance:
     - target: {fileID: 1048059893063013104, guid: 9729c43ff79e6054692da24762a405c6, type: 3}
       propertyPath: m_Name
       value: FirstPersonCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 1048059893063013104, guid: 9729c43ff79e6054692da24762a405c6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5106401017641858703, guid: 9729c43ff79e6054692da24762a405c6, type: 3}
       propertyPath: healthFill

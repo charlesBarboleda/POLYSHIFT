@@ -13,10 +13,11 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public float DamageReduction = 0;
     public bool IsDead;
     bool ironResolve = false;
-    float ironResolveDamageReduction = 0.15f;
+    float ironResolveDamageReduction = 0.50f;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        maxHealth.Value = DefaultHealth;
         currentHealth.Value = maxHealth.Value;
         DamageReduction = 0;
         if (IsServer)

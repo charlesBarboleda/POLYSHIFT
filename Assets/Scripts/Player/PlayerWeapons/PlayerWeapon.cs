@@ -38,7 +38,7 @@ public class PlayerWeapon : NetworkBehaviour
     bool _kineticBurst;
     bool _dualStance;
     bool _isStandingStill = true; // Tracks if the player is standing still
-    bool _dualStanceBuffApplied = false;  // Tracks if movement buffs are applied
+    bool _dualStanceBuffApplied = false;  // Tracks if movement buffs are applied;
 
 
     public override void OnNetworkSpawn()
@@ -62,9 +62,8 @@ public class PlayerWeapon : NetworkBehaviour
     {
         if (!IsOwner) return; // Only the owner can control the weapon
 
-        if (Input.GetMouseButton(0) && Time.time >= _nextShotTime && !_isReloading)
+        if (Input.GetMouseButton(0) && Time.time >= _nextShotTime && !_isReloading && !playerSkills.SkillTreeOpen())
         {
-
             if (currentAmmoCount > 0)
             {
 
@@ -285,7 +284,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void DecreaseFireRateByServerRpc(float multiplier)
     {
         DecreaseFireRateByClientRpc(multiplier);
@@ -442,8 +441,12 @@ public class PlayerWeapon : NetworkBehaviour
         if (currentAmmoCount <= 0)
         {
             // Explode
-            KineticBurstVisualEffectServerRpc();
-            playerSkills.DealDamageInCircle(bulletSpawnPoint.position, kineticBurstRange, Damage * kineticBurstDamageMultiplier, kineticBurstKnockbackForce);
+            if (_kineticBurst)
+            {
+
+                KineticBurstVisualEffectServerRpc();
+                playerSkills.DealDamageInCircle(bulletSpawnPoint.position, kineticBurstRange, Damage * kineticBurstDamageMultiplier, kineticBurstKnockbackForce);
+            }
         }
         _isReloading = true;
         yield return new WaitForSeconds(ReloadTime);

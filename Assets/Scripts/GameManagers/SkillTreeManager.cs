@@ -22,9 +22,8 @@ public class SkillTreeManager : NetworkBehaviour
     [SerializeField] Transform lineParent;
     PlayerSkills playerSkills;
 
-    public override void OnNetworkSpawn()
+    void Start()
     {
-        base.OnNetworkSpawn();
         confirmationBox.SetActive(false);
         noButton.onClick.AddListener(() => confirmationBox.SetActive(false));
         InitializeSkillNodeMap();

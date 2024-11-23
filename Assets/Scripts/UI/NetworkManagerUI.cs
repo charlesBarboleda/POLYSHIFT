@@ -16,16 +16,18 @@ using UnityEngine.UI;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using System.Collections;
+using DG.Tweening;
 
 public class NetworkManagerUI : MonoBehaviour
 {
     [SerializeField] private int _maxConnections = 4;
     [Header("Connection UI")]
-    [SerializeField] Button _clientBtn;
-    [SerializeField] Button _hostBtn;
-    [SerializeField] TMP_Text _statusText;
     [SerializeField] TMP_Text _playerIDText;
-    [SerializeField] TMP_InputField _joinCodeText;
+    [SerializeField] TMP_Text _wrongCodeText;
+    [SerializeField] TMP_Text _joinCodeText;
+    [SerializeField] TMP_InputField _inputCodeText;
+    [SerializeField] Button _joinButton;
+    [SerializeField] Button _joinLobbyBackButton;
 
     string _playerID;
     bool _clientAuthenticated = false;
@@ -105,7 +107,7 @@ public class NetworkManagerUI : MonoBehaviour
 
         _joinCodeText.gameObject.SetActive(true);
         _joinCodeText.text = _joinCode;
-        _statusText.text = "Joined as Host!";
+        _joinCodeText.GetComponent<CanvasGroup>().DOFade(1, 1f);
     }
 
     public async Task<RelayServerData> JoinRelayServerWithCode(string joinCode)
@@ -138,14 +140,40 @@ public class NetworkManagerUI : MonoBehaviour
         if (joinAllocationFromCode.IsFaulted)
         {
             Debug.Log("Cannot join relay due to an exception");
+            _wrongCodeText.gameObject.SetActive(true);
+            _wrongCodeText.GetComponent<CanvasGroup>().DOFade(1, 1f).OnComplete(() =>
+            {
+                _wrongCodeText.GetComponent<CanvasGroup>().DOFade(0, 1f).OnComplete(() =>
+                {
+                    _wrongCodeText.gameObject.SetActive(false);
+                });
+            });
             yield break;
         }
+
+        _inputCodeText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            _inputCodeText.gameObject.SetActive(false);
+        });
+
+        _joinButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            _joinButton.gameObject.SetActive(false);
+        });
+
+        _joinLobbyBackButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            _joinLobbyBackButton.gameObject.SetActive(false);
+        });
+
 
         var relayServerData = joinAllocationFromCode.Result;
 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+
+
         NetworkManager.Singleton.StartClient();
-        _statusText.text = "Joined as Client!";
+
     }
 
 
@@ -160,14 +188,13 @@ public class NetworkManagerUI : MonoBehaviour
         if (_joinCodeText.text.Length <= 0)
         {
             Debug.LogError("Join code is empty.");
-            _statusText.text = "Join code is empty.";
             return;
         }
-        StartCoroutine(ConfigureUseCodeJoinClient(_joinCodeText.text));
 
-        _clientBtn.gameObject.SetActive(false);
-        _hostBtn.gameObject.SetActive(false);
-        _joinCodeText.gameObject.SetActive(false);
+
+
+        StartCoroutine(ConfigureUseCodeJoinClient(_inputCodeText.text));
+
     }
 
     public void JoinHost()
@@ -181,10 +208,7 @@ public class NetworkManagerUI : MonoBehaviour
         StartCoroutine(ConfigureGetCodeAndJoinHost());
         Debug.Log(_joinCodeText.text);
 
-        _clientBtn.gameObject.SetActive(false);
-        _hostBtn.gameObject.SetActive(false);
         _joinCodeText.gameObject.SetActive(false);
-
 
     }
 

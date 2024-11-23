@@ -95,6 +95,10 @@ public class PlayerSkills : NetworkBehaviour
 
         }
     }
+    public bool SkillTreeOpen()
+    {
+        return SkillTreeCanvas.activeSelf;
+    }
     public void ActivateBloodBond()
     {
         bloodBond = true;
