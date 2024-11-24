@@ -5,16 +5,28 @@ using System.Collections.Generic;
 using System.Collections;
 using DG.Tweening;
 
+public enum GameState
+{
+    Lobby,
+    OutLevel,
+    InLevel,
+    GameOver
+}
+
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public NetworkVariable<int> GameLevel = new NetworkVariable<int>(0);
+    public NetworkVariable<float> GameCountdown = new NetworkVariable<float>(30f);
     public List<Enemy> SpawnedEnemies = new List<Enemy>();
     public List<GameObject> SpawnedAllies = new List<GameObject>();
-    private PlayerInfo _localPlayer;
-    private Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>();
-    [SerializeField] TMP_InputField _playerNameInput;
+    public GameState CurrentGameState = GameState.Lobby;
     public List<Transform> _spawnPoints = new List<Transform>();
     public int numberOfPlayers = 0;
+    bool isGameOverTriggered = false;
+    PlayerInfo _localPlayer;
+    Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>();
+    [SerializeField] TMP_InputField _playerNameInput;
 
     private void Awake()
     {
@@ -26,8 +38,73 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+            GameLevel.Value = 0;
+            SetCurrentGameState(GameState.Lobby);
         }
     }
+
+    public void SetCurrentGameState(GameState state)
+    {
+        CurrentGameState = state;
+
+        switch (CurrentGameState)
+        {
+            case GameState.Lobby:
+                // Set game-related lobby logic here
+                break;
+            case GameState.InLevel:
+
+                break;
+            case GameState.OutLevel:
+                Countdown();
+                break;
+            case GameState.GameOver:
+                // Set game-related game over logic here
+                break;
+        }
+    }
+
+    public void OnPlayerDeath(PlayerNetworkHealth health)
+    {
+        if (isGameOverTriggered) return;
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (client.PlayerObject != null && !client.PlayerObject.GetComponent<PlayerNetworkHealth>().IsDead)
+            {
+                return; // At least one player is still alive
+            }
+        }
+
+        isGameOverTriggered = true;
+        SetCurrentGameState(GameState.GameOver);
+    }
+
+    void OnClientDisconnected(ulong clientId)
+    {
+        var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+        if (player != null)
+        {
+            var playerHealth = player.GetComponent<PlayerNetworkHealth>();
+            if (playerHealth != null)
+            {
+                EventManager.Instance.OnPlayerDeath.RemoveListener(OnPlayerDeath);
+            }
+        }
+    }
+
+
+
+    public void OnEnemyDespawned(Enemy enemy)
+    {
+        if (SpawnedEnemies.Count == 0 && SpawnerManager.Instance.EnemiesToSpawn.Count == 0)
+        {
+            SetCurrentGameState(GameState.OutLevel);
+        }
+    }
+
+
 
 
 
@@ -110,6 +187,38 @@ public class GameManager : NetworkBehaviour
             Debug.Log(playerObject.transform.position);
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void StartGameServerRpc()
+    {
+        Countdown();
+    }
+
+    void Countdown()
+    {
+        SetCurrentGameState(GameState.OutLevel);
+        StartCoroutine(GameCountdownCoroutine());
+    }
+
+    IEnumerator GameCountdownCoroutine()
+    {
+        while (GameCountdown.Value > 0)
+        {
+            if (IsServer)
+            {
+                GameCountdown.Value -= Time.deltaTime;
+            }
+            yield return null;
+        }
+
+        if (IsServer)
+        {
+            GameLevel.Value++;
+            GameCountdown.Value = 30f;
+            SetCurrentGameState(GameState.InLevel);
+        }
+    }
+
 
 
 }

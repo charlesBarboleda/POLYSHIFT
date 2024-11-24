@@ -6852,7 +6852,7 @@ MonoBehaviour:
   ParentalReferenceBone: {fileID: 0}
   DestroyMomentTargetOnMaxDistance: 1
   OverrideRotations: 0
-  BackBonesCount: 2
+  BackBonesCount: 4
   _preBackBonesCount: 0
   LookBones:
   - Transform: {fileID: 4052199038485143699}
@@ -6892,9 +6892,9 @@ MonoBehaviour:
     initLocalRot: {x: -4.2968946e-16, y: -1.8466413e-15, z: 0.0417333, w: 0.9991288}
     targetDelayPosition: {x: 0, y: 0, z: 0}
     animatedDelayPosition: {x: 0, y: 0, z: 0}
-    lookWeight: 0.49296874
+    lookWeight: 0.38359374
     lookWeightB: 1
-    motionWeight: 0.49296874
+    motionWeight: 0.38359374
   - Transform: {fileID: 8076298970900226959}
     animatedStaticRotation: {x: 0, y: 0, z: 0, w: 0}
     targetStaticRotation: {x: 0, y: 0, z: 0, w: 0}
@@ -6912,9 +6912,49 @@ MonoBehaviour:
     initLocalRot: {x: 0.9938103, y: -0.11109032, z: -3.483493e-17, w: -6.5507636e-17}
     targetDelayPosition: {x: 0, y: 0, z: 0}
     animatedDelayPosition: {x: 0, y: 0, z: 0}
-    lookWeight: 0.39171878
+    lookWeight: 0.28234378
     lookWeightB: 1
-    motionWeight: 0.39171878
+    motionWeight: 0.28234378
+  - Transform: {fileID: 6981589492481248956}
+    animatedStaticRotation: {x: 0, y: 0, z: 0, w: 0}
+    targetStaticRotation: {x: 0, y: 0, z: 0, w: 0}
+    localStaticRotation: {x: 0, y: 0, z: 0, w: 0}
+    animatedTargetRotation: {x: 0, y: 0, z: 0, w: 0}
+    targetRotation: {x: 0, y: 0, z: 0, w: 0}
+    correctionOffset: {x: 0, y: 0, z: 0}
+    finalRotation: {x: 0, y: 0, z: 0, w: 0}
+    lastKeyframeRotation: {x: 0, y: 0, z: 0, w: 0}
+    lastFinalLocalRotation: {x: 0, y: 0, z: 0, w: 0}
+    forward: {x: -0.14608014, y: -0.9892728, z: 0.000000007450581}
+    right: {x: -0.00000011920929, y: -2.7354048e-16, z: 1.0000001}
+    up: {x: 0.9892728, y: 0.14608014, z: -3.842928e-15}
+    initLocalPos: {x: -0.18151169, y: 1.5543122e-17, z: -7.101073e-17}
+    initLocalRot: {x: 0.99518615, y: -0.098002784, z: -6.0366487e-16, w: -1.2097554e-16}
+    targetDelayPosition: {x: 0, y: 0, z: 0}
+    animatedDelayPosition: {x: 0, y: 0, z: 0}
+    lookWeight: 0.1785625
+    lookWeightB: 1
+    motionWeight: 0.1785625
+  - Transform: {fileID: 8853575331627887859}
+    animatedStaticRotation: {x: 0, y: 0, z: 0, w: 0}
+    targetStaticRotation: {x: 0, y: 0, z: 0, w: 0}
+    localStaticRotation: {x: 0, y: 0, z: 0, w: 0}
+    animatedTargetRotation: {x: 0, y: 0, z: 0, w: 0}
+    targetRotation: {x: 0, y: 0, z: 0, w: 0}
+    correctionOffset: {x: 0, y: 0, z: 0}
+    finalRotation: {x: 0, y: 0, z: 0, w: 0}
+    lastKeyframeRotation: {x: 0, y: 0, z: 0, w: 0}
+    lastFinalLocalRotation: {x: 0, y: 0, z: 0, w: 0}
+    forward: {x: 0.04969547, y: 0.9987644, z: 0.000000019092113}
+    right: {x: -0.00000011920929, y: -1.224647e-16, z: -1.0000001}
+    up: {x: 0.99876446, y: 0.049695373, z: 2.648731e-15}
+    initLocalPos: {x: -0.10393265, y: 1.3322676e-17, z: 4.6155368e-17}
+    initLocalRot: {x: 0.9950197, y: -0.09967895, z: 1.3224718e-15, w: 7.094358e-17}
+    targetDelayPosition: {x: 0, y: 0, z: 0}
+    animatedDelayPosition: {x: 0, y: 0, z: 0}
+    lookWeight: 0.13705
+    lookWeightB: 1
+    motionWeight: 0.13705
   NoTargetHeadStops: 0
   _editor_hideEyes: 0
   _editor_displayName: Look Animator 2

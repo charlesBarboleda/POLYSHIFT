@@ -14,18 +14,23 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public bool IsDead;
     bool ironResolve = false;
     float ironResolveDamageReduction = 0.50f;
+    Animator animator;
+    PlayerLobbyController playerLobbyController;
+    PlayerCameraBehavior playerCameraBehavior;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        maxHealth.Value = DefaultHealth;
-        currentHealth.Value = maxHealth.Value;
-        DamageReduction = 0;
         if (IsServer)
         {
+            DamageReduction = 0;
+            maxHealth.Value = DefaultHealth;
+            currentHealth.Value = maxHealth.Value;
             GameManager.Instance.SpawnedAllies.Add(gameObject);
+
         }
-
-
+        animator.GetComponent<Animator>();
+        playerLobbyController = GetComponent<PlayerLobbyController>();
+        playerCameraBehavior = GetComponent<PlayerCameraBehavior>();
 
     }
 
@@ -159,6 +164,8 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             if (currentHealth.Value <= 0)
             {
                 HandleDeath(clientId);
+                IsDead = true;
+                EventManager.Instance.PlayerDeathEvent(this);
             }
         }
     }
@@ -169,8 +176,13 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         if (IsServer)
         {
             GameManager.Instance.SpawnedAllies.Remove(gameObject);
-            gameObject.SetActive(false);
+            animator.SetTrigger("isDead");
 
+        }
+        if (IsOwner)
+        {
+            playerLobbyController.DisablePlayerControls();
+            playerCameraBehavior.EnableSpectatorMode();
         }
     }
 
