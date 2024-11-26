@@ -30,6 +30,7 @@ public class PlayerWeapon : NetworkBehaviour
     public float kineticBurstKnockbackForce = 10f;
     public float kineticBurstDamageMultiplier = 2f;
     public float kineticBurstRange = 5f;
+    public Animator weaponAnimator;
     PlayerNetworkLevel playerLevel;
     PlayerAudioManager audioManager;
     IWeaponBehavior currentWeaponBehavior;
@@ -74,7 +75,9 @@ public class PlayerWeapon : NetworkBehaviour
                     currentWeaponBehavior.FireIsometric(this);
                 else
                     currentWeaponBehavior.FireFirstPerson(this);
+
                 audioManager.PlayShootSound();
+                weaponAnimator.SetTrigger("isShooting");
             }
             else
             {

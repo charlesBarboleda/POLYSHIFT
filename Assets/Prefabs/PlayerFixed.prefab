@@ -6959,8 +6959,8 @@ MonoBehaviour:
   Damage: 10
   ReloadTime: 1
   ShootRate: 0.1
-  maxAmmoCount: 30
-  currentAmmoCount: 30
+  maxAmmoCount: 10
+  currentAmmoCount: 10
   maxPierceTargets: 0
   bulletSpawnPoint: {fileID: 8345376723030177191}
   playerNetworkMovement: {fileID: 7516287321782468021}
@@ -6970,6 +6970,7 @@ MonoBehaviour:
   kineticBurstKnockbackForce: 10
   kineticBurstDamageMultiplier: 2
   kineticBurstRange: 5
+  weaponAnimator: {fileID: 1219799933963540870}
 --- !u!114 &4468002526946764731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8329,7 +8330,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2014488965093096671, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2022413065770426156, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: skill
@@ -10486,7 +10487,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6108769070316271571, guid: 7feff4a244b087245be1bdc2196a938f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1219799933963540870}
   m_SourcePrefab: {fileID: 100100000, guid: 7feff4a244b087245be1bdc2196a938f, type: 3}
 --- !u!198 &2957078517164031809 stripped
 ParticleSystem:
@@ -10503,6 +10507,33 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6108769070316271570, guid: 7feff4a244b087245be1bdc2196a938f, type: 3}
   m_PrefabInstance: {fileID: 2816455055519604308}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8345376723029813639 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6108769070316271571, guid: 7feff4a244b087245be1bdc2196a938f, type: 3}
+  m_PrefabInstance: {fileID: 2816455055519604308}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1219799933963540870
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8345376723029813639}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 43b1cb53c34ad96418570b150b0f1d28, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &8345376723030177191 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6108769070316760051, guid: 7feff4a244b087245be1bdc2196a938f, type: 3}

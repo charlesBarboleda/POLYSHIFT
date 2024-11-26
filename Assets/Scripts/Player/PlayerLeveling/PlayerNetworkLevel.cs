@@ -30,7 +30,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
         if (IsServer)
         {
 
-            Level.Value = 19;
+            Level.Value = 1;
             Experience.Value = LevelProgression.CurrentExperience;
             NeededExperience.Value = LevelProgression.NeededExperience;
         }
