@@ -123,10 +123,13 @@ public class TitleScreenUIManager : MonoBehaviour
             lobbyCodeText.gameObject.SetActive(false);
         });
 
+
         foreach (var connectedPlayer in NetworkManager.Singleton.ConnectedClientsList)
         {
             var playerLobbyController = connectedPlayer.PlayerObject.GetComponent<PlayerLobbyController>();
+            var playerStateController = connectedPlayer.PlayerObject.GetComponent<PlayerStateController>();
             playerLobbyController.EnablePlayerControlsServerRpc();
+            playerStateController.SetPlayerStateServerRpc(PlayerState.Alive);
             GlobalUIManager.Instance.DisableTitleTextClientRpc();
             GlobalUIManager.Instance.DisableWaitForHostTextClientRpc();
         }

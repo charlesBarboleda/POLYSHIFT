@@ -105,28 +105,36 @@ public class SingleShot : IWeaponBehavior
                             if (targetNetworkObject != null)
                             {
                                 weapon.ApplyDamageServerRpc(targetNetworkObject.NetworkObjectId);
+                                if (targetNetworkObject.GetComponent<Enemy>() != null)
+                                {
+                                    targetNetworkObject.GetComponent<Enemy>().OnRaycastHitServerRpc(hit.point, hit.normal);
+                                }
                             }
                             else
                             {
                                 weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
+                                if (networkObject.GetComponent<Enemy>() != null)
+                                {
+                                    networkObject.GetComponent<Enemy>().OnRaycastHitServerRpc(hit.point, hit.normal);
+                                }
                             }
+
+                            // Spawn impact visual at the hit point
+                            weapon.FireSingleShotServerRpc(startPoint, hit.point);
+
+                            pierceCount++;
                         }
-
-                        // Spawn impact visual at the hit point
-                        weapon.FireSingleShotServerRpc(startPoint, hit.point);
-
-                        pierceCount++;
-                    }
-                    else
-                    {
-                        // Stop processing further hits if maxPierceTargets is reached
-                        break;
+                        else
+                        {
+                            // Stop processing further hits if maxPierceTargets is reached
+                            break;
+                        }
                     }
                 }
             }
         }
+
+
+
     }
-
-
-
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEngine.UI;
 using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,22 +18,25 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     Rigidbody rb;
     Collider collider;
     [SerializeField] string enemyName;
+    [SerializeField] Image healthbarFill;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
         if (IsServer)
         {
             CurrentHealth.Value = MaxHealth;
-            IsDead = false;
-            animator = GetComponent<Animator>();
-            kinematics = GetComponent<AIKinematics>();
-            enemy = GetComponent<Enemy>();
-            rb = GetComponent<Rigidbody>();
-            collider = GetComponent<Collider>();
-            collider.enabled = true;
-            CurrentHealth.OnValueChanged += OnHitAnimation;
-            CurrentHealth.OnValueChanged += OnHitEffects;
         }
+        IsDead = false;
+        animator = GetComponent<Animator>();
+        kinematics = GetComponent<AIKinematics>();
+        enemy = GetComponent<Enemy>();
+        rb = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
+        collider.enabled = true;
+        CurrentHealth.OnValueChanged += OnHitAnimation;
+        CurrentHealth.OnValueChanged += OnHitEffects;
+        CurrentHealth.OnValueChanged += UpdateHealthbar;
         EventManager.Instance.EnemySpawnedEvent(enemy);
     }
 
@@ -40,6 +44,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
         CurrentHealth.OnValueChanged -= OnHitAnimation;
         CurrentHealth.OnValueChanged -= OnHitEffects;
+        CurrentHealth.OnValueChanged -= UpdateHealthbar;
 
     }
 
@@ -48,11 +53,21 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
         if (!IsServer) return;
 
+        if (IsDead) return;
+
         if (CurrentHealth.Value < MaxHealth)
         {
             CurrentHealth.Value += HealthRegenRate * Time.deltaTime;
         }
 
+    }
+    void UpdateHealthbar(float prev, float current)
+    {
+
+        if (healthbarFill != null)
+        {
+            healthbarFill.fillAmount = current / MaxHealth;
+        }
     }
 
     void OnHitEffects(float prev, float current)
@@ -135,7 +150,6 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         if (collider != null)
             collider.enabled = false;
 
-        EventManager.Instance.EnemyDespawnedEvent(enemy);
         StartCoroutine(DeathAnim());
     }
 
@@ -145,7 +159,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 
         animator.SetTrigger("isDead");
         GameManager.Instance.SpawnedEnemies.Remove(enemy);
-        yield return new WaitForSeconds(5f);
+        EventManager.Instance.EnemyDespawnedEvent(enemy);
+        yield return new WaitForSeconds(3f);
         enemy.enabled = true;
         kinematics.enabled = true;
         GetComponent<NetworkObject>().Despawn(false);

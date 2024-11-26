@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 {
-    const float DefaultHealth = 100f;
-    const float DefaultRegenRate = 1f;
 
-    public NetworkVariable<float> currentHealth = new NetworkVariable<float>(DefaultHealth, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<float> maxHealth = new NetworkVariable<float>(DefaultHealth, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(DefaultRegenRate, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> currentHealth = new NetworkVariable<float>(100, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> maxHealth = new NetworkVariable<float>(100, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public float DamageReduction = 0;
     public bool IsDead;
     bool ironResolve = false;
@@ -17,15 +15,19 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     Animator animator;
     PlayerLobbyController playerLobbyController;
     PlayerCameraBehavior playerCameraBehavior;
+    PlayerNetworkMovement playerNetworkMovement;
+    PlayerStateController playerStateController;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         if (IsServer)
         {
             DamageReduction = 0;
-            maxHealth.Value = DefaultHealth;
+            maxHealth.Value = 100f;
             currentHealth.Value = maxHealth.Value;
+            healthRegenRate.Value = 1f;
             GameManager.Instance.SpawnedAllies.Add(gameObject);
+            GameManager.Instance.AlivePlayers.Add(gameObject);
 
         }
         animator.GetComponent<Animator>();
@@ -176,12 +178,13 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         if (IsServer)
         {
             GameManager.Instance.SpawnedAllies.Remove(gameObject);
+            GameManager.Instance.AlivePlayers.Remove(gameObject);
             animator.SetTrigger("isDead");
 
         }
         if (IsOwner)
         {
-            playerLobbyController.DisablePlayerControls();
+            playerStateController.SetPlayerStateServerRpc(PlayerState.Dead);
             playerCameraBehavior.EnableSpectatorMode();
         }
     }

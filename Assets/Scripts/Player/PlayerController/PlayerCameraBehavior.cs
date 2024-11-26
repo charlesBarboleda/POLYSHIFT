@@ -7,6 +7,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
     [SerializeField] private Transform playerHead; // The head target for first-person view
     [SerializeField] private CinemachineCamera firstPersonCamera;
     [SerializeField] private CinemachineCamera isometricCamera;
+    [SerializeField] private CinemachineCamera freeViewCamera;
     public Camera MainCamera;
     private PlayerNetworkMovement playerNetworkMovement;
     private PlayerNetworkRotation playerNetworkRotation;
@@ -77,6 +78,12 @@ public class PlayerCameraBehavior : NetworkBehaviour
 
         // Rotate the player’s body to match only the horizontal rotation of the camera
         transform.rotation = Quaternion.Euler(0f, horizontalRotation, 0f);
+    }
+
+    public void EnableSpectatorMode()
+    {
+        freeViewCamera.gameObject.SetActive(true);
+        freeViewCamera.Priority = 1;
     }
 
 

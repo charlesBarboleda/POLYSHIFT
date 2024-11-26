@@ -10,12 +10,15 @@ public class PlayerNetworkMovement : NetworkBehaviour
     public Vector2 inputDirection;
 
     [Header("Player Movement")]
+    public float GhostMoveSpeed = 6f;
     public float MoveSpeed = 2f;
     public bool IsIsometric = false;
     public bool canMove = true;
     private Animator animator;
     private PlayerNetworkRotation playerNetworkRotation;
     private PlayerNetworkHealth playerNetworkHealth;
+    private PlayerStateController state;
+
 
     private const float movementThreshold = 0.1f;
 
@@ -26,6 +29,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
         playerNetworkHealth = GetComponent<PlayerNetworkHealth>();
+        state = GetComponent<PlayerStateController>();
         moveInput = GetComponent<PlayerInput>();
         moveAction = moveInput.actions["Move"];
     }
@@ -33,17 +37,45 @@ public class PlayerNetworkMovement : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
-
-        if (playerNetworkHealth.currentHealth.Value <= 0) return;
-
         inputDirection = moveAction.ReadValue<Vector2>();
 
-        // Determine movement direction and apply animations for both first-person and isometric view
-        if (canMove)
+        if (state.playerState.Value == PlayerState.Dead)
         {
-            HandleMovementAndAnimations(inputDirection);
+            HandleGhostMovement(inputDirection);
+        }
+
+
+        if (state.playerState.Value == PlayerState.Alive)
+        {
+            // Determine movement direction and apply animations for both first-person and isometric view
+            if (canMove)
+            {
+                HandleMovementAndAnimations(inputDirection);
+            }
         }
     }
+
+    void HandleGhostMovement(Vector2 inputDirection)
+    {
+        float verticalInput = Input.GetKey(KeyCode.Space) ? 1f :
+                              Input.GetKey(KeyCode.LeftControl) ? -1f : 0f;
+
+        // Camera-based movement
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
+
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        Vector3 moveDirection = (cameraForward * inputDirection.y) + (cameraRight * inputDirection.x);
+        moveDirection.y = verticalInput;
+
+        // Apply movement
+        transform.Translate(moveDirection * GhostMoveSpeed * Time.deltaTime, Space.World);
+    }
+
 
     void HandleMovementAndAnimations(Vector2 inputDirection)
     {

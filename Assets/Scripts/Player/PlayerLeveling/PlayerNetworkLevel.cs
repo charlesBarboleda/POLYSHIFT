@@ -16,7 +16,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
     ISkillManager[] meleeSkillsManager;
     PlayerAudioManager audioManager;
     PlayerSkills playerSkills;
-
+    [SerializeField] SkillTreeManager skillTreeManager;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -65,6 +65,8 @@ public class PlayerNetworkLevel : NetworkBehaviour
             skill.Damage += Level.Value;
             skill.AttackSpeedMultiplier.Value += 0.01f;
         }
+
+        skillTreeManager.skillPoints += 1;
 
 
 

@@ -7,6 +7,7 @@ public class MeleeEnemy : Enemy
 {
     public float attackRange = 4f;
     public float attackDamage = 10f;
+    EnemyNetworkHealth health;
 
 
     public override void OnNetworkSpawn()
@@ -15,7 +16,14 @@ public class MeleeEnemy : Enemy
         enemyType = EnemyType.Melee;
         animator = GetComponent<Animator>();
 
+        if (IsServer)
+        {
+            health = GetComponent<EnemyNetworkHealth>();
+            health.MaxHealth += GameManager.Instance.GameLevel.Value * 3;
+            health.CurrentHealth.Value = health.MaxHealth;
+            attackDamage += GameManager.Instance.GameLevel.Value;
 
+        }
     }
 
 
@@ -32,7 +40,7 @@ public class MeleeEnemy : Enemy
     public void DealDamage()
     {
         if (ClosestTarget != null &&
-            Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange)
+            Vector3.Distance(transform.position, ClosestTarget.position) <= attackRange + 1f)
         {
             var damageable = ClosestTarget.GetComponent<IDamageable>();
             if (damageable != null)

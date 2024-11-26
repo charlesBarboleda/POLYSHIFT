@@ -11,7 +11,22 @@ public class JumperEnemy : Enemy
     public float leapProximityDamageRange = 2f; // Range for dealing damage mid-leap
     public float jumpCooldown = 3f;      // Cooldown between jumps
     private bool isJumping = false;      // Tracks if the enemy is currently leaping
+    EnemyNetworkHealth health;
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        enemyType = EnemyType.Melee;
+        animator = GetComponent<Animator>();
 
+        if (IsServer)
+        {
+            health = GetComponent<EnemyNetworkHealth>();
+            health.MaxHealth += GameManager.Instance.GameLevel.Value;
+            health.CurrentHealth.Value = health.MaxHealth;
+            attackDamage += GameManager.Instance.GameLevel.Value * 0.01f;
+
+        }
+    }
 
     protected override void Attack()
     {

@@ -4,6 +4,7 @@ using UnityEngine.AI;
 using FIMSpace.FLook;
 using Unity.AI.Navigation;
 using Pathfinding;
+using System.Collections;
 
 public class AIKinematics : NetworkBehaviour
 {
@@ -33,6 +34,7 @@ public class AIKinematics : NetworkBehaviour
     {
 
         if (!IsServer) return;
+
         lookAnimator.SetLookTarget(ClosestPlayer);
         FindClosestPossibleTarget();
         StopAndRotateTowardsTarget();
@@ -53,6 +55,21 @@ public class AIKinematics : NetworkBehaviour
         animator.SetBool("IsMoving", Agent.velocity.magnitude != 0);
         Agent.maxSpeed = MoveSpeed;
 
+    }
+
+    void TeleportIfStuck()
+    {
+
+    }
+
+    IEnumerator CheckIfStuck()
+    {
+        Vector3 lastPosition = transform.position;
+        yield return new WaitForSeconds(5f);
+        if (Vector3.Distance(transform.position, lastPosition) < 0.5f)
+        {
+            transform.position = ClosestPlayer.position;
+        }
     }
 
     void StopAndRotateTowardsTarget()
