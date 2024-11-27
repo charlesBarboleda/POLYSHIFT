@@ -431,7 +431,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3127593741244525772
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5520,6 +5520,7 @@ GameObject:
   m_Component:
   - component: {fileID: 502962766797369881}
   - component: {fileID: 1583477839547932710}
+  - component: {fileID: 4092268920345790966}
   m_Layer: 0
   m_Name: Character_Male_Face_01
   m_TagString: Untagged
@@ -5647,6 +5648,103 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.8434789, z: -0.04096748}
     m_Extent: {x: 1.0245618, y: 0.9445723, z: 0.20547234}
   m_DirtyAABB: 0
+--- !u!82 &4092268920345790966
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7528016679747395621}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7620497887335823277
 GameObject:
   m_ObjectHideFlags: 0
@@ -7153,10 +7251,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  weaponAudioSource: {fileID: 7628998548112913343}
+  footstepAudioSource: {fileID: 4092268920345790966}
+  grassFootstepSounds:
+  - {fileID: 8300000, guid: f0e74653bc0ee8145bc6eae60176f349, type: 3}
+  - {fileID: 8300000, guid: d3ac36954ba598b469b83afb0ecfe38e, type: 3}
+  - {fileID: 8300000, guid: 031cc0c6e96be8240bbe614639fbbad1, type: 3}
+  - {fileID: 8300000, guid: 68ae666acbab4ef43a23be8a73db9935, type: 3}
+  - {fileID: 8300000, guid: c22c9be9d162deb499b35d97fc7b9349, type: 3}
+  stoneFootstepSounds:
+  - {fileID: 8300000, guid: 09a814398bef8314bb7ea37fa1fd88c9, type: 3}
+  - {fileID: 8300000, guid: 9688f67a4d2ef954caad473cd82bc495, type: 3}
   levelUpSound: {fileID: 8300000, guid: 70f34d3156572484a9cb417730324a16, type: 3}
   shootSound: {fileID: 8300000, guid: 2a3f507aa95dc224cadfb006dd19fd2d, type: 3}
   meleeSlash1Sound: {fileID: 8300000, guid: 60887ffe25f99e04097887e2ca6f15af, type: 3}
   arcaneDevilSlamShoutSound: {fileID: 8300000, guid: 2a47385abaa7f4040b5713f6932f9706, type: 3}
+  reloadSound: {fileID: 8300000, guid: c314498c201acf9418880756187aaacb, type: 3}
 --- !u!114 &3023023807594702307
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,51 +1,80 @@
 using Unity.Netcode;
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class PlayerAudioManager : NetworkBehaviour
 {
-    AudioSource audioSource;
-    AudioSource audioSource2;
+    AudioSource generalAudioSource;
+    [SerializeField] AudioSource weaponAudioSource;
+    [SerializeField] AudioSource footstepAudioSource;
+    [SerializeField] List<AudioClip> grassFootstepSounds;
+    [SerializeField] List<AudioClip> stoneFootstepSounds;
     [SerializeField] AudioClip levelUpSound;
     [SerializeField] AudioClip shootSound;
     [SerializeField] AudioClip meleeSlash1Sound;
     [SerializeField] AudioClip arcaneDevilSlamShoutSound;
+    [SerializeField] AudioClip reloadSound;
+
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        audioSource = GetComponent<AudioSource>();
-        audioSource2 = GetComponentInChildren<AudioSource>();
+        generalAudioSource = GetComponent<AudioSource>();
 
+    }
+
+    public void PlayReloadSound()
+    {
+        weaponAudioSource.volume = 0.1f;
+        weaponAudioSource.PlayOneShot(reloadSound);
     }
 
     public void PlayLevelUpSound()
     {
-        audioSource.PlayOneShot(levelUpSound);
-        audioSource.DOFade(0, 5f).OnComplete(() =>
+        generalAudioSource.PlayOneShot(levelUpSound);
+        generalAudioSource.DOFade(0, 5f).OnComplete(() =>
         {
-            audioSource.Stop();
-            audioSource.volume = 1;
+            generalAudioSource.Stop();
+            generalAudioSource.volume = 1;
         }
         );
     }
 
+    public void PlayFootstepSound()
+    {
+        footstepAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        footstepAudioSource.volume = 0.01f;
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.5f, LayerMask.GetMask("Grass")))
+        {
+            footstepAudioSource.PlayOneShot(grassFootstepSounds[Random.Range(0, grassFootstepSounds.Count)]);
+        }
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit2, 1.5f, LayerMask.GetMask("Ground")))
+        {
+            footstepAudioSource.PlayOneShot(stoneFootstepSounds[Random.Range(0, stoneFootstepSounds.Count)]);
+        }
+    }
+
+
+
     public void PlayShootSound()
     {
-        audioSource2.volume = 0.5f;
-        audioSource2.PlayOneShot(shootSound);
+        // Set a random pitch within a range, e.g., 0.9 to 1.1 for slight variation
+        weaponAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        weaponAudioSource.volume = 0.1f;
+        weaponAudioSource.PlayOneShot(shootSound);
     }
 
     public void PlayMeleeSlash1Sound()
     {
-        audioSource.volume = 1f;
-        audioSource.PlayOneShot(meleeSlash1Sound);
+        generalAudioSource.volume = 0.1f;
+        generalAudioSource.PlayOneShot(meleeSlash1Sound);
     }
 
     public void PlayArcaneDevilSlamShoutSound()
     {
-        audioSource.volume = 0.05f;
-        audioSource.PlayOneShot(arcaneDevilSlamShoutSound);
+        generalAudioSource.volume = 0.05f;
+        generalAudioSource.PlayOneShot(arcaneDevilSlamShoutSound);
     }
 
 }

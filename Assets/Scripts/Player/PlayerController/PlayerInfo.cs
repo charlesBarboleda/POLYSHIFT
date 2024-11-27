@@ -27,12 +27,13 @@ public class PlayerInfo : NetworkBehaviour
             GameManager.Instance.SetLocalPlayer(this);
         }
 
-        // Update UI on spawn
+        // Update UI on spawn for all players
         UpdatePlayerNameUI(PlayerName.Value.ToString());
     }
 
     private void OnPlayerNameChanged(FixedString64Bytes previousValue, FixedString64Bytes newValue)
     {
+        // Update the UI for all clients when the name changes
         UpdatePlayerNameUI(newValue.ToString());
         Debug.Log($"Player name changed from {previousValue} to {newValue} on client {OwnerClientId}");
     }
@@ -54,14 +55,7 @@ public class PlayerInfo : NetworkBehaviour
         if (IsOwner)
         {
             PlayerName.Value = new FixedString64Bytes(name);
-            UpdateNameForClientsClientRpc(name); // Explicitly update for all clients
         }
-    }
-
-    [ClientRpc]
-    private void UpdateNameForClientsClientRpc(string name)
-    {
-        UpdatePlayerNameUI(name);
     }
 
     public override void OnNetworkDespawn()

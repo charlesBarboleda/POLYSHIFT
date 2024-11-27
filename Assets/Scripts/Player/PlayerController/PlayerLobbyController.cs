@@ -76,7 +76,10 @@ public class PlayerLobbyController : NetworkBehaviour
     [ClientRpc]
     void EnablePlayerControlsClientRpc()
     {
+        infoCanvas.SetActive(true);
+
         if (!IsLocalPlayer) return;
+
         _playerCameraBehavior.enabled = true;
         _playerNetworkMovement.enabled = true;
         _playerNetworkRotation.enabled = true;
@@ -84,7 +87,6 @@ public class PlayerLobbyController : NetworkBehaviour
         _playerWeapon.enabled = true;
         _playerUIManager.enabled = true;
         _cameraController.enabled = true;
-        infoCanvas.SetActive(true);
         isometricCamera.SetActive(true);
         firstPersonCamera.SetActive(true);
         hotbarCanvas.SetActive(true);

@@ -10,6 +10,8 @@ public class TitleScreenUIManager : MonoBehaviour
     [SerializeField] Button startGameButton;
     [SerializeField] TMP_Text lobbyCodeText;
     [Header("Play Screen")]
+    [SerializeField] TMP_InputField playerNameInputField;
+    [SerializeField] TMP_Text nameText;
     [SerializeField] Button backButton;
     [SerializeField] Button joinButton;
     [SerializeField] Button hostButton;
@@ -58,6 +60,12 @@ public class TitleScreenUIManager : MonoBehaviour
 
             backButton.gameObject.SetActive(true);
             backButton.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+
+            playerNameInputField.gameObject.SetActive(true);
+            playerNameInputField.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+
+            nameText.gameObject.SetActive(true);
+            nameText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
         });
     }
 
@@ -80,6 +88,16 @@ public class TitleScreenUIManager : MonoBehaviour
        {
            hostButton.gameObject.SetActive(false);
        });
+
+        playerNameInputField.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            playerNameInputField.gameObject.SetActive(false);
+        });
+
+        nameText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            nameText.gameObject.SetActive(false);
+        });
     }
 
     public void HostButton()
@@ -102,7 +120,15 @@ public class TitleScreenUIManager : MonoBehaviour
             backButton.gameObject.SetActive(false);
         });
 
+        playerNameInputField.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            playerNameInputField.gameObject.SetActive(false);
+        });
 
+        nameText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            nameText.gameObject.SetActive(false);
+        });
 
     }
 
@@ -159,6 +185,16 @@ public class TitleScreenUIManager : MonoBehaviour
         backButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
         {
             backButton.gameObject.SetActive(false);
+        });
+
+        playerNameInputField.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            playerNameInputField.gameObject.SetActive(false);
+        });
+
+        nameText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        {
+            nameText.gameObject.SetActive(false);
         });
     }
 

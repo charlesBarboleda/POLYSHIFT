@@ -31,9 +31,9 @@ public class PlayerWeapon : NetworkBehaviour
     public float kineticBurstDamageMultiplier = 2f;
     public float kineticBurstRange = 5f;
     public Animator weaponAnimator;
-    PlayerNetworkLevel playerLevel;
     PlayerAudioManager audioManager;
     IWeaponBehavior currentWeaponBehavior;
+    WeaponAnimationEvents weaponAnimationEvents;
     float _nextShotTime;
     bool _isReloading;
     bool _kineticBurst;
@@ -47,7 +47,7 @@ public class PlayerWeapon : NetworkBehaviour
         TryGetComponent(out playerNetworkMovement);
         TryGetComponent(out audioManager);
         TryGetComponent(out playerSkills);
-        TryGetComponent(out playerLevel);
+        TryGetComponent(out weaponAnimationEvents);
         currentAmmoCount = maxAmmoCount;
         SetWeaponBehavior(WeaponType.SingleShot);
         Camera = Camera.main;
@@ -451,8 +451,11 @@ public class PlayerWeapon : NetworkBehaviour
                 playerSkills.DealDamageInCircle(bulletSpawnPoint.position, kineticBurstRange, Damage * kineticBurstDamageMultiplier, kineticBurstKnockbackForce);
             }
         }
+        weaponAnimationEvents.TurnWeaponRedServerRpc();
+        audioManager.PlayReloadSound();
         _isReloading = true;
         yield return new WaitForSeconds(ReloadTime);
+        weaponAnimationEvents.TurnWeaponWhiteServerRpc();
         currentAmmoCount = maxAmmoCount;
         _isReloading = false;
     }

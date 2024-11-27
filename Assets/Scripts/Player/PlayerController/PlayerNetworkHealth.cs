@@ -40,6 +40,8 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     {
         if (!IsServer) return;
 
+        if (IsDead) return;
+
         if (currentHealth.Value < maxHealth.Value)
         {
             RegenerateHealth(healthRegenRate.Value);

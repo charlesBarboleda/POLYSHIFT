@@ -29,22 +29,22 @@ public class WeaponAnimationEvents : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void TurnWeaponMagentaServerRpc()
+    public void TurnWeaponRedServerRpc()
     {
-        TurnWeaponMagentaClientRpc();
+        TurnWeaponRedClientRpc();
     }
 
     [ClientRpc]
-    void TurnWeaponMagentaClientRpc()
+    void TurnWeaponRedClientRpc()
     {
-        // Change the color of the weapon orbs to magenta
+        // Change the color of the weapon orbs to red
         foreach (ParticleSystem orb in weaponOrbOrbit)
         {
-            StartCoroutine(TweenParticleColor(orb, Color.magenta, 0.1f));
+            StartCoroutine(TweenParticleColor(orb, Color.red, 0.5f));
         }
 
-        StartCoroutine(TweenParticleColor(weaponOrbMiddle, Color.magenta, 0.1f));
-        StartCoroutine(TweenParticleColor(weaponOrbStars, Color.magenta, 0.1f));
+        StartCoroutine(TweenParticleColor(weaponOrbMiddle, Color.red, 0.5f));
+        StartCoroutine(TweenParticleColor(weaponOrbStars, Color.red, 0.5f));
 
 
     }
