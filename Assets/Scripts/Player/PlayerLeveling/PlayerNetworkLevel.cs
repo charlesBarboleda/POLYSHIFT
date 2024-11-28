@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class PlayerNetworkLevel : NetworkBehaviour
 {
@@ -15,8 +18,9 @@ public class PlayerNetworkLevel : NetworkBehaviour
     PlayerWeapon playerWeapon;
     ISkillManager[] meleeSkillsManager;
     PlayerAudioManager audioManager;
-    PlayerSkills playerSkills;
     [SerializeField] SkillTreeManager skillTreeManager;
+    [SerializeField] TMP_Text levelText;
+    [SerializeField] Image experienceBar;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -26,7 +30,6 @@ public class PlayerNetworkLevel : NetworkBehaviour
         playerWeapon = GetComponent<PlayerWeapon>();
         Level.OnValueChanged += OnLevelUp;
         meleeSkillsManager = GetComponentsInChildren<ISkillManager>();
-        playerSkills = GetComponent<PlayerSkills>();
         if (IsServer)
         {
 
@@ -34,7 +37,22 @@ public class PlayerNetworkLevel : NetworkBehaviour
             Experience.Value = LevelProgression.CurrentExperience;
             NeededExperience.Value = LevelProgression.NeededExperience;
         }
+        Level.OnValueChanged += UpdateLevelUIClientRpc;
+        Experience.OnValueChanged += UpdateExperienceUIClientRpc;
+        NeededExperience.OnValueChanged += UpdateExperienceUIClientRpc;
 
+    }
+
+    [ClientRpc]
+    void UpdateLevelUIClientRpc(int prev, int current)
+    {
+        levelText.text = $"{current}";
+    }
+
+    [ClientRpc]
+    void UpdateExperienceUIClientRpc(float prev, float current)
+    {
+        experienceBar.fillAmount = Experience.Value / NeededExperience.Value;
     }
 
     public void AddExperience(float experience)

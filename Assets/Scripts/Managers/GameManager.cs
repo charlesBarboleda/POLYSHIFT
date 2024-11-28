@@ -117,11 +117,21 @@ public class GameManager : NetworkBehaviour
     public void StartGameServerRpc()
     {
         SetCurrentGameState(GameState.OutLevel);
+        SetPlayerStatesClientRpc();
     }
 
     void Countdown()
     {
         StartCoroutine(GameCountdownCoroutine());
+    }
+
+    [ClientRpc]
+    void SetPlayerStatesClientRpc()
+    {
+        foreach (GameObject player in AlivePlayers)
+        {
+            player.GetComponent<PlayerStateController>().SetPlayerStateServerRpc(PlayerState.Alive);
+        }
     }
 
     IEnumerator GameCountdownCoroutine()

@@ -389,8 +389,6 @@ GameObject:
   - component: {fileID: 6669371545567419886}
   - component: {fileID: 201821132496048654}
   - component: {fileID: 56470086631651684}
-  - component: {fileID: 6938223271482850110}
-  - component: {fileID: 8147348589360582273}
   m_Layer: 5
   m_Name: IsometricPlayerHealth
   m_TagString: Untagged
@@ -463,7 +461,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &56470086631651684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,44 +479,3 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6938223271482850110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8780789418580452908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 373075073
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
---- !u!114 &8147348589360582273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8780789418580452908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b58b3c8b5885d014ea38d168e1b02327, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthbarFill: {fileID: 7218090428908223786}
-  experiencebarFill: {fileID: 1788547600191992066}
-  healthbarContainer: {fileID: 8403926791576013340}
-  levelText: {fileID: 6197092994609001530}

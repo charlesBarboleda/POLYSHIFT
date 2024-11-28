@@ -11,6 +11,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
     public Camera MainCamera;
     private PlayerNetworkMovement playerNetworkMovement;
     private PlayerNetworkRotation playerNetworkRotation;
+    private PlayerStateController playerState;
 
     float verticalRotation = 0f;
     float horizontalRotation = 0f;
@@ -22,6 +23,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
     {
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
+        playerState = GetComponent<PlayerStateController>();
 
         if (!IsOwner)
         {
@@ -29,7 +31,6 @@ public class PlayerCameraBehavior : NetworkBehaviour
             isometricCamera.gameObject.SetActive(false);
             return;
         }
-
         isometricCamera.transform.SetParent(null);
         firstPersonCamera.transform.SetParent(null);
         EnableFirstPersonCamera();
@@ -39,21 +40,28 @@ public class PlayerCameraBehavior : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
+        if (playerState.playerState.Value == PlayerState.Alive)
         {
-            playerNetworkMovement.IsIsometric = !playerNetworkMovement.IsIsometric;
-            _lastSwitchTime = Time.time;
-        }
+            if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
+            {
+                playerNetworkMovement.IsIsometric = !playerNetworkMovement.IsIsometric;
+                _lastSwitchTime = Time.time;
+            }
 
-        if (IsIsometricMode())
-        {
-            EnableIsometricCamera();
+            if (IsIsometricMode())
+            {
+                EnableIsometricCamera();
+            }
+            else
+            {
+                EnableFirstPersonCamera();
+                FollowPlayerHead();
+                RotateCameraIndependently();
+            }
         }
-        else
+        else if (playerState.playerState.Value == PlayerState.Dead)
         {
-            EnableFirstPersonCamera();
-            FollowPlayerHead();
-            RotateCameraIndependently();
+            RotateFreeViewCamera();
         }
     }
 
@@ -80,10 +88,27 @@ public class PlayerCameraBehavior : NetworkBehaviour
         transform.rotation = Quaternion.Euler(0f, horizontalRotation, 0f);
     }
 
+    void RotateFreeViewCamera()
+    {
+        // Handle horizontal and vertical rotation independently of the player
+        float horizontalMouseInput = Input.GetAxis("Mouse X") * 5;
+        float verticalMouseInput = Input.GetAxis("Mouse Y") * 5;
+
+        // Update rotations based on input
+        horizontalRotation += horizontalMouseInput;
+        verticalRotation -= verticalMouseInput;
+        verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
+
+        // Apply the rotation to the camera
+        freeViewCamera.transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
+    }
+
     public void EnableSpectatorMode()
     {
         freeViewCamera.gameObject.SetActive(true);
         freeViewCamera.Priority = 1;
+        firstPersonCamera.Priority = 0;
+        isometricCamera.Priority = 0;
     }
 
 

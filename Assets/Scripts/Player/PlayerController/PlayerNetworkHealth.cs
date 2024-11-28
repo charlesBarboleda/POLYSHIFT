@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -17,9 +18,12 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     PlayerCameraBehavior playerCameraBehavior;
     PlayerNetworkMovement playerNetworkMovement;
     PlayerStateController playerStateController;
+    PlayerNetworkRotation playerNetworkRotation;
+    [SerializeField] Image healthbarFill;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
         if (IsServer)
         {
             DamageReduction = 0;
@@ -30,14 +34,37 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             GameManager.Instance.AlivePlayers.Add(gameObject);
 
         }
-        animator.GetComponent<Animator>();
+
+        currentHealth.OnValueChanged += OnHealthChangedClientRpc;
+        maxHealth.OnValueChanged += OnHealthChangedClientRpc;
+
+        animator = GetComponent<Animator>();
+        playerStateController = GetComponent<PlayerStateController>();
+        playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerLobbyController = GetComponent<PlayerLobbyController>();
         playerCameraBehavior = GetComponent<PlayerCameraBehavior>();
+        playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
+
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+
+        currentHealth.OnValueChanged -= OnHealthChangedClientRpc;
+        maxHealth.OnValueChanged -= OnHealthChangedClientRpc;
 
     }
 
     void Update()
     {
+        if (IsLocalPlayer)
+        {
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                RequestTakeDamageServerRpc(99, NetworkManager.LocalClientId);
+            }
+        }
         if (!IsServer) return;
 
         if (IsDead) return;
@@ -46,6 +73,17 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         {
             RegenerateHealth(healthRegenRate.Value);
         }
+
+        if (currentHealth.Value < maxHealth.Value)
+        {
+            RegenerateHealth(healthRegenRate.Value);
+        }
+    }
+
+    [ClientRpc]
+    void OnHealthChangedClientRpc(float oldHealth, float newHealth)
+    {
+        healthbarFill.fillAmount = currentHealth.Value / maxHealth.Value;
     }
 
     [ServerRpc]
@@ -176,18 +214,37 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     public void HandleDeath(ulong clientId)
     {
-        Debug.Log("Player died");
         if (IsServer)
         {
             GameManager.Instance.SpawnedAllies.Remove(gameObject);
             GameManager.Instance.AlivePlayers.Remove(gameObject);
-            animator.SetTrigger("isDead");
 
         }
+
+        if (IsLocalPlayer)
+        {
+            DeathClientRpc();
+        }
+
+    }
+
+
+    [ClientRpc]
+    void DeathClientRpc()
+    {
+        animator.SetTrigger("isDead");
+        playerNetworkRotation.canRotate = false;
+        playerNetworkMovement.canMove = false;
+        StartCoroutine(DeathCoroutine());
+    }
+    IEnumerator DeathCoroutine()
+    {
+        // Wait for the animation to finish
+        yield return new WaitForSeconds(2f);
         if (IsOwner)
         {
             playerStateController.SetPlayerStateServerRpc(PlayerState.Dead);
-            playerCameraBehavior.EnableSpectatorMode();
+
         }
     }
 

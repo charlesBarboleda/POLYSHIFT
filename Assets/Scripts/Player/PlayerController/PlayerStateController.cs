@@ -1,3 +1,5 @@
+using DG.Tweening;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,14 +12,29 @@ public enum PlayerState
 public class PlayerStateController : NetworkBehaviour
 {
     public NetworkVariable<PlayerState> playerState = new NetworkVariable<PlayerState>(PlayerState.Lobby, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    PlayerNetworkMovement movement;
+
+    [Header("Components")]
+    Rigidbody rb;
+    PlayerCameraBehavior playerCameraBehavior;
+    SkinnedMeshRenderer skinnedMeshRenderer;
+    Animator animator;
+    [Header("UI")]
+    [SerializeField] TMP_Text youDiedText;
+    [SerializeField] GameObject firstPersonCanvas;
+    [SerializeField] GameObject infoCanvas;
+    [SerializeField] GameObject hotbarUI;
+
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
             playerState.Value = PlayerState.Lobby;
         }
+        rb = GetComponent<Rigidbody>();
+        playerCameraBehavior = GetComponent<PlayerCameraBehavior>();
+        skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void SetPlayerStateServerRpc(PlayerState state)
@@ -30,11 +47,32 @@ public class PlayerStateController : NetworkBehaviour
                 // Set player-related lobby logic here
                 break;
             case PlayerState.Alive:
-                // Set player-related alive logic here
+                rb.isKinematic = false;
                 break;
             case PlayerState.Dead:
-                // Set player-related dead logic here
+                youDiedText.gameObject.SetActive(true);
+                youDiedText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+
+                rb.isKinematic = true;
+
+                firstPersonCanvas.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+                {
+                    firstPersonCanvas.SetActive(false);
+                });
+
+                hotbarUI.SetActive(false);
+
+                infoCanvas.SetActive(false);
+
+                playerCameraBehavior.EnableSpectatorMode();
+
+                animator.enabled = false;
+
+                skinnedMeshRenderer.gameObject.transform.SetParent(null);
+
                 break;
         }
     }
+
+
 }
