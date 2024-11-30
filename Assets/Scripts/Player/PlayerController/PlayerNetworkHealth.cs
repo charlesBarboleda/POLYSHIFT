@@ -20,6 +20,9 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     PlayerStateController playerStateController;
     PlayerNetworkRotation playerNetworkRotation;
     [SerializeField] Image healthbarFill;
+    [SerializeField] GameObject hotbarUI;
+    [SerializeField] GameObject infoCanvas;
+    [SerializeField] GameObject firstPersonCanvas;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -58,13 +61,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     void Update()
     {
-        if (IsLocalPlayer)
-        {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                RequestTakeDamageServerRpc(99, NetworkManager.LocalClientId);
-            }
-        }
         if (!IsServer) return;
 
         if (IsDead) return;
@@ -207,6 +203,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             {
                 HandleDeath(clientId);
                 IsDead = true;
+                currentHealth.Value = 0;
                 EventManager.Instance.PlayerDeathEvent(this);
             }
         }
@@ -221,17 +218,16 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
         }
 
-        if (IsLocalPlayer)
-        {
-            DeathClientRpc();
-        }
 
+        DeathEffectClientRpc();
     }
 
 
     [ClientRpc]
-    void DeathClientRpc()
+    void DeathEffectClientRpc()
     {
+        hotbarUI.SetActive(false);
+        infoCanvas.SetActive(false);
         animator.SetTrigger("isDead");
         playerNetworkRotation.canRotate = false;
         playerNetworkMovement.canMove = false;
@@ -241,11 +237,10 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     {
         // Wait for the animation to finish
         yield return new WaitForSeconds(2f);
-        if (IsOwner)
-        {
-            playerStateController.SetPlayerStateServerRpc(PlayerState.Dead);
 
-        }
+        playerStateController.SetPlayerStateServerRpc(PlayerState.Dead);
+
+
     }
 
     public void Respawn()

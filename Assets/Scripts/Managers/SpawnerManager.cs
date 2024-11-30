@@ -52,8 +52,8 @@ public class SpawnerManager : NetworkBehaviour
     void SetEnemies()
     {
         int gameLevel = GameManager.Instance.GameLevel.Value;
-        int playersConnected = GameManager.Instance.AlivePlayers.Count;
-        EnemiesToSpawn = gameLevel * 5 * playersConnected;
+        int playersAlive = GameManager.Instance.AlivePlayers.Count;
+        EnemiesToSpawn = gameLevel * 5 * playersAlive;
         SpawnRate = Mathf.Max(0.05f, 2f - gameLevel * 0.05f);
 
         UpdateSpawnProbabilitiesForLevel(gameLevel);

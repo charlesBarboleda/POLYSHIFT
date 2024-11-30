@@ -16,7 +16,6 @@ public class JumperEnemy : Enemy
     {
         base.OnNetworkSpawn();
         enemyType = EnemyType.Melee;
-        animator = GetComponent<Animator>();
 
         if (IsServer)
         {
@@ -24,7 +23,7 @@ public class JumperEnemy : Enemy
             health.MaxHealth += GameManager.Instance.GameLevel.Value;
             health.CurrentHealth.Value = health.MaxHealth;
             attackDamage += GameManager.Instance.GameLevel.Value * 0.01f;
-
+            health.ExperienceDrop += GameManager.Instance.GameLevel.Value;
         }
     }
 

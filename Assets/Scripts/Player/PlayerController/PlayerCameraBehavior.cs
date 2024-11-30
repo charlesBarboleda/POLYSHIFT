@@ -105,11 +105,14 @@ public class PlayerCameraBehavior : NetworkBehaviour
 
     public void EnableSpectatorMode()
     {
+        if (!IsOwner) return; // Only allow the owning player to adjust the spectator mode
+
         freeViewCamera.gameObject.SetActive(true);
         freeViewCamera.Priority = 1;
         firstPersonCamera.Priority = 0;
         isometricCamera.Priority = 0;
     }
+
 
 
     public void EnableFirstPersonCamera()

@@ -7217,6 +7217,9 @@ MonoBehaviour:
   DamageReduction: 0
   IsDead: 0
   healthbarFill: {fileID: 333921539961543992}
+  hotbarUI: {fileID: 1870046718290805530}
+  infoCanvas: {fileID: 1276427289537575300}
+  firstPersonCanvas: {fileID: 2448210542121795043}
 --- !u!114 &4552583738861525909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7789,6 +7792,7 @@ MonoBehaviour:
   - ArcaneBladeVortex
   - LifeSurge
   - Overload
+  - Death
 --- !u!114 &6441736105564417975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8100,6 +8104,8 @@ MonoBehaviour:
   firstPersonCanvas: {fileID: 2448210542121795043}
   infoCanvas: {fileID: 1276427289537575300}
   hotbarUI: {fileID: 1870046718290805530}
+  bodyMesh: {fileID: 7528016679747395621}
+  bodyRoot: {fileID: 5067083951494717544}
 --- !u!1 &8981931978188997259
 GameObject:
   m_ObjectHideFlags: 0

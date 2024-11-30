@@ -26,7 +26,7 @@ public class AIKinematics : NetworkBehaviour
         animator = GetComponent<Animator>();
         lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<AIPath>();
-
+        InvokeRepeating("TeleportIfStuck", 5f, 5f);
 
     }
 
@@ -56,19 +56,52 @@ public class AIKinematics : NetworkBehaviour
         Agent.maxSpeed = MoveSpeed;
 
     }
+    void RepositionToNearestValidNode()
+    {
+        // Ensure the A* Pathfinding system is active
+        if (AstarPath.active == null)
+        {
+            Debug.LogError("A* Pathfinding is not active!");
+            return;
+        }
+
+        // Get the grid graph
+        GridGraph gridGraph = AstarPath.active.data.gridGraph;
+        if (gridGraph == null)
+        {
+            Debug.LogError("No GridGraph found in the A* Pathfinding setup!");
+            return;
+        }
+
+        // Get the nearest valid node to the current position
+        var nearestNodeInfo = gridGraph.GetNearest(transform.position, NNConstraint.Default);
+        var nearestNodePosition = (Vector3)nearestNodeInfo.node.position;
+
+        // Check if the node is walkable
+        if (nearestNodeInfo.node.Walkable)
+        {
+            // Teleport the AI to the nearest walkable node position
+            transform.position = nearestNodePosition;
+        }
+        else
+        {
+            Debug.LogWarning("No walkable node found nearby.");
+        }
+    }
+
 
     void TeleportIfStuck()
     {
-
+        StartCoroutine(CheckIfStuck());
     }
 
     IEnumerator CheckIfStuck()
     {
         Vector3 lastPosition = transform.position;
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         if (Vector3.Distance(transform.position, lastPosition) < 0.5f)
         {
-            transform.position = ClosestPlayer.position;
+            RepositionToNearestValidNode();
         }
     }
 
@@ -115,5 +148,11 @@ public class AIKinematics : NetworkBehaviour
     public void MoveSpeedIncreaseBy(float amount)
     {
         MoveSpeed += amount;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        CancelInvoke();
     }
 }

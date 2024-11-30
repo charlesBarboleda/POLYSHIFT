@@ -26,6 +26,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         if (IsServer)
         {
             CurrentHealth.Value = MaxHealth;
+            UpdateHealthbar(MaxHealth, MaxHealth);
         }
         IsDead = false;
         animator = GetComponent<Animator>();

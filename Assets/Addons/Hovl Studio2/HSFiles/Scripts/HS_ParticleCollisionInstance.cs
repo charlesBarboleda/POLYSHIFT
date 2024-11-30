@@ -1,48 +1,74 @@
-/*This script created by using docs.unity3d.com/ScriptReference/MonoBehaviour.OnParticleCollision.html*/
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 
 public class HS_ParticleCollisionInstance : MonoBehaviour
 {
-    public GameObject[] EffectsOnCollision;
-    public float DestroyTimeDelay = 5;
-    public bool UseWorldSpacePosition;
-    public float Offset = 0;
-    public Vector3 rotationOffset = new Vector3(0,0,0);
+    public float Damage;
+    public string effectName;
+    public bool UseWorldSpacePosition = false;
+    public float Offset = 0f;
+    public Vector3 rotationOffset = Vector3.zero;
     public bool useOnlyRotationOffset = true;
-    public bool UseFirePointRotation;
-    public bool DestoyMainEffect = false;
+    public bool UseFirePointRotation = false;
+    public bool DestroyMainEffect = false;
+
     private ParticleSystem part;
     private List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
-    private ParticleSystem ps;
 
     void Start()
     {
         part = GetComponent<ParticleSystem>();
     }
+
     void OnParticleCollision(GameObject other)
-    {      
-        int numCollisionEvents = part.GetCollisionEvents(other, collisionEvents);     
+    {
+        int numCollisionEvents = part.GetCollisionEvents(other, collisionEvents);
+
         for (int i = 0; i < numCollisionEvents; i++)
         {
-            foreach (var effect in EffectsOnCollision)
+            // Spawn visual effect
+            var spawnPosition = collisionEvents[i].intersection + collisionEvents[i].normal * Offset;
+            var instance = ObjectPooler.Instance.Spawn(effectName, spawnPosition, Quaternion.identity) as GameObject;
+
+            // Apply damage
+            if (Physics.SphereCast(spawnPosition, 2f, collisionEvents[i].normal, out RaycastHit hit, 0.1f))
             {
-                var instance = Instantiate(effect, collisionEvents[i].intersection + collisionEvents[i].normal * Offset, new Quaternion()) as GameObject;
-                if (!UseWorldSpacePosition) instance.transform.parent = transform;
-                if (UseFirePointRotation) { instance.transform.LookAt(transform.position); }
-                else if (rotationOffset != Vector3.zero && useOnlyRotationOffset) { instance.transform.rotation = Quaternion.Euler(rotationOffset); }
-                else
+                var damageable = hit.transform.GetComponent<IDamageable>();
+                if (damageable != null)
                 {
-                    instance.transform.LookAt(collisionEvents[i].intersection + collisionEvents[i].normal);
-                    instance.transform.rotation *= Quaternion.Euler(rotationOffset);
+                    damageable.RequestTakeDamageServerRpc(Damage, 0);
                 }
-                Destroy(instance, DestroyTimeDelay);
+            }
+
+            // Adjust rotation
+            if (!UseWorldSpacePosition) instance.transform.parent = transform;
+            if (UseFirePointRotation)
+            {
+                instance.transform.LookAt(transform.position);
+            }
+            else if (rotationOffset != Vector3.zero && useOnlyRotationOffset)
+            {
+                instance.transform.rotation = Quaternion.Euler(rotationOffset);
+            }
+            else
+            {
+                instance.transform.LookAt(spawnPosition + collisionEvents[i].normal);
+                instance.transform.rotation *= Quaternion.Euler(rotationOffset);
             }
         }
-        if (DestoyMainEffect == true)
+
+        // Despawn particle system if required
+        if (DestroyMainEffect)
         {
-            Destroy(gameObject, DestroyTimeDelay + 0.5f);
+            if (TryGetComponent(out NetworkObject networkObject))
+            {
+                networkObject.Despawn(false);
+            }
+
+            ObjectPooler.Instance.Despawn(effectName, gameObject);
         }
+
+        collisionEvents.Clear();
     }
 }

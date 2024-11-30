@@ -16,13 +16,17 @@ public class PlayerStateController : NetworkBehaviour
     [Header("Components")]
     Rigidbody rb;
     PlayerCameraBehavior playerCameraBehavior;
-    SkinnedMeshRenderer skinnedMeshRenderer;
+    PlayerWeapon playerWeapon;
+    PlayerSkills playerSkills;
     Animator animator;
     [Header("UI")]
     [SerializeField] TMP_Text youDiedText;
     [SerializeField] GameObject firstPersonCanvas;
     [SerializeField] GameObject infoCanvas;
     [SerializeField] GameObject hotbarUI;
+    [SerializeField] GameObject bodyMesh;
+    [SerializeField] GameObject bodyRoot;
+
 
     public override void OnNetworkSpawn()
     {
@@ -30,49 +34,70 @@ public class PlayerStateController : NetworkBehaviour
         {
             playerState.Value = PlayerState.Lobby;
         }
+        playerState.OnValueChanged += OnPlayerStateChanged;
+
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
         playerCameraBehavior = GetComponent<PlayerCameraBehavior>();
-        skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        playerWeapon = GetComponent<PlayerWeapon>();
+        playerSkills = GetComponent<PlayerSkills>();
     }
 
-
     [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerStateServerRpc(PlayerState state)
+    public void SetPlayerStateServerRpc(PlayerState newState)
     {
-        playerState.Value = state;
+        playerState.Value = newState;
+    }
 
-        switch (state)
+    void OnPlayerStateChanged(PlayerState previousState, PlayerState newState)
+    {
+        if (newState == PlayerState.Dead)
         {
-            case PlayerState.Lobby:
-                // Set player-related lobby logic here
-                break;
-            case PlayerState.Alive:
-                rb.isKinematic = false;
-                break;
-            case PlayerState.Dead:
-                youDiedText.gameObject.SetActive(true);
-                youDiedText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
-
-                rb.isKinematic = true;
-
-                firstPersonCanvas.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
-                {
-                    firstPersonCanvas.SetActive(false);
-                });
-
-                hotbarUI.SetActive(false);
-
-                infoCanvas.SetActive(false);
-
-                playerCameraBehavior.EnableSpectatorMode();
-
-                animator.enabled = false;
-
-                skinnedMeshRenderer.gameObject.transform.SetParent(null);
-
-                break;
+            HandleDeathState();
+        }
+        else if (newState == PlayerState.Alive)
+        {
+            HandleAliveState();
         }
     }
 
+    void HandleDeathState()
+    {
+        youDiedText.gameObject.SetActive(true);
+        youDiedText.GetComponent<CanvasGroup>()?.DOFade(1, 0.5f);
 
+        firstPersonCanvas.GetComponent<CanvasGroup>()?.DOFade(0, 0.5f).OnComplete(() =>
+        {
+            firstPersonCanvas.SetActive(false);
+        });
+
+        bodyMesh.SetActive(false);
+        bodyRoot.SetActive(false);
+
+        rb.isKinematic = true;
+
+        playerCameraBehavior.EnableSpectatorMode();
+
+        animator.enabled = false;
+        playerWeapon.enabled = false;
+        playerSkills.enabled = false;
+    }
+
+    void HandleAliveState()
+    {
+        youDiedText.gameObject.SetActive(false);
+        firstPersonCanvas.SetActive(true);
+        hotbarUI.SetActive(true);
+        infoCanvas.SetActive(true);
+
+        rb.isKinematic = false;
+        animator.enabled = true;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        playerState.OnValueChanged -= OnPlayerStateChanged;
+
+
+    }
 }

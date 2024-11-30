@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using Pathfinding;
+using UnityEngine.UIElements;
 
 public enum EnemyType
 {
@@ -41,7 +42,7 @@ public abstract class Enemy : NetworkBehaviour
         TryGetComponent(out enemyMovement);
         TryGetComponent(out networkObject);
         agent = GetComponent<AIPath>();
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>();
         StartCoroutine(AttackGracePeriod());
         if (enemyMovement != null)
         {
@@ -59,29 +60,33 @@ public abstract class Enemy : NetworkBehaviour
 
         if (IsServer)
         {
+
             ClosestTarget = enemyMovement.ClosestPlayer;
             if (ClosestTarget != null)
             {
-                agent.destination = ClosestTarget.position;
 
-                // Check if agent is close to the target
-                if (agent.reachedDestination)
+                float flatDistance = Vector3.Distance(
+                    new Vector3(agent.destination.x, transform.position.y, agent.destination.z),
+                    transform.position
+                );
+
+                if (flatDistance <= agent.endReachedDistance)
                 {
-                    // Stop the agent when within range
                     agent.isStopped = true;
+                    RotateTowardsTarget();
 
-                    // Perform attack if cooldown has reset
                     if (elapsedCooldown <= 0 && canAttack)
                     {
+
                         Attack();
                         elapsedCooldown = attackCooldown;
                     }
                 }
                 else
                 {
-                    // Resume movement if the target is far
                     agent.isStopped = false;
                 }
+
             }
 
             // Update cooldown timer
@@ -90,6 +95,13 @@ public abstract class Enemy : NetworkBehaviour
                 elapsedCooldown -= Time.deltaTime;
             }
         }
+    }
+
+    void RotateTowardsTarget()
+    {
+        Vector3 direction = (ClosestTarget.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
     }
 
     IEnumerator AttackGracePeriod()
@@ -114,13 +126,14 @@ public abstract class Enemy : NetworkBehaviour
     IEnumerator SpawnBloodSplatterCoroutine(Vector3 hitPoint, Vector3 hitNormal)
     {
         // Instantiate the blood splatter effect locally on each client
-        GameObject bloodSplatter = ObjectPooler.Instance.Spawn(bloodSplatterEffects[Random.Range(0, bloodSplatterEffects.Count)], hitPoint, Quaternion.identity);
+        int randomIndex = Random.Range(0, bloodSplatterEffects.Count);
+        GameObject bloodSplatter = ObjectPooler.Instance.Spawn(bloodSplatterEffects[randomIndex], hitPoint, Quaternion.identity);
         bloodSplatter.transform.position = hitPoint;
         bloodSplatter.transform.rotation = Quaternion.LookRotation(hitNormal);
 
         yield return new WaitForSeconds(3f);
         // Optionally, destroy after a short time to prevent clutter
-        ObjectPooler.Destroy(bloodSplatter);
+        ObjectPooler.Instance.Despawn(bloodSplatterEffects[randomIndex], bloodSplatter);
     }
 
 

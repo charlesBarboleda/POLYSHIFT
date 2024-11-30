@@ -14,7 +14,6 @@ public class MeleeEnemy : Enemy
     {
         base.OnNetworkSpawn();
         enemyType = EnemyType.Melee;
-        animator = GetComponent<Animator>();
 
         if (IsServer)
         {
@@ -22,7 +21,7 @@ public class MeleeEnemy : Enemy
             health.MaxHealth += GameManager.Instance.GameLevel.Value * 3;
             health.CurrentHealth.Value = health.MaxHealth;
             attackDamage += GameManager.Instance.GameLevel.Value;
-
+            health.ExperienceDrop += GameManager.Instance.GameLevel.Value;
         }
     }
 
