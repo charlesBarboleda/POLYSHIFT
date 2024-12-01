@@ -17,7 +17,7 @@ public class PlayerNetworkRotation : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (!canRotate) return;
-        if (!playerNetworkMovement.IsIsometric)
+        if (!playerNetworkMovement.IsIsometric.Value)
         {
             RotatePlayerFirstPerson();
         }

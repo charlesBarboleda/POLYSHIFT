@@ -39,7 +39,7 @@ public class TitleScreenUIManager : MonoBehaviour
         titleCanvasGroup.alpha = 0;
         titleCanvasGroup.DOFade(1, 3f).OnComplete(() =>
         {
-            titleText.transform.DOMoveY(425f, 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+            titleText.rectTransform.DOAnchorPos(new Vector2(0, 120), 2).SetEase(Ease.InOutSine).OnComplete(() =>
             {
                 playButton.GetComponent<CanvasGroup>().DOFade(1, 1f);
             });

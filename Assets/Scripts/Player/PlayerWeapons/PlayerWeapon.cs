@@ -71,7 +71,7 @@ public class PlayerWeapon : NetworkBehaviour
 
                 _nextShotTime = Time.time + 1f * ShootRate;
                 currentAmmoCount--;
-                if (playerNetworkMovement.IsIsometric)
+                if (playerNetworkMovement.IsIsometric.Value)
                     currentWeaponBehavior.FireIsometric(this);
                 else
                     currentWeaponBehavior.FireFirstPerson(this);

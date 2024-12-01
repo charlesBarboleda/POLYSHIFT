@@ -6,7 +6,7 @@ public class PositionAtRaycast : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!playerNetworkMovement.IsIsometric)
+        if (!playerNetworkMovement.IsIsometric.Value)
         {
             PositionAtRaycastFirstPerson();
         }

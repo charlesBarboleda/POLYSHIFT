@@ -12,7 +12,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [Header("Player Movement")]
     public float GhostMoveSpeed = 6f;
     public float MoveSpeed = 2f;
-    public bool IsIsometric = false;
+    public VariableWithEvent<bool> IsIsometric = new VariableWithEvent<bool>(false);
     public bool canMove = true;
     private Animator animator;
     private PlayerNetworkRotation playerNetworkRotation;
@@ -81,7 +81,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     {
         Vector3 moveDirection;
 
-        if (!IsIsometric)
+        if (!IsIsometric.Value)
         {
             moveDirection = GetFirstPersonMoveDirection(inputDirection);
             Cursor.visible = false;

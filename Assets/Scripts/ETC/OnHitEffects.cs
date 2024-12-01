@@ -25,13 +25,13 @@ public class OnHitEffects : NetworkBehaviour
     IEnumerator HitEffectCoroutine()
     {
         // Scale up smoothly
-        transform.DOScale(transform.localScale * 1.03f, 0.1f);
+        transform.DOScale(transform.localScale * 1.06f, 0.1f);
 
         // Wait for 0.1 seconds (duration of scale tween)
         yield return new WaitForSeconds(0.1f);
 
         // Scale back down smoothly
-        transform.DOScale(transform.localScale / 1.03f, 0.1f);
+        transform.DOScale(transform.localScale / 1.06f, 0.1f);
 
         // Wait for the scale-down tween to finish
         yield return new WaitForSeconds(0.1f);

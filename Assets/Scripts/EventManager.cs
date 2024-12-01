@@ -33,9 +33,9 @@ public class EventManager : MonoBehaviour
         OnPlayerSpawnReference.Invoke(player);
     }
 
-    public void PerspectiveChange(bool isIsometric)
+    public void PerspectiveChange(bool IsIsometric)
     {
-        OnPerspectiveChange.Invoke(isIsometric);
+        OnPerspectiveChange.Invoke(IsIsometric);
     }
 
     public void EnemySpawnedEvent(Enemy enemy)

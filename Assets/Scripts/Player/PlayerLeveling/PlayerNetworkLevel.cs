@@ -21,6 +21,8 @@ public class PlayerNetworkLevel : NetworkBehaviour
     [SerializeField] SkillTreeManager skillTreeManager;
     [SerializeField] TMP_Text levelText;
     [SerializeField] Image experienceBar;
+    [SerializeField] Image firstPersonExperienceBar;
+    [SerializeField] TMP_Text firstPersonLevelText;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -47,12 +49,14 @@ public class PlayerNetworkLevel : NetworkBehaviour
     void UpdateLevelUIClientRpc(int prev, int current)
     {
         levelText.text = $"{current}";
+        firstPersonLevelText.text = $"LV. {current}";
     }
 
     [ClientRpc]
     void UpdateExperienceUIClientRpc(float prev, float current)
     {
         experienceBar.fillAmount = Experience.Value / NeededExperience.Value;
+        firstPersonExperienceBar.fillAmount = Experience.Value / NeededExperience.Value;
     }
 
     public void AddExperience(float experience)
