@@ -29372,15 +29372,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a959a1b0b8414d4fb8a68bdc12d69ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EffectsOnCollision:
-  - {fileID: 1029544359644514, guid: aab2daf1fd2b23f4a9bdbbb38fc95704, type: 3}
-  DestroyTimeDelay: 1
+  Damage: 0
+  effectName: 
   UseWorldSpacePosition: 1
   Offset: 0.1
   rotationOffset: {x: 0, y: 0, z: 0}
   useOnlyRotationOffset: 1
   UseFirePointRotation: 0
-  DestoyMainEffect: 0
+  DestroyMainEffect: 0
 --- !u!199 &199214229298909674
 ParticleSystemRenderer:
   serializedVersion: 6

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3348033264233414128}
   - component: {fileID: 3477112175316098970}
   - component: {fileID: 4093076376573266994}
+  - component: {fileID: -3834273749791197663}
   m_Layer: 0
   m_Name: House_13
   m_TagString: Untagged
@@ -123,7 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f481598c91753744ba63be7ba18ab670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  ShowTopMostFoldoutHeaderGroup: 1
+  destroyableSize: 0
+  MaxHealth: 0
 --- !u!114 &4093076376573266994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 431943135
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -149,3 +152,16 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &-3834273749791197663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3348033264233446319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b534f639c0045ea43b379bf479dc901c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1

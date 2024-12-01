@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3102328871694926780}
   - component: {fileID: 3102328871697226689}
   - component: {fileID: -785905082894034649}
+  - component: {fileID: -4220533187574022083}
   m_Layer: 0
   m_Name: Football
   m_TagString: Untagged
@@ -122,4 +123,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f481598c91753744ba63be7ba18ab670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  ShowTopMostFoldoutHeaderGroup: 1
+  destroyableSize: 0
+  MaxHealth: 0
+--- !u!114 &-4220533187574022083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3102328871697128828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b534f639c0045ea43b379bf479dc901c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1

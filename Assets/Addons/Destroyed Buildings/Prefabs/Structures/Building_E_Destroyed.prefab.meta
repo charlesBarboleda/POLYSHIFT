@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a59582db76a2f8446b3a828eb916cc67
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 253524
+  packageName: Low Poly Destroyed Buildings
+  packageVersion: 1.0
+  assetPath: Assets/Destroyed Buildings/Prefabs/Structures/Building_E_Destroyed.prefab
+  uploadId: 592756

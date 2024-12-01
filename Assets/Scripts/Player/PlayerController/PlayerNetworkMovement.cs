@@ -18,6 +18,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     private PlayerNetworkRotation playerNetworkRotation;
     private PlayerNetworkHealth playerNetworkHealth;
     private PlayerStateController state;
+    [SerializeField] GameObject skillTreeCanvas;
 
 
     private const float movementThreshold = 0.1f;
@@ -84,7 +85,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
         if (!IsIsometric.Value)
         {
             moveDirection = GetFirstPersonMoveDirection(inputDirection);
-            Cursor.visible = false;
+
+            Cursor.visible = skillTreeCanvas.activeSelf;
             Cursor.lockState = CursorLockMode.Confined;
         }
         else
