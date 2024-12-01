@@ -34,16 +34,12 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        Debug.Log($"Golem spawned on {(IsServer ? "Server" : "Client")} with ClientID: {NetworkManager.Singleton.LocalClientId}. Owner: {GetComponent<NetworkObject>().OwnerClientId}");
         // Initialize components for both server and client
         Animator = GetComponent<Animator>();
-        Debug.Log($"Animator is {(Animator == null ? "null" : "not null")}");
         Agent = GetComponent<AIPath>();
-        Debug.Log($"Agent is {(Agent == null ? "null" : "not null")}");
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
 
-        Debug.Log("Golem spawned");
 
         // Health UI update for all instances
         healthFill.fillAmount = CurrentHealth.Value / MaxHealth.Value;
@@ -52,7 +48,6 @@ public abstract class Golem : NetworkBehaviour, IDamageable
         // Only run server-specific setup
         if (IsServer)
         {
-            Debug.Log("Golem is server side");
 
             // Server-only setup
             CurrentHealth.Value = MaxHealth.Value;
@@ -86,11 +81,11 @@ public abstract class Golem : NetworkBehaviour, IDamageable
             {
 
                 if (Agent != null)
-                    Agent.destination = Owner.transform.position + transform.forward * 5f;
+                    Agent.destination = Owner.transform.position + -transform.forward * 8f;
 
                 if (distanceToOwner > 30f)
                 {
-                    transform.position = Owner.transform.position + transform.forward * 5f; // Teleport to owner if too far
+                    transform.position = Owner.transform.position + -transform.forward * 8f; // Teleport to owner if too far
                 }
             }
             else
@@ -109,7 +104,6 @@ public abstract class Golem : NetworkBehaviour, IDamageable
                         if (elapsedCooldown <= 0 && CanAttack)
                         {
                             // Stop and attack
-                            Debug.Log("In attack range");
                             FaceTarget();
                             Agent.isStopped = true;
                             Attack();

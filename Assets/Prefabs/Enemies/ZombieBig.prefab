@@ -489,7 +489,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1512476592110436899}
   - component: {fileID: 5309221088555987894}
-  - component: {fileID: 2795991127634313981}
+  - component: {fileID: 6489348700450661390}
   m_Layer: 7
   m_Name: Zombie_Cartoon_ArtStore3D
   m_TagString: Untagged
@@ -505,13 +505,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2131586636054344932}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -0.017, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.00984472, w: 0.9999516}
+  m_LocalPosition: {x: -0, y: 0.491, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 68310808725374813}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 1.128}
 --- !u!137 &5309221088555987894
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -627,10 +627,10 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 8908982375159131358}
   m_AABB:
-    m_Center: {x: -0.103028506, y: -0.08699161, z: 0.06559417}
-    m_Extent: {x: 0.7064996, y: 1.0372643, z: 0.2541846}
+    m_Center: {x: -0.103028536, y: -0.09247172, z: 0.06559417}
+    m_Extent: {x: 0.7064996, y: 1.0317842, z: 0.2541846}
   m_DirtyAABB: 0
---- !u!65 &2795991127634313981
+--- !u!65 &6489348700450661390
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -649,8 +649,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6673765, y: 0.28552297, z: 0.5030569}
-  m_Center: {x: -0.015448093, y: 0.64, z: 0.062938035}
+  m_Size: {x: 0.6598693, y: 0.32318598, z: 0.50661427}
+  m_Center: {x: -0.044050477, y: -0.17000325, z: -0.1399278}
 --- !u!1 &2252938243618085888
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,9 +927,10 @@ GameObject:
   - component: {fileID: 2645762297186770900}
   - component: {fileID: 5113101919023726967}
   - component: {fileID: 5588953981742103810}
-  - component: {fileID: 6816751214802421365}
-  - component: {fileID: 4632008771931510260}
   - component: {fileID: 7398882635146020654}
+  - component: {fileID: 8652866320462619837}
+  - component: {fileID: 8685428883562334900}
+  - component: {fileID: 4461120697114359616}
   m_Layer: 7
   m_Name: ZombieBig
   m_TagString: Enemy
@@ -1375,6 +1376,16 @@ MonoBehaviour:
   debuffs: []
   attackCooldown: 3
   canAttack: 0
+  attackSounds:
+  - {fileID: 8300000, guid: fafe06e9adbdba24c9db9cfc565c814c, type: 3}
+  - {fileID: 8300000, guid: 9e4011a99791cbc4aaefd4c07a521b26, type: 3}
+  - {fileID: 8300000, guid: ec9365a3e8cbbb049a1409fe5a6dfba3, type: 3}
+  - {fileID: 8300000, guid: 57c8833fcab3e2a41a68d03c796db553, type: 3}
+  movementSounds:
+  - {fileID: 8300000, guid: 223c29f68fde97d46ae2b0ff6deff63d, type: 3}
+  - {fileID: 8300000, guid: 6743a93d270e65a40bbd7dcdf0894948, type: 3}
+  - {fileID: 8300000, guid: e4562288991bf254b9cfc03450bca709, type: 3}
+  - {fileID: 8300000, guid: 3833780cd4aa180499f9fe3c9e0a743f, type: 3}
   attackRange: 3
   attackDamage: 30
 --- !u!136 &5588953981742103810
@@ -1400,7 +1411,117 @@ CapsuleCollider:
   m_Height: 1.84
   m_Direction: 1
   m_Center: {x: 0, y: 1.07, z: 0}
---- !u!114 &6816751214802421365
+--- !u!114 &7398882635146020654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3227787598189730512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9306687927c980a4d815d7aebfa64b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debuffs: []
+--- !u!82 &8652866320462619837
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3227787598189730512}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0.05
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &8685428883562334900
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1428,7 +1549,7 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!114 &4632008771931510260
+--- !u!114 &4461120697114359616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1441,8 +1562,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 0.5
-  height: 2
+  radius: 0.51
+  height: 1.83
   canMove: 1
   maxSpeed: 20
   gravity: {x: NaN, y: NaN, z: NaN}
@@ -1470,19 +1591,6 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
---- !u!114 &7398882635146020654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3227787598189730512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9306687927c980a4d815d7aebfa64b76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debuffs: []
 --- !u!1 &3382776625891409302
 GameObject:
   m_ObjectHideFlags: 0

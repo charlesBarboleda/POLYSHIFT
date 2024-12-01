@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpawnerManager : NetworkBehaviour
@@ -40,6 +41,21 @@ public class SpawnerManager : NetworkBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    void Update()
+    {
+        if (IsServer)
+        {
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                GameObject zombie = ObjectPooler.Instance.Spawn("ZombieFast", spawnPositions[0].position, Quaternion.identity);
+                if (zombie.TryGetComponent(out NetworkObject networkObject))
+                {
+                    networkObject.Spawn();
+                }
+            }
         }
     }
 

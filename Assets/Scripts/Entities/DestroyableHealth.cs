@@ -12,17 +12,24 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         Large
     }
     public DestroyableSize destroyableSize;
-    public float health = 1f;
+    public float MaxHealth;
+    public VariableWithEvent<float> health = new VariableWithEvent<float>();
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        health.Value = MaxHealth;
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void HealServerRpc(float healAmount)
     {
-        health += healAmount;
+        health.Value += healAmount;
     }
     public void TakeDamage(float damage, ulong instigator)
     {
-        health -= 1;
-        if (health <= 0)
+        health.Value -= 1;
+        if (health.Value <= 0)
         {
             HandleDeath(instigator);
         }

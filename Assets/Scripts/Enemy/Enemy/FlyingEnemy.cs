@@ -20,7 +20,7 @@ public class FlyingEnemy : Enemy
             health = GetComponent<EnemyNetworkHealth>();
             health.MaxHealth += GameManager.Instance.GameLevel.Value * 5;
             health.CurrentHealth.Value = health.MaxHealth;
-            attackDamage += GameManager.Instance.GameLevel.Value * 3;
+            attackDamage += GameManager.Instance.GameLevel.Value * 5;
             health.ExperienceDrop += GameManager.Instance.GameLevel.Value;
 
         }

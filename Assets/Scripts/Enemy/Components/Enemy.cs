@@ -28,7 +28,11 @@ public abstract class Enemy : NetworkBehaviour
     public List<Debuff> debuffs = new List<Debuff>();
     public float attackCooldown = 3f;
     public bool canAttack = false;
+    public List<AudioClip> attackSounds = new List<AudioClip>();
+    public List<AudioClip> movementSounds = new List<AudioClip>();
+
     private float elapsedCooldown = 0f;
+    private AudioSource audioSource;
     private List<string> bloodSplatterEffects = new List<string> { "BloodSplatter1", "BloodSplatter2", "BloodSplatter3", "BloodSplatter4", "BloodSplatter5" };
 
     protected abstract void Attack();
@@ -41,6 +45,7 @@ public abstract class Enemy : NetworkBehaviour
         TryGetComponent(out enemyHealth);
         TryGetComponent(out enemyMovement);
         TryGetComponent(out networkObject);
+        TryGetComponent(out audioSource);
         agent = GetComponent<AIPath>();
         animator = GetComponent<Animator>();
         StartCoroutine(AttackGracePeriod());
@@ -52,7 +57,13 @@ public abstract class Enemy : NetworkBehaviour
         {
             Debug.LogError("Enemy Movement is null");
         }
-        GameManager.Instance.SpawnedEnemies.Add(this);
+        if (IsServer)
+        {
+            GameManager.Instance.SpawnedEnemies.Add(this);
+        }
+
+        InvokeRepeating("PlayRandomMovementSound", 5f, 10f);
+
 
     }
     protected virtual void Update()
@@ -74,10 +85,9 @@ public abstract class Enemy : NetworkBehaviour
                 {
                     agent.isStopped = true;
                     RotateTowardsTarget();
-
+                    PlayRandomAttackSound();
                     if (elapsedCooldown <= 0 && canAttack)
                     {
-
                         Attack();
                         elapsedCooldown = attackCooldown;
                     }
@@ -134,6 +144,30 @@ public abstract class Enemy : NetworkBehaviour
         yield return new WaitForSeconds(3f);
         // Optionally, destroy after a short time to prevent clutter
         ObjectPooler.Instance.Despawn(bloodSplatterEffects[randomIndex], bloodSplatter);
+    }
+
+    void PlayRandomMovementSound()
+    {
+        if (movementSounds.Count > 0)
+        {
+            int randomIndex = Random.Range(0, movementSounds.Count);
+            audioSource.PlayOneShot(movementSounds[randomIndex]);
+        }
+    }
+
+    void PlayRandomAttackSound()
+    {
+        if (attackSounds.Count > 0)
+        {
+            int randomIndex = Random.Range(0, attackSounds.Count);
+            audioSource.PlayOneShot(attackSounds[randomIndex]);
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        CancelInvoke();
     }
 
 

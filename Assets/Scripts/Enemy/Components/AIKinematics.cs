@@ -46,8 +46,6 @@ public class AIKinematics : NetworkBehaviour
 
         if (!Agent.hasPath)
         {
-
-            Debug.LogWarning("Agent has no path!");
             transform.position = Vector3.MoveTowards(transform.position, ClosestPlayer.position, MoveSpeed * Time.deltaTime);
         }
 
@@ -145,9 +143,13 @@ public class AIKinematics : NetworkBehaviour
 
     }
 
-    public void MoveSpeedIncreaseBy(float amount)
+    public void MoveSpeedIncreaseByPercentage(float amount)
     {
-        MoveSpeed += amount;
+        MoveSpeed += MoveSpeed * amount;
+    }
+    public void MoveSpeedDecreaseByPercentage(float amount)
+    {
+        MoveSpeed -= MoveSpeed * amount;
     }
 
     public override void OnNetworkDespawn()

@@ -47,16 +47,16 @@ public class TempestGolem : Golem
             {
                 // Apply the debuff
                 var enemyMovement = enemy.GetComponent<AIKinematics>();
-                enemyMovement.MoveSpeedIncreaseBy(-3f);
+                enemyMovement.MoveSpeedDecreaseByPercentage(1.5f);
+
 
                 enemiesWithDebuff.Add(enemy); // Track this enemy as having the debuff
             }
             else if ((!isInRange && enemiesWithDebuff.Contains(enemy)) || IsDead)
             {
                 // Remove the debuff
-
                 var enemyMovement = enemy.GetComponent<AIKinematics>();
-                enemyMovement.MoveSpeedIncreaseBy(3f);
+                enemyMovement.MoveSpeedIncreaseByPercentage(1.5f);
 
                 enemiesWithDebuff.Remove(enemy); // Stop tracking this enemy
             }
