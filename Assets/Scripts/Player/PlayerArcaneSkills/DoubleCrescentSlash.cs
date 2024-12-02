@@ -3,6 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DoubleCrescentSlash", menuName = "Skills/DoubleCrescentSlash")]
 public class DoubleCrescentSlash : ActiveSkill
 {
+    public override void Initialize(Animator animator)
+    {
+        base.Initialize(animator);
+        Cooldown = 7f;
+    }
 
 
     public override void ExecuteAttack()

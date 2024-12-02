@@ -3,6 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ArcaneCleave", menuName = "Skills/ArcaneCleave", order = 1)]
 public class ArcaneCleave : ActiveSkill
 {
+    public override void Initialize(Animator animator)
+    {
+        base.Initialize(animator);
+        Cooldown = 12f;
+    }
     public override void ExecuteAttack()
     {
         if (OnCooldown)

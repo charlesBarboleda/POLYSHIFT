@@ -3,6 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ArcaneBarrier", menuName = "Skills/ArcaneBarrier", order = 1)]
 public class ArcaneBarrier : ActiveSkill
 {
+    public override void Initialize(Animator animator)
+    {
+        base.Initialize(animator);
+        Cooldown = 180f;
+    }
     public override void ExecuteAttack()
     {
         if (OnCooldown)

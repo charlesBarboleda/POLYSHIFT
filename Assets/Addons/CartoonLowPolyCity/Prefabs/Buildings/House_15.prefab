@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1566877731762475014}
   - component: {fileID: 1566877731763606214}
   - component: {fileID: 1566877731761572523}
-  - component: {fileID: 8000821108476784917}
   - component: {fileID: 7026764122010453908}
+  - component: {fileID: 8000821108476784917}
   - component: {fileID: 7782211557791365680}
   m_Layer: 0
   m_Name: House_15
@@ -112,21 +112,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 2eca3b7d07a6f20458afbfc519f1ac77, type: 3}
---- !u!114 &8000821108476784917
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1566877731761671174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f481598c91753744ba63be7ba18ab670, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  destroyableSize: 0
-  MaxHealth: 0
 --- !u!114 &7026764122010453908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +137,21 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &8000821108476784917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566877731761671174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f481598c91753744ba63be7ba18ab670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  destroyableSize: 0
+  MaxHealth: 0
 --- !u!114 &7782211557791365680
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -125,6 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  crackedMaterial: {fileID: 2100000, guid: c4a682571ae5cc64284105d75d31555a, type: 2}
   destroyableSize: 0
   MaxHealth: 0
 --- !u!114 &1366992947162896335

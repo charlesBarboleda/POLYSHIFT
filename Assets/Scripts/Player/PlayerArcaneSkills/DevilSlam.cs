@@ -3,6 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DevilSlam", menuName = "Skills/DevilSlam")]
 public class DevilSlam : ActiveSkill
 {
+    public override void Initialize(Animator animator)
+    {
+        base.Initialize(animator);
+        Cooldown = 300f;
+    }
     public override void ExecuteAttack()
     {
         if (OnCooldown)

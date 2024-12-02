@@ -3,6 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "RelentlessOnslaught", menuName = "Skills/RelentlessOnslaught")]
 public class RelentlessOnslaught : ActiveSkill
 {
+    public override void Initialize(Animator animator)
+    {
+        base.Initialize(animator);
+        Cooldown = 120f;
+    }
     public override void ExecuteAttack()
     {
         if (OnCooldown)
