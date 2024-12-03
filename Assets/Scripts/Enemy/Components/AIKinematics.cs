@@ -26,7 +26,7 @@ public class AIKinematics : NetworkBehaviour
         animator = GetComponent<Animator>();
         lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<AIPath>();
-        InvokeRepeating("TeleportIfStuck", 5f, 5f);
+        InvokeRepeating("TeleportIfStuck", 5f, 3f);
 
     }
 
@@ -71,19 +71,43 @@ public class AIKinematics : NetworkBehaviour
             return;
         }
 
-        // Get the nearest valid node to the current position
-        var nearestNodeInfo = gridGraph.GetNearest(transform.position, NNConstraint.Default);
-        var nearestNodePosition = (Vector3)nearestNodeInfo.node.position;
+        // Get the current position and facing direction
+        Vector3 currentPosition = transform.position;
+        Vector3 forwardDirection = transform.forward;
 
-        // Check if the node is walkable
-        if (nearestNodeInfo.node.Walkable)
+        float closestDistance = Mathf.Infinity;
+        Vector3 bestNodePosition = currentPosition;
+
+        // Iterate through the nodes in the grid graph
+        foreach (GraphNode node in gridGraph.nodes)
         {
-            // Teleport the AI to the nearest walkable node position
-            transform.position = nearestNodePosition;
+            if (!node.Walkable) continue; // Skip non-walkable nodes
+
+            Vector3 nodePosition = (Vector3)node.position;
+            Vector3 directionToNode = (nodePosition - currentPosition).normalized;
+
+            // Check if the node is in front of the AI
+            float dotProduct = Vector3.Dot(forwardDirection, directionToNode);
+            if (dotProduct < 0.5f) continue; // Only consider nodes with a forward-facing angle (dot > 0.5)
+
+            // Check the distance to the node
+            float distance = Vector3.Distance(currentPosition, nodePosition);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                bestNodePosition = nodePosition;
+            }
+        }
+
+        // Teleport the AI to the best node position found
+        if (closestDistance < Mathf.Infinity)
+        {
+            transform.position = bestNodePosition;
+            Debug.Log($"Teleported to nearest valid forward-facing node at {bestNodePosition}");
         }
         else
         {
-            Debug.LogWarning("No walkable node found nearby.");
+            Debug.LogWarning("No valid forward-facing walkable node found.");
         }
     }
 

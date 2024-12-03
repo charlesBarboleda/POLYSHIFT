@@ -1,42 +1,42 @@
-using Unity.AI.Navigation;
 using Unity.Netcode;
 using UnityEngine;
-using Pathfinding;
 using DestroyIt;
+using Pathfinding;
 
 public class DestroyableHealth : NetworkBehaviour, IDamageable
 {
-    public enum DestroyableSize
-    {
-        Small,
-        Medium,
-        Large
-    }
+    public enum DestroyableSize { Small, Medium, Large }
 
     public DestroyableSize destroyableSize;
     public float MaxHealth;
-    public VariableWithEvent<float> health = new VariableWithEvent<float>();
+    public NetworkVariable<float> Health = new NetworkVariable<float>();
 
     private Destructible destructible;
-
-    private void Awake()
+    void Awake()
     {
         destructible = GetComponent<Destructible>();
-        health.Value = MaxHealth;
+    }
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+            Health.Value = MaxHealth; // Initialize health on the server
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void HealServerRpc(float healAmount)
     {
-        health.Value += healAmount;
+        Health.Value += healAmount;
     }
 
     public void TakeDamage(float damage, ulong instigator)
     {
-        health.Value -= 1;
+        if (!IsServer)
+            return;
+
+        Health.Value -= 1;
         destructible?.ApplyDamage(1);
 
-        if (health.Value <= 0)
+        if (Health.Value <= 0)
         {
             HandleDeath(instigator);
         }
@@ -50,9 +50,14 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
 
     public void HandleDeath(ulong instigator)
     {
-        // Notify the Destructible script to handle destruction effects
+        if (!IsServer) return;
 
-        // Additional destruction logic
+        Debug.Log("Destroyable handle death started");
+        var networkObject = GetComponent<NetworkObject>();
+        if (networkObject == null || !networkObject.IsSpawned) return;
+
+        destructible?.Destroy();
+
         switch (destroyableSize)
         {
             case DestroyableSize.Small:
@@ -66,12 +71,10 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
                 break;
         }
 
-        // Update pathfinding graphs (if using A* Pathfinding)
         UpdateGraphs();
 
-        // Despawn and destroy the object
-        GetComponent<NetworkObject>().Despawn(true);
-        destructible?.Destroy();
+        if (networkObject.IsSpawned)
+            networkObject.Despawn(false);
     }
 
     private void SpawnEffect(string effectName)

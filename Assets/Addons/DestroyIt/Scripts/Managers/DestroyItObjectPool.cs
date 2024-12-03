@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -46,15 +47,15 @@ namespace DestroyIt
 
         public override void OnNetworkSpawn()
         {
-            if (isInitialized) return;
+            if (isInitialized || !IsServer) return;
             if (prefabsToPool == null) return;
 
-            // Check if the object pool container already exists. If so, use it.
+            // Check if the object pool container already exists. If not, create it.
             GameObject existingContainer = GameObject.Find("DestroyIt_ObjectPool");
             container = existingContainer != null ? existingContainer : new GameObject("DestroyIt_ObjectPool");
             container.SetActive(false);
 
-            autoPooledObjects = new Dictionary<int, GameObject>();
+            autoPooledObjects = autoPooledObjects ?? new Dictionary<int, GameObject>();
 
             Pool = new GameObject[prefabsToPool.Count][];
             for (int i = 0; i < prefabsToPool.Count; i++)
@@ -64,8 +65,9 @@ namespace DestroyIt
                 for (int n = 0; n < poolEntry.Count; n++)
                 {
                     if (poolEntry.Prefab == null) continue;
+
                     var newObj = Instantiate(poolEntry.Prefab);
-                    newObj.GetComponent<NetworkObject>().Spawn();
+                    newObj.GetComponent<NetworkObject>().Spawn(); // Always spawn on the server
                     newObj.name = poolEntry.Prefab.name;
                     PoolObject(newObj);
                 }
@@ -74,94 +76,16 @@ namespace DestroyIt
             CreateInstance();
         }
 
-        public void AddDestructibleObjectToPool(Destructible destObj)
-        {
-            if (autoPooledObjects.ContainsKey(destObj.GetInstanceID())) return;
 
-            if (destObj.destroyedPrefab != null && destObj.autoPoolDestroyedPrefab)
-            {
-                var newObj = Instantiate(destObj.destroyedPrefab);
-                newObj.GetComponent<NetworkObject>().Spawn();
-                newObj.transform.SetParent(container.transform, true);
 
-                Destructible[] destObjectsInObject = newObj.GetComponentsInChildren<Destructible>();
-                for (int i = 0; i < destObjectsInObject.Length; i++)
-                    AddDestructibleObjectToPool(destObjectsInObject[i]);
-
-                newObj.name = destObj.destroyedPrefab.name;
-                newObj.AddTag(Tag.Pooled);
-                DestructibleHelper.TransferMaterials(destObj, newObj);
-
-                ClingPoint[] clingPoints = newObj.GetComponentsInChildren<ClingPoint>();
-                if (clingPoints.Length == 0)
-                    destObj.CheckForClingingDebris = false;
-
-                destObj.PooledRigidbodies = newObj.GetComponentsInChildren<Rigidbody>();
-                destObj.PooledRigidbodyGos = new GameObject[destObj.PooledRigidbodies.Length];
-                for (int i = 0; i < destObj.PooledRigidbodies.Length; i++)
-                    destObj.PooledRigidbodyGos[i] = destObj.PooledRigidbodies[i].gameObject;
-
-                newObj.SetActive(false);
-                autoPooledObjects.Add(destObj.GetInstanceID(), newObj);
-            }
-        }
-
-        public GameObject SpawnFromOriginal(string prefabName)
-        {
-            foreach (PoolEntry entry in prefabsToPool)
-            {
-                if (entry.Prefab != null && entry.Prefab.name == prefabName)
-                {
-                    GameObject obj = Instantiate(entry.Prefab);
-                    obj.GetComponent<NetworkObject>().Spawn();
-                    obj.name = prefabName;
-                    return obj;
-                }
-            }
-            return null;
-        }
-
-        private static GameObject InstantiateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
-        {
-            GameObject obj = Instantiate(prefab, position, rotation);
-            obj.GetComponent<NetworkObject>().Spawn();
-
-            if (obj == null) return null;
-
-            if (parent != null && parent.gameObject.activeInHierarchy)
-            {
-                obj.transform.SetParent(parent, true);
-                obj.transform.localPosition = position;
-            }
-            else
-            {
-                obj.transform.SetParent(null);
-                obj.transform.position = position;
-            }
-
-            obj.transform.rotation = rotation;
-
-            return obj;
-        }
-
-        public GameObject Spawn(GameObject originalPrefab, Vector3 position, Quaternion rotation, Transform parent, int autoPoolID = 0)
+        public GameObject Spawn(GameObject originalPrefab, Vector3 position, Quaternion rotation, Transform parent = null, int autoPoolID = 0)
         {
             if (autoPooledObjects != null && autoPoolID != 0 && autoPooledObjects.ContainsKey(autoPoolID))
             {
                 GameObject pooledObj = autoPooledObjects[autoPoolID];
-                if (pooledObj != null)
+                if (pooledObj != null && !pooledObj.activeInHierarchy)
                 {
-                    if (parent != null && parent.gameObject.activeInHierarchy)
-                    {
-                        pooledObj.transform.SetParent(parent, true);
-                        pooledObj.transform.localPosition = position;
-                    }
-                    else
-                    {
-                        pooledObj.transform.SetParent(null);
-                        pooledObj.transform.position = position;
-                    }
-                    pooledObj.transform.rotation = rotation;
+                    SetObjectTransform(pooledObj, position, rotation, parent);
                     pooledObj.SetActive(true);
                     return pooledObj;
                 }
@@ -179,21 +103,11 @@ namespace DestroyIt
                 {
                     for (int j = 0; j < Pool[i].Length; j++)
                     {
-                        if (Pool[i][j] != null)
+                        if (Pool[i][j] != null && !Pool[i][j].activeInHierarchy) // Check if object is inactive
                         {
                             GameObject pooledObj = Pool[i][j];
                             Pool[i][j] = null;
-                            if (parent != null && parent.gameObject.activeInHierarchy)
-                            {
-                                pooledObj.transform.SetParent(parent, true);
-                                pooledObj.transform.localPosition = position;
-                            }
-                            else
-                            {
-                                pooledObj.transform.SetParent(null);
-                                pooledObj.transform.position = position;
-                            }
-                            pooledObj.transform.rotation = rotation;
+                            SetObjectTransform(pooledObj, position, rotation, parent);
                             pooledObj.SetActive(true);
                             return pooledObj;
                         }
@@ -208,51 +122,155 @@ namespace DestroyIt
                     return pooledObj;
                 }
             }
+
             return InstantiateObject(originalPrefab, position, rotation, parent);
         }
 
-        public GameObject Spawn(GameObject originalPrefab, Vector3 position, Quaternion rotation, int autoPoolID = 0)
-        {
-            return Spawn(originalPrefab, position, rotation, null, autoPoolID);
-        }
+
 
         public void PoolObject(GameObject obj, bool reenableChildren = false)
         {
-            for (int i = 0; i < prefabsToPool.Count; i++)
+            if (obj == null)
             {
-                if (prefabsToPool[i].Prefab == null || prefabsToPool[i].Prefab.name != obj.name) continue;
-
-                obj.transform.SetParent(container.transform, true);
-                ParticleSystem[] particleSystems = obj.GetComponentsInChildren<ParticleSystem>();
-                foreach (var ps in particleSystems)
-                {
-                    ps.Stop();
-                    ps.Clear();
-                    var emission = ps.emission;
-                    emission.enabled = true;
-                }
-                if (reenableChildren)
-                {
-                    foreach (Transform child in obj.GetComponentsInChildren<Transform>(true))
-                        child.gameObject.SetActive(true);
-                }
-
-                obj.AddTag(Tag.Pooled);
-                obj.SetActive(false);
-
-                for (int j = 0; j < Pool[i].Length; j++)
-                {
-                    if (Pool[i][j] == null)
-                    {
-                        Pool[i][j] = obj;
-                        return;
-                    }
-                }
-
-                Destroy(obj);
+                Debug.LogWarning("Attempted to pool a null object.");
                 return;
             }
-            Destroy(obj);
+
+            // Handle network objects
+            obj.transform.SetParent(container.transform, true);
+
+            var networkObj = obj.GetComponent<NetworkObject>();
+            if (networkObj != null && networkObj.IsSpawned)
+            {
+                if (IsServer)
+                    networkObj.Despawn(false); // Despawn but don't destroy
+            }
+
+            // Stop all particle systems
+            ParticleSystem[] particleSystems = obj.GetComponentsInChildren<ParticleSystem>();
+            foreach (var ps in particleSystems)
+            {
+                ps.Stop();
+                ps.Clear();
+                var emission = ps.emission;
+                emission.enabled = true;
+            }
+
+            // Disable physics components
+            Rigidbody rb = obj.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true; // Ensure it doesn't interact with physics while pooled
+            }
+
+
+            // Reset and deactivate children if needed
+            if (reenableChildren)
+            {
+                foreach (Transform child in obj.GetComponentsInChildren<Transform>(true))
+                    child.gameObject.SetActive(true);
+            }
+
+            // Reparent to the pool container and deactivate
+            obj.SetActive(false);
+
+            Debug.Log($"Pooled object: {obj.name}");
+        }
+
+
+
+
+        private static GameObject InstantiateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
+        {
+            GameObject obj = Instantiate(prefab, position, rotation);
+            Debug.Log($"Instantiating new object: {prefab.name} at {position}");
+
+            var networkObj = obj.GetComponent<NetworkObject>();
+            if (networkObj != null && Instance.IsServer)
+            {
+                Debug.Log($"Spawning NetworkObject: {prefab.name}");
+                networkObj.Spawn();
+            }
+
+            SetObjectTransform(obj, position, rotation, parent);
+            return obj;
+        }
+
+
+        private static void SetObjectTransform(GameObject obj, Vector3 position, Quaternion rotation, Transform parent)
+        {
+            if (parent != null && parent.gameObject.activeInHierarchy)
+            {
+                obj.transform.SetParent(parent, true); // Set parent and retain world position
+                obj.transform.localPosition = position; // Adjust local position relative to parent
+            }
+            else
+            {
+                obj.transform.SetParent(null); // Detach from any parent
+                obj.transform.position = position; // Set world position
+            }
+
+            obj.transform.rotation = rotation; // Set rotation
+        }
+
+        public void AddDestructibleObjectToPool(Destructible destObj)
+        {
+            if (destObj == null)
+            {
+                Debug.LogError("Destructible object is null. Cannot add to pool.");
+                return;
+            }
+
+            if (autoPooledObjects == null)
+            {
+                autoPooledObjects = new Dictionary<int, GameObject>();
+            }
+
+            if (autoPooledObjects.ContainsKey(destObj.GetInstanceID())) return;
+
+            if (destObj.destroyedPrefab == null || !destObj.autoPoolDestroyedPrefab)
+            {
+                Debug.LogWarning($"Destroyed prefab is null or autoPoolDestroyedPrefab is false for {destObj.name}. Skipping pooling.");
+                return;
+            }
+
+            var newObj = Instantiate(destObj.destroyedPrefab);
+            if (IsServer)
+            {
+                var networkObj = newObj.GetComponent<NetworkObject>();
+                if (networkObj != null)
+                    networkObj.Spawn();
+                else
+                    Debug.LogWarning($"NetworkObject missing on {newObj.name}. Ensure it's properly configured.");
+            }
+
+            newObj.transform.SetParent(container.transform, true);
+
+            Destructible[] nestedDestructibles = newObj.GetComponentsInChildren<Destructible>();
+            foreach (var nestedObj in nestedDestructibles)
+                AddDestructibleObjectToPool(nestedObj);
+
+            newObj.name = destObj.destroyedPrefab.name;
+            newObj.SetActive(false);
+            autoPooledObjects.Add(destObj.GetInstanceID(), newObj);
+        }
+
+        public GameObject SpawnFromOriginal(string prefabName)
+        {
+            foreach (PoolEntry entry in prefabsToPool)
+            {
+                if (entry.Prefab != null && entry.Prefab.name == prefabName)
+                {
+                    GameObject obj = Instantiate(entry.Prefab);
+                    if (IsServer)
+                        obj.GetComponent<NetworkObject>().Spawn();
+                    obj.name = prefabName;
+                    return obj;
+                }
+            }
+            return null;
         }
     }
 }

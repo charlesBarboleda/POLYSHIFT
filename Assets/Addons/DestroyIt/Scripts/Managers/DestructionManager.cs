@@ -173,8 +173,7 @@ namespace DestroyIt
         /// <summary>Swaps the current destructible object with a new one and applies the correct materials to the new object.</summary>
         public void ProcessDestruction<T>(Destructible oldObj, GameObject destroyedPrefab, T damageInfo)
         {
-            if (oldObj == null) return;
-            if (!oldObj.canBeDestroyed) return;
+            if (oldObj == null || !oldObj.canBeDestroyed) return;
 
             oldObj.FireDestroyedEvent();
 
@@ -182,78 +181,31 @@ namespace DestroyIt
             if (oldObj.destroyedSound != null)
                 AudioSource.PlayClipAtPoint(oldObj.destroyedSound, oldObj.transform.position);
 
-            // Look for any debris objects clinging to the old object and un-parent them before destroying the old object.
             oldObj.ReleaseClingingDebris();
 
             // Remove any Joints from the destroyed object
-            //TODO: Add option for transerring joints to the destroyed prefab
-            Joint[] joints = oldObj.GetComponentsInChildren<Joint>();
-            foreach (Joint jnt in joints)
+            foreach (Joint jnt in oldObj.GetComponentsInChildren<Joint>())
                 Destroy(jnt);
 
-            // Unparent DamageEffects and turn off all particle emissions
-            if (oldObj.damageEffects != null)
-            {
-                foreach (var damageEffect in oldObj.damageEffects)
-                {
-                    if (!damageEffect.UnparentOnDestroy || damageEffect.GameObject == null) continue;
-                    damageEffect.GameObject.transform.SetParent(null, true);
-                    if (!damageEffect.StopEmittingOnDestroy || damageEffect.ParticleSystems == null || damageEffect.ParticleSystems.Length <= 0) continue;
-                    foreach (var particle in damageEffect.ParticleSystems)
-                    {
-                        var emission = particle.emission;
-                        emission.enabled = false;
-                    }
-                }
-            }
-
-            // Is this destructible object a stand-in for a Terrain Tree?
-            if (oldObj.gameObject.HasTagInParent(Tag.TerrainTree))
-                TreeManager.Instance.DestroyTreeAt(oldObj.transform.position);
-
-            // Should this object sink into the ground instead of being destroyed?
-            if (oldObj.sinkWhenDestroyed)
-            {
-                DestructibleHelper.SinkAndDestroy(oldObj);
-                return; // Exit immediately, don't do any more destruction processing.
-            }
-
-            // Play a particle effect and exit.
+            // Use fallback particle effect if prefab destruction is skipped
             if (destroyedPrefab == null || IsDestroyedPrefabLimitReached)
             {
                 DestroyWithParticleEffect(oldObj, oldObj.fallbackParticle, damageInfo);
                 return;
             }
 
-            if (useCameraDistanceLimit)
+            // Use the object pooler to spawn the destroyed prefab on the server
+            if (IsServer)
             {
-                // Find the distance between the camera and the destroyed object
-                float distance = Vector3.Distance(oldObj.transform.position, Camera.main.transform.position);
-                if (distance > cameraDistanceLimit)
-                {
-                    DestroyWithParticleEffect(oldObj, oldObj.fallbackParticle, damageInfo);
-                    return;
-                }
+                GameObject newObj = DestroyItObjectPool.Instance.Spawn(destroyedPrefab, oldObj.PositionFixedUpdate, oldObj.RotationFixedUpdate);
+                newObj.GetComponent<NetworkObject>()?.Spawn();
+                InstantiateDebris(newObj, oldObj, damageInfo);
             }
-
-            // If we've passed the checks above, we are creating debris.
-            DestroyedPrefabCounter.Add(Time.time);
-            FireDestroyedPrefabCounterChangedEvent();
-
-            // Unparent any specified child objects before destroying
-            UnparentSpecifiedChildren(oldObj);
-
-            // Put the destroyed object in the Debris layer to keep new debris from clinging to it
-            if (debrisLayer != -1)
-                oldObj.gameObject.layer = debrisLayer;
-
-            // Try to get the destroyed prefab from the object pool
-            GameObject newObj = DestroyItObjectPool.Instance.Spawn(destroyedPrefab, oldObj.PositionFixedUpdate, oldObj.RotationFixedUpdate, oldObj.GetInstanceID());
-            InstantiateDebris(newObj, oldObj, damageInfo);
 
             oldObj.gameObject.SetActive(false);
             _destroyedObjects.Add(oldObj);
         }
+
 
         private void DestroyWithParticleEffect<T>(Destructible oldObj, ParticleSystem customParticle, T damageInfo)
         {
@@ -273,16 +225,21 @@ namespace DestroyIt
                 // Convert the particle spawn point position to world coordinates.
                 position = oldObj.transform.TransformPoint(position);
 
-                // If no specific fallback particle effect is defined, use the default particle effect assigned in DestructionManager.
-                ParticleManager.Instance.PlayEffect(customParticle ?? defaultParticle, oldObj, position, oldObj.transform.rotation, instanceId);
+                // Spawn the particle effect on the server
+                if (IsServer)
+                {
+                    GameObject particleObj = DestroyItObjectPool.Instance.Spawn(customParticle.gameObject, position, oldObj.transform.rotation);
+
+                    var networkObj = particleObj.GetComponent<NetworkObject>();
+                    if (networkObj != null && !networkObj.IsSpawned)
+                        networkObj.Spawn();
+                }
             }
 
             UnparentSpecifiedChildren(oldObj);
             oldObj.gameObject.SetActive(false);
             _destroyedObjects.Add(oldObj);
 
-            // Reapply impact force to impact object so it punches through the destroyed object along its original path. 
-            // If you turn this off, impact objects will be deflected even though the impacted object was destroyed.
             if (damageInfo.GetType() == typeof(ImpactDamage))
                 DestructibleHelper.ReapplyImpactForce(damageInfo as ImpactDamage, oldObj.VelocityReduction);
         }
@@ -321,98 +278,47 @@ namespace DestroyIt
 
         private void InstantiateDebris<T>(GameObject newObj, Destructible oldObj, T damageInfo)
         {
-            // Apply new materials derived from previous object's materials
-            if (!oldObj.autoPoolDestroyedPrefab) // if the old object was autopooled, the destroyed object will come from the pool already having the right materials on it.
-                DestructibleHelper.TransferMaterials(oldObj, newObj);
+            DestructibleHelper.TransferMaterials(oldObj, newObj);
 
-            // For SpeedTree terrain trees, turn off the Hue Variation on the shader so it's locked in and the tree can fall without changing hue.
             if (oldObj.isTerrainTree)
                 newObj.gameObject.LockHueVariation();
 
-            // Re-scale destroyed version if original destructible object has been scaled. (Scaling rigidbodies in general is bad, but this is put here for convenience.)
-            if (oldObj.transform.lossyScale != new Vector3(1f, 1f, 1f)) // if destructible object has been scaled in the scene
+            if (oldObj.transform.lossyScale != Vector3.one)
                 newObj.transform.localScale = oldObj.transform.lossyScale;
 
             if (oldObj.destroyedPrefabParent != null)
                 newObj.transform.parent = oldObj.destroyedPrefabParent.transform;
 
-            if (oldObj.isDebrisChipAway)
+            Rigidbody[] debrisRigidbodies = newObj.GetComponentsInChildren<Rigidbody>();
+
+            foreach (Rigidbody debrisRigidbody in debrisRigidbodies)
             {
-                // If we are doing chip-away debris, attach the ChipAwayDebris script to each piece of debris and exit.
-                Collider[] debrisColliders = newObj.GetComponentsInChildren<Collider>();
-                foreach (Collider coll in debrisColliders)
+                if (debrisLayer != -1)
+                    debrisRigidbody.gameObject.layer = debrisLayer;
+
+                debrisRigidbody.linearVelocity = oldObj.VelocityFixedUpdate;
+                debrisRigidbody.angularVelocity = oldObj.AngularVelocityFixedUpdate;
+
+                // Spawn debris as a networked object
+                if (IsServer)
                 {
-                    if (coll.gameObject.GetComponent<ChipAwayDebris>() != null) continue;
-
-                    // If there is already an attached non-kinematic rigidbody on the debris piece, remove it.
-                    if (coll.attachedRigidbody != null && !coll.attachedRigidbody.isKinematic)
-                        coll.attachedRigidbody.gameObject.RemoveComponent<Rigidbody>();
-
-                    ChipAwayDebris chipAwayDebris = coll.gameObject.AddComponent<ChipAwayDebris>();
-                    chipAwayDebris.debrisMass = oldObj.chipAwayDebrisMass;
-                    chipAwayDebris.debrisDrag = oldObj.chipAwayDebrisDrag;
-                    chipAwayDebris.debrisAngularDrag = oldObj.chipAwayDebrisAngularDrag;
-                }
-                return;
-            }
-
-            oldObj.ReparentChildren(newObj); // assign the appropriate parent objects for Children to Reparent
-
-            // Attempt to get the debris rigidbodies from the PooledRigidbody property on the destroyed object first.
-            Rigidbody[] debrisRigidbodies = oldObj.PooledRigidbodies;
-            GameObject[] debrisRigidbodyGos = oldObj.PooledRigidbodyGos;
-
-            // If the debris rigidbodies weren't pooled on the destroyed object, try to retrieve them directly from the newly-spawned-in destroyed object instead.
-            if (debrisRigidbodies == null || debrisRigidbodies.Length == 0)
-            {
-                debrisRigidbodies = newObj.GetComponentsInChildren<Rigidbody>();
-                debrisRigidbodyGos = new GameObject[debrisRigidbodies.Length];
-                for (int i = 0; i < debrisRigidbodies.Length; i++)
-                    debrisRigidbodyGos[i] = debrisRigidbodies[i].gameObject;
-            }
-
-            // If we found rigidbodies on the destroyed object, assign them to the appropriate layer/tag/queue, and transfer velocity to them.
-            if (debrisRigidbodies.Length > 0)
-            {
-                for (int i = 0; i < debrisRigidbodies.Length; i++)
-                {
-                    // Assign each piece of debris to the Debris layer if it exists.
-                    if (debrisLayer != -1)
-                        debrisRigidbodies[i].gameObject.layer = debrisLayer;
-
-                    // Reparent any debris tagged for reparenting.
-                    if (oldObj.debrisToReParentByName != null && oldObj.debrisToReParentByName.Count > 0 && oldObj.transform.parent != null && (oldObj.debrisToReParentByName.Contains("ALL DEBRIS") || oldObj.debrisToReParentByName.Contains(debrisRigidbodies[i].name)))
-                    {
-                        debrisRigidbodies[i].gameObject.transform.parent = oldObj.transform.parent;
-                        debrisRigidbodies[i].isKinematic = oldObj.debrisToReParentIsKinematic;
-                    }
-
-                    // Add leftover velocity and angular velocity from destroyed object
-                    if (!debrisRigidbodies[i].isKinematic)
-                    {
-                        debrisRigidbodies[i].linearVelocity = oldObj.VelocityFixedUpdate;
-                        debrisRigidbodies[i].angularVelocity = oldObj.AngularVelocityFixedUpdate;
-                    }
-
-                    // Add debris to the debris queue.
-                    Debris debris = new Debris { Rigidbody = debrisRigidbodies[i], GameObject = debrisRigidbodyGos[i] };
-                    _debrisPieces.Add(debris);
+                    debrisRigidbody.gameObject.GetComponent<NetworkObject>()?.Spawn();
+                    _debrisPieces.Add(new Debris { Rigidbody = debrisRigidbody, GameObject = debrisRigidbody.gameObject });
                     FireActiveDebrisCounterChangedEvent();
                 }
             }
 
-            // Attempt to make some of the debris cling to adjacent rigidbodies
             if (oldObj.CheckForClingingDebris)
                 newObj.MakeDebrisCling();
 
-            // Reapply impact force to impact object so it punches through the destroyed object along its original path. 
-            // If you turn this off, impact objects will be deflected even though the impacted object was destroyed.
             if (damageInfo.GetType() == typeof(ImpactDamage))
                 DestructibleHelper.ReapplyImpactForce(damageInfo as ImpactDamage, oldObj.VelocityReduction);
 
             if (damageInfo.GetType() == typeof(ExplosiveDamage) || damageInfo.GetType() == typeof(ImpactDamage))
                 ExplosionHelper.ApplyForcesToDebris(newObj, 1f, damageInfo);
         }
+
+
 
         public void SetProgressiveDamageTexture(Renderer rend, Material sourceMat, DamageLevel damageLevel)
         {

@@ -14,11 +14,17 @@ public class OnHitEffects : NetworkBehaviour
         base.OnNetworkSpawn();
         health = GetComponent<DestroyableHealth>();
         originalScale = transform.localScale;
-        health.health.OnValueChanged += OnHitEffectsServerRpc;
+        health.Health.OnValueChanged += OnHitEffectsServerRpc;
     }
 
-    [ServerRpc]
-    void OnHitEffectsServerRpc(float current)
+    [ServerRpc(RequireOwnership = false)]
+    void OnHitEffectsServerRpc(float current, float prev)
+    {
+        OnHitEffectsClientRpc(current, prev);
+    }
+
+    [ClientRpc]
+    void OnHitEffectsClientRpc(float current, float prev)
     {
         if (hitEffectCoroutine != null)
         {
