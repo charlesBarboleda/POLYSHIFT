@@ -116,11 +116,13 @@ namespace DestroyIt
             {
                 TotalHitPoints = _health.MaxHealth;
                 CurrentHitPoints = TotalHitPoints;
+                _health.Health.OnValueChanged += OnValueChanged;
             }
 
             if (!IsServer) return; // Ensure initialization happens only on the server
 
             _isDestroyed = false; // Reset destruction state
+
 
             CheckForClingingDebris = true;
 
@@ -204,7 +206,6 @@ namespace DestroyIt
         /// <summary>Applies a generic amount of damage, with no specific impact or explosive force.</summary>
         public void ApplyDamage(float amount)
         {
-            Debug.Log($"CurrentHitPoints: {CurrentHitPoints}");
             if (!IsServer) return; // Only the server processes damage
 
             if (IsDestroyed || _isInvulnerable || !DestructionManager.Instance.allowDamage) return;
@@ -226,9 +227,19 @@ namespace DestroyIt
             if (damagedSound != null)
                 AudioSource.PlayClipAtPoint(damagedSound, transform.position);
 
-            // Delegate damage handling to DestroyableHealth.
-            var destroyableHealth = GetComponent<DestroyableHealth>();
-            destroyableHealth?.RequestTakeDamageServerRpc(amount, 0);
+            CurrentHitPoints -= amount;
+            if (CurrentHitPoints <= 0)
+            {
+                Debug.Log($"Object {gameObject.name} destroyed!");
+                CurrentHitPoints = 0;
+
+                if (!_isDestroyed) // Ensure destruction logic is only triggered once
+                {
+                    Debug.Log("Executing Destroy method");
+                    Destroy();
+                    Debug.Log("Destroy method executed");
+                }
+            }
         }
 
 
@@ -356,6 +367,12 @@ namespace DestroyIt
                 }
             }
         }
+
+
+
+
+
+
 
         /// <summary>Advances the damage state, applies damage-level materials as needed, and plays particle effects.</summary>
         private void SetDamageLevel()
@@ -551,9 +568,14 @@ namespace DestroyIt
             DamagedEvent?.Invoke(); // If there is at least one listener, trigger the event.
         }
 
-        public void SyncHealth(float healthValue)
+        void OnDisable()
         {
-            CurrentHitPoints = healthValue;
+            _health.Health.OnValueChanged -= OnValueChanged;
+        }
+
+        void OnValueChanged(float value, float prev)
+        {
+            CurrentHitPoints = _health.Health.Value;
         }
     }
 }
