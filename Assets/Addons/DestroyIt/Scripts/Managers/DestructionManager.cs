@@ -202,13 +202,14 @@ namespace DestroyIt
                 InstantiateDebris(newObj, oldObj, damageInfo);
             }
 
-            oldObj.gameObject.SetActive(false);
+            Destroy(oldObj);
             _destroyedObjects.Add(oldObj);
         }
 
 
         private void DestroyWithParticleEffect<T>(Destructible oldObj, ParticleSystem customParticle, T damageInfo)
         {
+
             if (oldObj.useFallbackParticle)
             {
                 // Use the DestructibleGroup instance ID if it exists, otherwise use the Destructible object's parent's instance ID.
@@ -237,8 +238,10 @@ namespace DestroyIt
             }
 
             UnparentSpecifiedChildren(oldObj);
-            oldObj.gameObject.SetActive(false);
+
             _destroyedObjects.Add(oldObj);
+
+            Destroy(oldObj);
 
             if (damageInfo.GetType() == typeof(ImpactDamage))
                 DestructibleHelper.ReapplyImpactForce(damageInfo as ImpactDamage, oldObj.VelocityReduction);

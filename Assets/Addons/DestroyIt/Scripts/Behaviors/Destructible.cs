@@ -116,7 +116,6 @@ namespace DestroyIt
             {
                 TotalHitPoints = _health.MaxHealth;
                 CurrentHitPoints = TotalHitPoints;
-                _health.Health.OnValueChanged += OnValueChanged;
             }
 
             if (!IsServer) return; // Ensure initialization happens only on the server
@@ -568,14 +567,10 @@ namespace DestroyIt
             DamagedEvent?.Invoke(); // If there is at least one listener, trigger the event.
         }
 
-        void OnDisable()
-        {
-            _health.Health.OnValueChanged -= OnValueChanged;
-        }
 
-        void OnValueChanged(float value, float prev)
+        public void SyncHealth(float amount)
         {
-            CurrentHitPoints = _health.Health.Value;
+            CurrentHitPoints = amount;
         }
     }
 }
