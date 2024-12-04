@@ -306,8 +306,6 @@ namespace DestroyIt
                 Debug.Log($"Destroy skipped for {gameObject.name}. IsServer: {IsServer}, _isDestroyed: {_isDestroyed}, _isInvulnerable: {_isInvulnerable}");
                 return;
             }
-
-            Debug.Log($"Destroying object: {gameObject.name}");
             _isDestroyed = true; // Mark the object as destroyed
 
             LastDamagedAmount = CurrentHitPoints;

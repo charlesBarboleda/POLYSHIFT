@@ -241,7 +241,7 @@ namespace DestroyIt
 
             _destroyedObjects.Add(oldObj);
 
-            Destroy(oldObj);
+            Destroy(oldObj.gameObject);
 
             if (damageInfo.GetType() == typeof(ImpactDamage))
                 DestructibleHelper.ReapplyImpactForce(damageInfo as ImpactDamage, oldObj.VelocityReduction);

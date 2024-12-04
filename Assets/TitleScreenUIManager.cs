@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using Unity.Netcode;
+using System.Collections;
 
 public class TitleScreenUIManager : MonoBehaviour
 {
@@ -106,8 +107,7 @@ public class TitleScreenUIManager : MonoBehaviour
         {
             hostButton.gameObject.SetActive(false);
 
-            startGameButton.gameObject.SetActive(true);
-            startGameButton.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+            StartCoroutine(StartGameButtonCoroutine());
         });
 
         joinButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
@@ -130,6 +130,13 @@ public class TitleScreenUIManager : MonoBehaviour
             nameText.gameObject.SetActive(false);
         });
 
+    }
+
+    IEnumerator StartGameButtonCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+        startGameButton.gameObject.SetActive(true);
+        startGameButton.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
     }
 
     public void StartGameButton()
