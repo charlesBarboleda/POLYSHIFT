@@ -232,7 +232,7 @@ namespace DestroyIt
 
             if (destObj.destroyedPrefab == null || !destObj.autoPoolDestroyedPrefab)
             {
-                Debug.LogWarning($"Destroyed prefab is null or autoPoolDestroyedPrefab is false for {destObj.name}. Skipping pooling.");
+                // Debug.LogWarning($"Destroyed prefab is null or autoPoolDestroyedPrefab is false for {destObj.name}. Skipping pooling.");
                 return;
             }
 

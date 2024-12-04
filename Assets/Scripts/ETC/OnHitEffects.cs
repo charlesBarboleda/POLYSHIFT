@@ -36,13 +36,27 @@ public class OnHitEffects : NetworkBehaviour
 
     IEnumerator HitEffectCoroutine()
     {
-        // Scale up smoothly
+        // Scale up the parent smoothly (transform itself)
         transform.DOScale(originalScale * 1.06f, 0.1f);
+
+        // Scale up the children of the object
+        foreach (Transform child in transform)
+        {
+            child.DOScale(child.localScale * 1.06f, 0.1f);
+            UpdateRendererBounds(child); // Use renderer bounds for visualization
+        }
 
         // Wait for 0.1 seconds (duration of scale tween)
         yield return new WaitForSeconds(0.1f);
 
-        // Scale back down smoothly
+        // Scale back down the children smoothly
+        foreach (Transform child in transform)
+        {
+            child.DOScale(Vector3.one, 0.1f);
+            UpdateRendererBounds(child); // Use renderer bounds for visualization
+        }
+
+        // Scale back down the parent smoothly
         transform.DOScale(originalScale, 0.1f);
 
         // Wait for the scale-down tween to finish
@@ -50,5 +64,16 @@ public class OnHitEffects : NetworkBehaviour
 
         // Reset coroutine reference
         hitEffectCoroutine = null;
+    }
+
+    void UpdateRendererBounds(Transform obj)
+    {
+        // Use Renderer bounds instead of recalculating mesh bounds
+        var renderer = obj.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            Bounds bounds = renderer.bounds;
+            Debug.Log($"Renderer bounds for {obj.name}: Center={bounds.center}, Size={bounds.size}");
+        }
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4605877105520082
 Transform:
@@ -105,7 +105,7 @@ GameObject:
   m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4588360735933080
 Transform:
@@ -218,6 +218,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   destroyableSize: 1
   MaxHealth: 5
+  Health:
+    m_InternalValue: 0
 --- !u!114 &5643249262254465019
 MonoBehaviour:
   m_ObjectHideFlags: 0
