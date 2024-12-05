@@ -9,6 +9,8 @@ public class SingleShot : IWeaponBehavior
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         Ray ray = weapon.Camera.ScreenPointToRay(screenCenter);
 
+        weapon.SpawnMuzzleFlashServerRpc();
+
         // Perform a RaycastAll to detect all objects along the bullet's path
         RaycastHit[] hits = Physics.RaycastAll(ray);
 
@@ -28,6 +30,8 @@ public class SingleShot : IWeaponBehavior
                     // Apply damage to the hit object
                     if (hit.collider.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
                     {
+                        if (hit.collider.CompareTag("Player")) continue; // Skip the player object
+
                         weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
 
                         // Spawn the blood splatter effect if the hit object is an enemy
@@ -39,8 +43,9 @@ public class SingleShot : IWeaponBehavior
                     }
 
                     // Spawn visual effects for the shot
+                    Debug.Log("Calling FireSingleShotServerRpc from SingleShot");
                     weapon.FireSingleShotServerRpc(startPoint, hit.point);
-
+                    Debug.Log("Finished FireSingleShotServerRpc from SingleShot");
                     pierceCount++;
                 }
                 else
@@ -59,6 +64,8 @@ public class SingleShot : IWeaponBehavior
         Vector3 startPoint = weapon.bulletSpawnPoint.position;
         Vector3 mouseScreenPos = Input.mousePosition;
         Ray ray = weapon.Camera.ScreenPointToRay(mouseScreenPos);
+
+        weapon.SpawnMuzzleFlashServerRpc();
 
         // Perform a raycast from the camera to detect what the mouse is pointing at
         if (Physics.Raycast(ray, out RaycastHit targetHit))

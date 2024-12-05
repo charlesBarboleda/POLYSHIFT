@@ -62,7 +62,7 @@ public abstract class Enemy : NetworkBehaviour
             GameManager.Instance.SpawnedEnemies.Add(this);
         }
 
-        InvokeRepeating("PlayRandomMovementSound", 5f, 10f);
+        InvokeRepeating("PlayRandomMovementSound", 0f, 5f);
 
 
     }
@@ -71,40 +71,54 @@ public abstract class Enemy : NetworkBehaviour
 
         if (IsServer)
         {
+            AttackingLogic();
+        }
+    }
 
-            ClosestTarget = enemyMovement.ClosestPlayer;
-            if (ClosestTarget != null)
+    void AttackingLogic()
+    {
+        ClosestTarget = enemyMovement.ClosestPlayer;
+        if (ClosestTarget != null)
+        {
+
+            float flatDistance = Vector3.Distance(
+                new Vector3(agent.destination.x, transform.position.y, agent.destination.z),
+                transform.position
+            );
+
+            if (flatDistance <= agent.endReachedDistance)
             {
-
-                float flatDistance = Vector3.Distance(
-                    new Vector3(agent.destination.x, transform.position.y, agent.destination.z),
-                    transform.position
-                );
-
-                if (flatDistance <= agent.endReachedDistance)
+                agent.isStopped = true;
+                if (elapsedCooldown <= 0 && canAttack)
                 {
-                    agent.isStopped = true;
                     RotateTowardsTarget();
                     PlayRandomAttackSound();
-                    if (elapsedCooldown <= 0 && canAttack)
-                    {
-                        Attack();
-                        elapsedCooldown = attackCooldown;
-                    }
+                    Attack();
+                    elapsedCooldown = attackCooldown;
                 }
-                else
-                {
-                    agent.isStopped = false;
-                }
-
             }
-
-            // Update cooldown timer
-            if (elapsedCooldown > 0)
+            else
             {
-                elapsedCooldown -= Time.deltaTime;
+                agent.isStopped = false;
             }
+
         }
+
+        // Update cooldown timer
+        if (elapsedCooldown > 0)
+        {
+            elapsedCooldown -= Time.deltaTime;
+        }
+    }
+    void StartMoving()
+    {
+        agent.isStopped = false;
+        enemyMovement.CanMove = true;
+    }
+    void StopMoving()
+    {
+        agent.isStopped = true;
+        enemyMovement.CanMove = false;
     }
 
     void RotateTowardsTarget()

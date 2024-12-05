@@ -159,9 +159,11 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
 
         animator.SetTrigger("isDead");
+        healthbarFill.transform.parent.gameObject.SetActive(false);
         GameManager.Instance.SpawnedEnemies.Remove(enemy);
         EventManager.Instance.EnemyDespawnedEvent(enemy);
         yield return new WaitForSeconds(3f);
+        healthbarFill.transform.parent.gameObject.SetActive(true);
         enemy.enabled = true;
         kinematics.enabled = true;
         GetComponent<NetworkObject>().Despawn(false);

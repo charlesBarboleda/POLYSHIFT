@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,18 +14,21 @@ public class FlyingEnemy : Enemy
     {
         base.OnNetworkSpawn();
         enemyType = EnemyType.Flying;
-        transform.position = Vector3.up * Random.Range(6, 8);
 
         if (IsServer)
         {
             health = GetComponent<EnemyNetworkHealth>();
-            health.MaxHealth += GameManager.Instance.GameLevel.Value * 5;
+            health.MaxHealth += GameManager.Instance.GameLevel.Value * 8;
             health.CurrentHealth.Value = health.MaxHealth;
             attackDamage += GameManager.Instance.GameLevel.Value * 5;
-            health.ExperienceDrop += GameManager.Instance.GameLevel.Value;
+            health.ExperienceDrop += GameManager.Instance.GameLevel.Value * 2;
+            enemyMovement.MoveSpeed += Random.Range(GameManager.Instance.GameLevel.Value * 0.3f, GameManager.Instance.GameLevel.Value * 0.5f);
 
         }
     }
+
+
+
 
     protected override void Attack()
     {

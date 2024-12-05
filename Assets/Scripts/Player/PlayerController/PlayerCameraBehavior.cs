@@ -55,9 +55,9 @@ public class PlayerCameraBehavior : NetworkBehaviour
             else
             {
                 EnableFirstPersonCamera();
-                FollowPlayerHead();
                 RotateCameraIndependently();
             }
+            FollowPlayerHead();
         }
         else if (playerState.playerState.Value == PlayerState.Dead)
         {

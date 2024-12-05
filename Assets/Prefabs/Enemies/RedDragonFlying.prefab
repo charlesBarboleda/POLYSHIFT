@@ -1775,7 +1775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   MoveSpeed: 5
-  Agent: {fileID: 0}
+  Agent: {fileID: 522220704527099941}
   ClosestPlayer: {fileID: 0}
 --- !u!114 &8080816215498877083
 MonoBehaviour:
@@ -2097,6 +2097,8 @@ MonoBehaviour:
   debuffs: []
   attackCooldown: 3
   canAttack: 0
+  attackSounds: []
+  movementSounds: []
   attackRange: 25
   attackDamage: 25
   projectileSpawnPoint: {fileID: 8613246779842165903}

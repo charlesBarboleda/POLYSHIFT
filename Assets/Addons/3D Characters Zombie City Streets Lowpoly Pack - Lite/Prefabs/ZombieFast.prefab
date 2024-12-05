@@ -117,9 +117,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.003
-  m_Height: 0.018608255
+  m_Height: 0.0060000014
   m_Direction: 2
-  m_Center: {x: 0.0000041010976, y: -0.00009663015, z: 0.011102511}
+  m_Center: {x: 0.0000041010976, y: -0.00009663016, z: 0.0047983937}
 --- !u!1 &372580541245601530
 GameObject:
   m_ObjectHideFlags: 0
@@ -1865,9 +1865,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2.01
+  m_Height: 2.1152112
   m_Direction: 1
-  m_Center: {x: 0, y: 1.09, z: 0}
+  m_Center: {x: 0, y: 1.0373944, z: 0}
 --- !u!114 &2615142238517485442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1938,7 +1938,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2853,7 +2853,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7533447520865439334, guid: b88d97c794370724cad01d07560e199f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.786
+      value: 2.62
       objectReference: {fileID: 0}
     - target: {fileID: 7533447520865439334, guid: b88d97c794370724cad01d07560e199f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

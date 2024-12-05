@@ -387,20 +387,60 @@ public class PlayerWeapon : NetworkBehaviour
     [ClientRpc]
     void SpawnBulletVisualClientRpc(Vector3 startPoint, Vector3 hitPoint, Vector3 direction)
     {
-        SpawnBullet(startPoint, direction, Vector3.Distance(startPoint, hitPoint));
+        SpawnBullet(startPoint, hitPoint, 500f);
         SpawnImpact(hitPoint);
     }
-
-    void SpawnBullet(Vector3 startPoint, Vector3 direction, float distance)
+    [ClientRpc]
+    void SpawnMuzzleFlashClientRpc()
     {
-        GameObject bullet = ObjectPooler.Instance.Spawn("LaserBullet", transform.position, Quaternion.identity);
+        Debug.Log("Spawning muzzle flash");
+
+        // Spawn the muzzle flash prefab
+        GameObject muzzleFlash = ObjectPooler.Instance.Spawn("LaserMuzzleFlash", bulletSpawnPoint.position, Quaternion.identity);
+
+        if (muzzleFlash == null)
+        {
+            Debug.LogError("Failed to spawn muzzle flash!");
+            return;
+        }
+
+        // Align the muzzle flash with the bullet spawn point
+        muzzleFlash.transform.position = bulletSpawnPoint.position;
+        muzzleFlash.transform.rotation = Quaternion.LookRotation(bulletSpawnPoint.forward);
+
+        Debug.Log($"Muzzle flash spawned at position: {bulletSpawnPoint.position}, forward: {bulletSpawnPoint.forward}");
+
+        // Spawn the muzzle flash as a networked object
+        muzzleFlash.GetComponent<NetworkObject>().Spawn();
+    }
+
+
+
+    [ServerRpc]
+    public void SpawnMuzzleFlashServerRpc()
+    {
+        SpawnMuzzleFlashClientRpc();
+    }
+
+    void SpawnBullet(Vector3 startPoint, Vector3 hitPoint, float speed)
+    {
+
+
+        // Spawn the bullet at the start point
+        GameObject bullet = ObjectPooler.Instance.Spawn("LaserBullet", startPoint, Quaternion.identity);
         if (bullet != null)
         {
-            bullet.transform.position = startPoint;
+            // Calculate the direction from start point to hit point
+            Vector3 direction = (hitPoint - startPoint).normalized;
+
+            // Set the bullet's rotation to face the direction it will travel
             bullet.transform.rotation = Quaternion.LookRotation(direction);
-            StartCoroutine(MoveObject(bullet, direction, distance, 200f, () => ObjectPooler.Destroy(bullet)));
+
+            // Move the bullet towards the hit point and destroy it after the journey
+            StartCoroutine(MoveObject(bullet, direction, Vector3.Distance(startPoint, hitPoint), speed, () => Destroy(bullet)));
         }
     }
+
 
     void SpawnImpact(Vector3 position)
     {

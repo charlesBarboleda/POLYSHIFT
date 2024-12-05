@@ -40,10 +40,6 @@ public abstract class Turret : NetworkBehaviour, IDamageable
             CurrentHealth.Value = MaxHealth.Value;
             CurrentHealth.OnValueChanged += OnHealthChanged;
             GameManager.Instance.SpawnedAllies.Add(gameObject);
-            GameObject TurretPortal1 = ObjectPooler.Instance.Spawn("TurretPortal1", transform.position, Quaternion.identity);
-            TurretPortal1.GetComponent<NetworkObject>().Spawn();
-            GameObject TurretPortal2 = ObjectPooler.Instance.Spawn("TurretPortal2", transform.position, Quaternion.identity);
-            TurretPortal2.GetComponent<NetworkObject>().Spawn();
         }
     }
 

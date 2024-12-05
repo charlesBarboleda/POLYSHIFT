@@ -27,7 +27,6 @@ public class SummonStarbreakerManager : NetworkBehaviour, ISkillManager
     public void SummonPortalServerRpc()
     {
         GameObject starbreakerPortal = ObjectPooler.Instance.Spawn("StarbreakerPortal", transform.position, Quaternion.identity);
-        starbreakerPortal.transform.localRotation = Quaternion.Euler(-90, 0, 90);
         starbreakerPortal.GetComponent<NetworkObject>().Spawn();
     }
 
@@ -35,7 +34,6 @@ public class SummonStarbreakerManager : NetworkBehaviour, ISkillManager
     void SummonStarbreakerServerRpc()
     {
         GameObject auraCastWater = ObjectPooler.Instance.Spawn("AuraCastWater", transform.position, Quaternion.identity);
-        auraCastWater.transform.localRotation = Quaternion.Euler(-90, 0, 90);
         auraCastWater.GetComponent<NetworkObject>().Spawn();
 
         StartCoroutine(SummonStarbreakerCoroutine());
@@ -43,14 +41,13 @@ public class SummonStarbreakerManager : NetworkBehaviour, ISkillManager
 
     IEnumerator SummonStarbreakerCoroutine()
     {
-        GameObject starbreaker = ObjectPooler.Instance.Spawn("Starbreaker", transform.position + transform.up * 7.5f, Quaternion.identity);
+        GameObject starbreaker = ObjectPooler.Instance.Spawn("Starbreaker", transform.position + transform.up * 5f, Quaternion.identity);
         starbreaker.GetComponent<Starbreaker>().SetOwners(gameObject);
         starbreaker.GetComponent<NetworkObject>().Spawn();
 
         yield return new WaitForSeconds(60f);
 
-        GameObject starbreakerExplosion = ObjectPooler.Instance.Spawn("StarbreakerExplosion", starbreaker.transform.position, Quaternion.identity);
-        ObjectPooler.Instance.Despawn("Starbreaker", starbreaker);
+        GameObject starbreakerExplosion = ObjectPooler.Instance.Spawn("StarbreakerExplosion", starbreaker.transform.position, Quaternion.identity); ObjectPooler.Instance.Despawn("Starbreaker", starbreaker);
         starbreaker.GetComponent<NetworkObject>().Despawn(false);
     }
 }

@@ -42,6 +42,7 @@ public class Starbreaker : NetworkBehaviour
         {
             // Rotate turret to face the closest enemy
             lookAnimator.ObjectToFollow = targetEnemy.transform;
+            transform.LookAt(targetEnemy.transform);
 
             // Handle firing cooldown
             fireCooldownTimer -= Time.deltaTime;
@@ -54,7 +55,7 @@ public class Starbreaker : NetworkBehaviour
         }
 
         // Ship hovers over the player at all times
-        transform.position = Owner.transform.position + new Vector3(0, 20, 0);
+        transform.position = Owner.transform.position + new Vector3(0, 12, 0);
 
     }
 
@@ -115,5 +116,11 @@ public class Starbreaker : NetworkBehaviour
         }
 
         return closestEnemy;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        GameManager.Instance.SpawnedAllies.Remove(doppelbomberTurret1.gameObject);
+        GameManager.Instance.SpawnedAllies.Remove(doppelbomberTurret2.gameObject);
     }
 }

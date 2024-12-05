@@ -650,9 +650,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.35
-  m_Height: 1.3322152
+  m_Height: 0.70000005
   m_Direction: 1
-  m_Center: {x: -0.0000000011217713, y: 0.8160997, z: 0}
+  m_Center: {x: -9.6248565e-11, y: 0.03, z: 0}
 --- !u!1 &2252938243618085888
 GameObject:
   m_ObjectHideFlags: 0
@@ -1137,11 +1137,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
-    m_InternalValue: 100
-  MaxHealth: 100
+    m_InternalValue: 150
+  MaxHealth: 150
   HealthRegenRate: 1
   IsDead: 0
-  ExperienceDrop: 5
+  ExperienceDrop: 50
   enemyName: ZombieBig
   healthbarFill: {fileID: 8874573290306728651}
 --- !u!114 &2645762297186770900
@@ -1410,9 +1410,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1.84
+  m_Height: 2.0146754
   m_Direction: 1
-  m_Center: {x: 0, y: 1.07, z: 0}
+  m_Center: {x: 0, y: 0.9826672, z: 0}
 --- !u!114 &7398882635146020654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2963,7 +2963,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7533447520865439334, guid: b88d97c794370724cad01d07560e199f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.614
+      value: 2.484
       objectReference: {fileID: 0}
     - target: {fileID: 7533447520865439334, guid: b88d97c794370724cad01d07560e199f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

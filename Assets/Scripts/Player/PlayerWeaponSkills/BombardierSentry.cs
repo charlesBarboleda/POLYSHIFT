@@ -6,7 +6,7 @@ public class BombardierSentry : ActiveSkill
     public override void Initialize(Animator animator)
     {
         base.Initialize(animator);
-        Cooldown = 180f;
+        Cooldown = 240f;
     }
     public override void ExecuteAttack()
     {

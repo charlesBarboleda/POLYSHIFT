@@ -449,7 +449,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.5992905
+  m_Radius: 0.85
   m_Height: 3.3855953
   m_Direction: 1
   m_Center: {x: -0.007157445, y: 2.2475157, z: 0}
@@ -593,7 +593,7 @@ MonoBehaviour:
   BuffRadius: 20
   CanAttack: 1
   AttackCooldown: 2
-  ReviveTime: 5
+  ReviveTime: 30
   IsDead: 0
   healthFill: {fileID: 5921430169770899189}
   healthBar: {fileID: 72020655014315608}

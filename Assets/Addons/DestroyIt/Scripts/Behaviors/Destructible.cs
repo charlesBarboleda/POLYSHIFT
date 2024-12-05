@@ -180,9 +180,6 @@ namespace DestroyIt
             else if (destructionManager.autoDeactivateDestructibleTerrainObjects && isTerrainTree && shouldDeactivate)
                 UpdateDeactivation(destructionManager.deactivateAfter);
 
-            if (IsDestroyed)
-                destructionManager.ProcessDestruction(this, destroyedPrefab, new ExplosiveDamage());
-
             // If this is the first fixed update frame and autoDeativateDestructibles is true, start this component deactivated.
             if (_firstFixedUpdate)
                 this.SetActiveOrInactive(destructionManager);

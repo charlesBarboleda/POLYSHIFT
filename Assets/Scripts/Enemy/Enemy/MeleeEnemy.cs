@@ -22,6 +22,7 @@ public class MeleeEnemy : Enemy
             health.CurrentHealth.Value = health.MaxHealth;
             attackDamage += GameManager.Instance.GameLevel.Value * 5;
             health.ExperienceDrop += GameManager.Instance.GameLevel.Value;
+            enemyMovement.MoveSpeed += Random.Range(GameManager.Instance.GameLevel.Value * 0.1f, GameManager.Instance.GameLevel.Value * 0.2f);
         }
     }
 

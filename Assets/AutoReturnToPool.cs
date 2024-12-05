@@ -10,7 +10,6 @@ public class AutoReturnToPool : NetworkBehaviour
     {
 
         if (!IsServer) return;
-        Debug.Log("AutoReturnToPool enabled on server");
         Invoke("ReturnToPool", timeToReturn);
 
 
@@ -18,13 +17,11 @@ public class AutoReturnToPool : NetworkBehaviour
 
     void ReturnToPool()
     {
-        Debug.Log("ReturnToPool called for " + gameObject.name);
         if (isNetworkedObject)
         {
             NetworkObject networkObject = GetComponent<NetworkObject>();
             if (networkObject != null && networkObject.IsSpawned)
             {
-                Debug.Log("Despawning network object: " + gameObject.name);
                 networkObject.Despawn(false);
                 ObjectPooler.Instance.Despawn(tagName, gameObject);
 

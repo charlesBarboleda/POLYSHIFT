@@ -50,11 +50,7 @@ public class SpawnerManager : NetworkBehaviour
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-                GameObject zombie = ObjectPooler.Instance.Spawn("ZombieJumper", spawnPositions[0].position, Quaternion.identity);
-                if (zombie.TryGetComponent(out NetworkObject networkObject))
-                {
-                    networkObject.Spawn();
-                }
+
             }
         }
     }
@@ -69,8 +65,8 @@ public class SpawnerManager : NetworkBehaviour
     {
         int gameLevel = GameManager.Instance.GameLevel.Value;
         int playersAlive = GameManager.Instance.AlivePlayers.Count;
-        EnemiesToSpawn = gameLevel * 5 * playersAlive;
-        SpawnRate = Mathf.Max(0.05f, 2f - gameLevel * 0.05f);
+        EnemiesToSpawn = gameLevel * 10 * playersAlive;
+        SpawnRate = Mathf.Max(0.01f, 2f - gameLevel * 0.05f);
 
         UpdateSpawnProbabilitiesForLevel(gameLevel);
     }

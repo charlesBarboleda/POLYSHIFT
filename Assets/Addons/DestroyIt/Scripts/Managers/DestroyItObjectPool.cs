@@ -185,12 +185,10 @@ namespace DestroyIt
         private static GameObject InstantiateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
         {
             GameObject obj = Instantiate(prefab, position, rotation);
-            Debug.Log($"Instantiating new object: {prefab.name} at {position}");
 
             var networkObj = obj.GetComponent<NetworkObject>();
             if (networkObj != null && Instance.IsServer)
             {
-                Debug.Log($"Spawning NetworkObject: {prefab.name}");
                 networkObj.Spawn();
             }
 

@@ -526,6 +526,7 @@ MonoBehaviour:
     m_InternalValue: 1000
   MaxHealth:
     m_InternalValue: 1000
+  HealthRegenRate: 0
   Damage: 50
   AttackRange: 3
   MovementSpeed: 6
@@ -556,7 +557,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.2648631
+  m_Radius: 0.65
   m_Height: 3.5387678
   m_Direction: 1
   m_Center: {x: 0, y: 2.3677807, z: 0.16350439}

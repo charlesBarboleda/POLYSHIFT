@@ -14,6 +14,7 @@ public class AIKinematics : NetworkBehaviour
     public Transform ClosestPlayer;
     FLookAnimator lookAnimator;
     Animator animator;
+    public bool CanMove = true;
 
     public override void OnNetworkSpawn()
     {
@@ -23,6 +24,7 @@ public class AIKinematics : NetworkBehaviour
             // Disable AI logic on clients since only the server should run this
             enabled = false;
         }
+        CanMove = true;
         animator = GetComponent<Animator>();
         lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<AIPath>();
@@ -38,6 +40,8 @@ public class AIKinematics : NetworkBehaviour
         lookAnimator.SetLookTarget(ClosestPlayer);
         FindClosestPossibleTarget();
         StopAndRotateTowardsTarget();
+
+        if (!CanMove) return;
 
         if (ClosestPlayer != null)
         {
@@ -103,11 +107,6 @@ public class AIKinematics : NetworkBehaviour
         if (closestDistance < Mathf.Infinity)
         {
             transform.position = bestNodePosition;
-            Debug.Log($"Teleported to nearest valid forward-facing node at {bestNodePosition}");
-        }
-        else
-        {
-            Debug.LogWarning("No valid forward-facing walkable node found.");
         }
     }
 
@@ -138,6 +137,7 @@ public class AIKinematics : NetworkBehaviour
                 Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
                 Agent.isStopped = true;
+
             }
             else
             {

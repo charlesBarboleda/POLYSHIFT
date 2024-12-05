@@ -63,6 +63,7 @@ public class Projectile : MonoBehaviour
     private void Despawn()
     {
         GameObject onHitEffect = ObjectPooler.Instance.Spawn(ProjectileHitEffectName, transform.position, Quaternion.identity);
+        onHitEffect.transform.rotation = Quaternion.Euler(-90, 0, 90);
         onHitEffect.GetComponent<NetworkObject>().Spawn();
 
         Debug.Log($"Despawning projectile at {transform.position}");
