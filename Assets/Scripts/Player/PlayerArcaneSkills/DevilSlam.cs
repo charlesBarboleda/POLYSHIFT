@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "DevilSlam", menuName = "Skills/DevilSlam")]
-public class DevilSlam : ActiveSkill
+public class DevilSlam : ActiveSkill, IUltimateSkill
 {
     public override void Initialize(Animator animator)
     {

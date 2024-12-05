@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SummonStarbreaker", menuName = "Skills/SummonStarbreaker")]
-public class SummonStarbreaker : ActiveSkill
+public class SummonStarbreaker : ActiveSkill, IUltimateSkill
 {
     public override void Initialize(Animator animator)
     {

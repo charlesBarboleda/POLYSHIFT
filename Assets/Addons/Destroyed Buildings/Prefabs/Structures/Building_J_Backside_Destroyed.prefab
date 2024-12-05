@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 9152546342112407036}
   m_Layer: 6
   m_Name: Broken_Concrete 3
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2344220802
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 8818052866073077304}
   m_Layer: 6
   m_Name: Floors_Collapsed
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -271,7 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2281926667
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -312,7 +312,7 @@ GameObject:
   - component: {fileID: 2553145609880864549}
   m_Layer: 6
   m_Name: Windows 5
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -419,7 +419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3580996427
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -460,7 +460,7 @@ GameObject:
   - component: {fileID: 6949949102189161965}
   m_Layer: 6
   m_Name: Floor_Top 1
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3050519399
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -609,7 +609,7 @@ GameObject:
   - component: {fileID: 6228542357497811477}
   m_Layer: 6
   m_Name: Walls 12
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -738,7 +738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3971869714
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -778,7 +778,7 @@ GameObject:
   - component: {fileID: 322890722049888951}
   m_Layer: 6
   m_Name: Rebar 7
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -863,7 +863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4144245054
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -904,7 +904,7 @@ GameObject:
   - component: {fileID: 8445743388826606410}
   m_Layer: 6
   m_Name: Floor_Bottom 1
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1011,7 +1011,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1101910638
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1090,7 +1090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1607720718
+  GlobalObjectIdHash: 243742087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1

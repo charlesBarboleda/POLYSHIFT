@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5699770134440362536}
   m_Layer: 6
   m_Name: Floor_Top 4
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3327317583
+  GlobalObjectIdHash: 3796834080
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 6206659253417424011}
   m_Layer: 6
   m_Name: Windows 15
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -271,7 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1967920702
+  GlobalObjectIdHash: 3796834080
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1651786778
+  GlobalObjectIdHash: 3796834080
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -443,7 +443,7 @@ GameObject:
   - component: {fileID: 3001749673934946291}
   m_Layer: 6
   m_Name: Rebar 9
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -528,7 +528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3889150938
+  GlobalObjectIdHash: 3796834080
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -569,7 +569,7 @@ GameObject:
   - component: {fileID: 8475129156888151531}
   m_Layer: 6
   m_Name: Floor_Bottom 4
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -676,7 +676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3138928051
+  GlobalObjectIdHash: 3796834080
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -717,7 +717,7 @@ GameObject:
   - component: {fileID: 1940528265042638437}
   m_Layer: 6
   m_Name: Walls 9
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -824,7 +824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3528379376
+  GlobalObjectIdHash: 3796834080
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -865,7 +865,7 @@ GameObject:
   - component: {fileID: 2481698335496592436}
   m_Layer: 6
   m_Name: Broken_Concrete 4
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -972,7 +972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1639776514
+  GlobalObjectIdHash: 3796834080
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1

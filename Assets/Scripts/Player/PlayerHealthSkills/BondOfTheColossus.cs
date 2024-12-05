@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BondOfTheColossus", menuName = "Skills/BondOfTheColossus")]
-public class BondOfTheColossus : ActiveSkill
+public class BondOfTheColossus : ActiveSkill, IUltimateSkill
 {
     public override void ExecuteAttack()
     {

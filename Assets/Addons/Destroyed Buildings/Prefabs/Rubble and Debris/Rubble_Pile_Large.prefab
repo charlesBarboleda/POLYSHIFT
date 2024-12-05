@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23147292435374648}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 23850499203524522}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 23558748543777018}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 23328125069955486}
   m_Layer: 6
   m_Name: Brick
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 23368810467573084}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -443,7 +443,7 @@ GameObject:
   - component: {fileID: 23369643326094336}
   m_Layer: 6
   m_Name: Brick
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -529,7 +529,7 @@ GameObject:
   - component: {fileID: 23982800691621382}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -615,7 +615,7 @@ GameObject:
   - component: {fileID: 23742782057760280}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -701,7 +701,7 @@ GameObject:
   - component: {fileID: 23698623565952650}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -876,7 +876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4139968382
+  GlobalObjectIdHash: 3863744656
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -968,7 +968,7 @@ GameObject:
   - component: {fileID: 23108888480233020}
   m_Layer: 6
   m_Name: Broken_Concrete
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1054,7 +1054,7 @@ GameObject:
   - component: {fileID: 23120028611045976}
   m_Layer: 6
   m_Name: Broken_Concrete
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1140,7 +1140,7 @@ GameObject:
   - component: {fileID: 23512821354935810}
   m_Layer: 6
   m_Name: Rubble
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1226,7 +1226,7 @@ GameObject:
   - component: {fileID: 23702584621390138}
   m_Layer: 6
   m_Name: Brick
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1312,7 +1312,7 @@ GameObject:
   - component: {fileID: 23144542736165812}
   m_Layer: 6
   m_Name: Brick
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1398,7 +1398,7 @@ GameObject:
   - component: {fileID: 23958841626568874}
   m_Layer: 6
   m_Name: Rubble
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1484,7 +1484,7 @@ GameObject:
   - component: {fileID: 23872695681786252}
   m_Layer: 6
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1570,7 +1570,7 @@ GameObject:
   - component: {fileID: 23069398668276760}
   m_Layer: 6
   m_Name: Column
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1656,7 +1656,7 @@ GameObject:
   - component: {fileID: 23854301332904564}
   m_Layer: 6
   m_Name: Brick
-  m_TagString: Untagged
+  m_TagString: Destroyables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

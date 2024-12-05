@@ -73,7 +73,6 @@ public class OnHitEffects : NetworkBehaviour
         if (renderer != null)
         {
             Bounds bounds = renderer.bounds;
-            Debug.Log($"Renderer bounds for {obj.name}: Center={bounds.center}, Size={bounds.size}");
         }
     }
 }

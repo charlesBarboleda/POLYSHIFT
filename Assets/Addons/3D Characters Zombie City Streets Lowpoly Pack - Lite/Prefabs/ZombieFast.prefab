@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2419545488649489685}
-  - component: {fileID: 4795400075608827079}
+  - component: {fileID: 1556423060811821117}
   m_Layer: 7
   m_Name: metarig
   m_TagString: Untagged
@@ -97,8 +97,8 @@ Transform:
   - {fileID: 1907641006776737516}
   m_Father: {fileID: 6279823610682781954}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4795400075608827079
-BoxCollider:
+--- !u!136 &1556423060811821117
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -115,9 +115,11 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.004379921, y: 0.002790706, z: 0.0019835634}
-  m_Center: {x: -0.00025644733, y: 0.00022286088, z: 0.0025503444}
+  serializedVersion: 2
+  m_Radius: 0.003
+  m_Height: 0.018608255
+  m_Direction: 2
+  m_Center: {x: 0.0000041010976, y: -0.00009663015, z: 0.011102511}
 --- !u!1 &372580541245601530
 GameObject:
   m_ObjectHideFlags: 0
@@ -1425,7 +1427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1024282167
+  GlobalObjectIdHash: 2292706137
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1863,9 +1865,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1.5537376
+  m_Height: 2.01
   m_Direction: 1
-  m_Center: {x: 0, y: 1.2971206, z: 0}
+  m_Center: {x: 0, y: 1.09, z: 0}
 --- !u!114 &2615142238517485442
 MonoBehaviour:
   m_ObjectHideFlags: 0

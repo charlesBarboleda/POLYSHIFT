@@ -212,7 +212,7 @@ public class PlayerSkills : NetworkBehaviour
         foreach (var collider in hitColliders)
         {
             Vector3 directionToTarget = (collider.transform.position - origin).normalized;
-            if (Vector3.Angle(transform.forward, directionToTarget) <= coneAngle && collider.CompareTag("Enemy"))
+            if (Vector3.Angle(transform.forward, directionToTarget) <= coneAngle && (collider.CompareTag("Enemy") || collider.CompareTag("Destroyables")))
             {
                 DealDamage(collider, origin, damage, knockbackForce);
             }

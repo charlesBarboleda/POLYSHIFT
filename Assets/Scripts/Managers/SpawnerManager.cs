@@ -50,7 +50,7 @@ public class SpawnerManager : NetworkBehaviour
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-                GameObject zombie = ObjectPooler.Instance.Spawn("ZombieFast", spawnPositions[0].position, Quaternion.identity);
+                GameObject zombie = ObjectPooler.Instance.Spawn("ZombieJumper", spawnPositions[0].position, Quaternion.identity);
                 if (zombie.TryGetComponent(out NetworkObject networkObject))
                 {
                     networkObject.Spawn();

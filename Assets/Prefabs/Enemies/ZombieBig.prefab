@@ -489,7 +489,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1512476592110436899}
   - component: {fileID: 5309221088555987894}
-  - component: {fileID: 6489348700450661390}
+  - component: {fileID: 5422164966379632302}
   m_Layer: 7
   m_Name: Zombie_Cartoon_ArtStore3D
   m_TagString: Untagged
@@ -630,8 +630,8 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.103028536, y: -0.09247172, z: 0.06559417}
     m_Extent: {x: 0.7064996, y: 1.0317842, z: 0.2541846}
   m_DirtyAABB: 0
---- !u!65 &6489348700450661390
-BoxCollider:
+--- !u!136 &5422164966379632302
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -648,9 +648,11 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.6598693, y: 0.32318598, z: 0.50661427}
-  m_Center: {x: -0.044050477, y: -0.35, z: -0.1399278}
+  serializedVersion: 2
+  m_Radius: 0.35
+  m_Height: 1.3322152
+  m_Direction: 1
+  m_Center: {x: -0.0000000011217713, y: 0.8160997, z: 0}
 --- !u!1 &2252938243618085888
 GameObject:
   m_ObjectHideFlags: 0

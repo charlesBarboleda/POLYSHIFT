@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4007887594260577832}
   - component: {fileID: 8683405568647393629}
   - component: {fileID: 7474391577370412200}
-  - component: {fileID: 1484812002249801201}
+  - component: {fileID: -1385002668713862464}
   m_Layer: 0
   m_Name: Road_02 1
   m_TagString: Untagged
@@ -87,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1484812002249801201
+--- !u!64 &-1385002668713862464
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

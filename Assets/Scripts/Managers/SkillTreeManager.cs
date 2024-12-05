@@ -57,6 +57,14 @@ public class SkillTreeManager : NetworkBehaviour
 
         Debug.Log($"{skill.skillName} unlocked!");
 
+        // Disable all ultimate skills if an ultimate skill is unlocked
+        if (skill is IUltimateSkill)
+        {
+            foreach (var ultimateSkill in ultimateSkills)
+            {
+                ultimateSkill.interactable = false;
+            }
+        }
         // Find the RectTransform of the unlocked node
         if (skillNodeMap.TryGetValue(skill, out RectTransform newNode))
         {
@@ -148,7 +156,9 @@ public class SkillTreeManager : NetworkBehaviour
     void OnLevelUp(int prev, int current)
     {
         skillPoints++;
-        if (current % 5 == 0)
+
+
+        if (current % 20 == 0)
         {
             foreach (var ultimateSkill in ultimateSkills)
             {
