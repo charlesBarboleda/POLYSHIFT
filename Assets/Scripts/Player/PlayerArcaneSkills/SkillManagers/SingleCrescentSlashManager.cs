@@ -13,11 +13,23 @@ public class SingleCrescentSlashManager : NetworkBehaviour, ISkillManager
     public Animator animator { get; set; }
     PlayerSkills PlayerSkills;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
         PlayerSkills = GetComponent<PlayerSkills>();
         animator = GetComponent<Animator>();
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
+
+        AttackRange = 3f;
+        coneAngle = 90f;
+        KnockbackForce = 1f;
+    }
+
+    public void ResetSkill()
+    {
+        AttackRange = 3f;
+        coneAngle = 90f;
+        KnockbackForce = 1f;
+        Damage = 10f;
     }
 
 

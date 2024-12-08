@@ -27,8 +27,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         {
             CurrentHealth.Value = MaxHealth;
             UpdateHealthbar(MaxHealth, MaxHealth);
+            IsDead = false;
         }
-        IsDead = false;
         animator = GetComponent<Animator>();
         kinematics = GetComponent<AIKinematics>();
         enemy = GetComponent<Enemy>();

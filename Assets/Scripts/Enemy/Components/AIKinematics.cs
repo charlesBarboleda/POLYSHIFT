@@ -50,7 +50,11 @@ public class AIKinematics : NetworkBehaviour
 
         if (!Agent.hasPath)
         {
-            transform.position = Vector3.MoveTowards(transform.position, ClosestPlayer.position, MoveSpeed * Time.deltaTime);
+            if (ClosestPlayer != null)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, ClosestPlayer.position, MoveSpeed * Time.deltaTime);
+            }
+
         }
 
 

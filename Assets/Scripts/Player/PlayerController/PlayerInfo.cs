@@ -24,7 +24,7 @@ public class PlayerInfo : NetworkBehaviour
         // Set the local player name via the GameManager
         if (IsLocalPlayer)
         {
-            GameManager.Instance.SetLocalPlayer(this);
+            MainMenuManager.Instance.SetLocalPlayer(this);
         }
 
         // Update UI on spawn for all players

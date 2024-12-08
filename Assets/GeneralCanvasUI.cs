@@ -9,6 +9,10 @@ public class GeneralCanvasUI : MonoBehaviour
 
     void Start()
     {
+        if (GameManager.Instance == null)
+        {
+            return;
+        }
         GameManager.Instance.GameCountdown.OnValueChanged += UpdateCountdownText;
         GameManager.Instance.GameLevel.OnValueChanged += UpdateGameLevelText;
     }

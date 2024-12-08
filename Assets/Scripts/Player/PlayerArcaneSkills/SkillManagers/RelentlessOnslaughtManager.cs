@@ -26,6 +26,15 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
         animator = GetComponent<Animator>();
     }
 
+    public void ResetSkill()
+    {
+        Damage = 0;
+        KnockbackForce = 0;
+        AttackRange = 0;
+        AttackSpeedMultiplier.Value = 1f;
+        Duration = 30f;
+    }
+
 
     // This method is called when the player wants to use the ability
     public void ActivateRelentlessOnslaught()

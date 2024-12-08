@@ -139,6 +139,16 @@ public abstract class Golem : NetworkBehaviour, IDamageable
 
 
     [ServerRpc(RequireOwnership = false)]
+    public void DespawnGolemServerRpc()
+    {
+        if (IsServer)
+        {
+            NetworkObject.Despawn(true);
+        }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
     public void HealServerRpc(float amount)
     {
         if (IsServer)

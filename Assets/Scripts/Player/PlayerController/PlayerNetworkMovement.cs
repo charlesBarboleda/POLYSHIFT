@@ -56,6 +56,10 @@ public class PlayerNetworkMovement : NetworkBehaviour
         }
     }
 
+    public void ResetMovement()
+    {
+        MoveSpeed = 3f;
+    }
     void HandleGhostMovement(Vector2 inputDirection)
     {
         float verticalInput = Input.GetKey(KeyCode.Space) ? 1f :
@@ -87,13 +91,21 @@ public class PlayerNetworkMovement : NetworkBehaviour
             moveDirection = GetFirstPersonMoveDirection(inputDirection);
 
             Cursor.visible = skillTreeCanvas.activeSelf;
-            Cursor.lockState = CursorLockMode.Confined;
+
+            if (skillTreeCanvas.activeSelf)
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
         else
         {
             moveDirection = GetIsometricMoveDirection(inputDirection);
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Confined;
         }
 
         float movementMagnitude = moveDirection.magnitude;

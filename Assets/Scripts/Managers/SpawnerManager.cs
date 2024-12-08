@@ -55,6 +55,42 @@ public class SpawnerManager : NetworkBehaviour
         }
     }
 
+    public void KillAllAllies()
+    {
+        if (!IsServer) return;
+
+        List<Enemy> spawnedAlliesCopy = new List<Enemy>(GameManager.Instance.SpawnedEnemies);
+
+        const int LethalDamage = 999999;
+
+        foreach (var ally in spawnedAlliesCopy)
+        {
+            if (ally != null && ally.TryGetComponent(out IDamageable networkHealth))
+            {
+                networkHealth.RequestTakeDamageServerRpc(LethalDamage, 0);
+            }
+        }
+    }
+
+    public void KillAllEnemies()
+    {
+        if (!IsServer) return;
+
+        List<Enemy> spawnedEnemiesCopy = new List<Enemy>(GameManager.Instance.SpawnedEnemies);
+        const int LethalDamage = 999999;
+
+        foreach (var enemy in spawnedEnemiesCopy)
+        {
+            if (enemy != null && enemy.TryGetComponent(out EnemyNetworkHealth enemyHealth))
+            {
+                enemyHealth.RequestTakeDamageServerRpc(LethalDamage, 0);
+            }
+        }
+
+        EnemiesToSpawn = 0;
+    }
+
+
     public void SpawnEnemies()
     {
         SetEnemies();

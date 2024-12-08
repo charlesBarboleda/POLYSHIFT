@@ -8,4 +8,13 @@ public class BombardierSentryManager : NetworkBehaviour, ISkillManager
     public VariableWithEvent<float> AttackSpeedMultiplier { get; set; }
     public float AttackRange { get; set; }
     public Animator animator { get; set; }
+
+    public void ResetSkill()
+    {
+        Damage = 0;
+        KnockbackForce = 0;
+        AttackRange = 0;
+        AttackSpeedMultiplier.Value = 1f;
+    }
+
 }

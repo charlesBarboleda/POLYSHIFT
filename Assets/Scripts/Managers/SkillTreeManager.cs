@@ -20,6 +20,9 @@ public class SkillTreeManager : NetworkBehaviour
     [SerializeField] PlayerNetworkLevel playerLevel;
     [SerializeField] GameObject linePrefab;
     [SerializeField] Transform lineParent;
+    [SerializeField] Image newBeginningsButton;
+    [SerializeField] Image newBeginningsContainer;
+    List<GameObject> nodeLines = new List<GameObject>();
     PlayerSkills playerSkills;
 
     void Start()
@@ -121,6 +124,7 @@ public class SkillTreeManager : NetworkBehaviour
         // Instantiate the line and parent it to the lineParent
         GameObject line = Instantiate(linePrefab, lineParent);
 
+        nodeLines.Add(line);
         // Get the RectTransform of the line
         RectTransform lineRect = line.GetComponent<RectTransform>();
 
@@ -146,13 +150,6 @@ public class SkillTreeManager : NetworkBehaviour
     }
 
 
-
-
-
-
-
-
-
     void OnLevelUp(int prev, int current)
     {
         skillPoints++;
@@ -172,11 +169,28 @@ public class SkillTreeManager : NetworkBehaviour
         for (int i = 0; i < skillNodes.Count; i++)
         {
             Skill skill = skillNodes[i].GetComponent<SkillNodeController>().skill; // Assuming each node has a Skill component or reference
+            Image image = skillNodes[i].GetComponent<Image>();
+            Image button = skillNodes[i].GetComponentInChildren<Image>();
+
+            if (button != null)
+            {
+                button.color = new Color(1, 1, 1, 0.0f);
+            }
+
+            if (image != null)
+            {
+                image.color = new Color(1, 1, 1, 0.0f);
+            }
+
+
+
             if (skill != null)
             {
                 skillNodeMap[skill] = skillNodes[i];
             }
         }
+        newBeginningsButton.color = new Color(1, 1, 1, 1);
+        newBeginningsContainer.color = new Color(1, 1, 1, 1);
     }
 
     void UnlockNearbySkills(RectTransform unlockedNode)
@@ -199,6 +213,7 @@ public class SkillTreeManager : NetworkBehaviour
             {
                 node.GetComponentInChildren<Button>().interactable = true;
                 node.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                node.GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
             }
         }
     }
@@ -238,5 +253,34 @@ public class SkillTreeManager : NetworkBehaviour
     public void SetCurrentSkill(Skill skill)
     {
         currentSkill = skill;
+    }
+
+    public void ResetSkillTree()
+    {
+        foreach (var node in skillNodes)
+        {
+            node.GetComponentInChildren<Button>().interactable = false;
+            node.GetComponent<Image>().color = new Color(1, 1, 1, 0.0f);
+            node.GetComponentInChildren<Image>().color = new Color(1, 1, 1, 0.0f);
+        }
+
+        newBeginningsButton.GetComponent<Button>().interactable = true;
+        newBeginningsButton.color = new Color(1, 1, 1, 1);
+        newBeginningsContainer.color = new Color(1, 1, 1, 1);
+
+        foreach (var line in nodeLines)
+        {
+            Destroy(line);
+        }
+
+        foreach (var ultimateSkill in ultimateSkills)
+        {
+            ultimateSkill.interactable = false;
+        }
+
+
+        skillPoints = 0;
+        playerSkills.unlockedSkills.Clear();
+
     }
 }

@@ -21,18 +21,24 @@ public class PlayerCameraBehavior : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
-        playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
-        playerState = GetComponent<PlayerStateController>();
-
         if (!IsOwner)
         {
             firstPersonCamera.gameObject.SetActive(false);
             isometricCamera.gameObject.SetActive(false);
             return;
         }
+
+        playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
+        playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
+        playerState = GetComponent<PlayerStateController>();
+
+
         isometricCamera.transform.SetParent(null);
         firstPersonCamera.transform.SetParent(null);
+
+        DontDestroyOnLoad(isometricCamera.gameObject);
+        DontDestroyOnLoad(firstPersonCamera.gameObject);
+
         EnableFirstPersonCamera();
     }
 
@@ -59,7 +65,8 @@ public class PlayerCameraBehavior : NetworkBehaviour
             }
             FollowPlayerHead();
         }
-        else if (playerState.playerState.Value == PlayerState.Dead)
+
+        if (playerState.playerState.Value == PlayerState.Dead)
         {
             RotateFreeViewCamera();
         }
@@ -111,6 +118,15 @@ public class PlayerCameraBehavior : NetworkBehaviour
         freeViewCamera.Priority = 1;
         firstPersonCamera.Priority = 0;
         isometricCamera.Priority = 0;
+    }
+
+    public void DisableSpectatorMode()
+    {
+        if (!IsOwner) return; // Only allow the owning player to adjust the spectator mode
+
+        freeViewCamera.Priority = 0;
+        freeViewCamera.gameObject.SetActive(false);
+        firstPersonCamera.Priority = 1;
     }
 
 

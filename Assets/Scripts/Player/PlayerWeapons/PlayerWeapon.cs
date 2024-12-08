@@ -511,4 +511,14 @@ public class PlayerWeapon : NetworkBehaviour
                 // Add cases for other weapon types...
         }
     }
+
+    public void ResetWeapon()
+    {
+        maxAmmoCount = 10;
+        currentAmmoCount = maxAmmoCount;
+        ShootRate = 2f;
+        ReloadTime = 4f;
+        Damage = 10f;
+        SetWeaponBehavior(WeaponType.SingleShot);
+    }
 }

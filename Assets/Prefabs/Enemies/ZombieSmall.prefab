@@ -1533,11 +1533,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
-    m_InternalValue: 25
-  MaxHealth: 25
+    m_InternalValue: 15
+  MaxHealth: 15
   HealthRegenRate: 1
   IsDead: 0
-  ExperienceDrop: 2.5
+  ExperienceDrop: 3
   enemyName: ZombieSmall
   healthbarFill: {fileID: 2726886102658222419}
 --- !u!136 &563338668290707213

@@ -6,7 +6,13 @@ public class GolemManager : MonoBehaviour
 {
     public List<Golem> SpawnedGolems = new List<Golem>();
 
-
+    public void ResetGolems()
+    {
+        foreach (var golem in SpawnedGolems)
+        {
+            golem.DespawnGolemServerRpc();
+        }
+    }
 
     public void IncreaseGolemDamageReduction(float amount)
     {

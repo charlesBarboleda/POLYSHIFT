@@ -28,6 +28,19 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerSkills = GetComponent<PlayerSkills>();
         playerWeapon = GetComponent<PlayerWeapon>();
+
+        AttackRange = 20f;
+        KnockbackForce = 25f;
+        Damage = 0f;
+
+    }
+
+    public void ResetSkill()
+    {
+        AttackRange = 20f;
+        KnockbackForce = 25f;
+        Damage = 0f;
+
     }
 
     void Update()
@@ -142,7 +155,7 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
 
     public void Knockback()
     {
-        playerSkills.DealDamageInCircle(transform.position, 25f, 0, 20f);
+        playerSkills.DealDamageInCircle(transform.position, AttackRange, Damage, KnockbackForce);
     }
 
     private IEnumerator ApplyFiftyBuff()

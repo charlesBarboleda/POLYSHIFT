@@ -105,4 +105,20 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
     {
         animator.SetFloat("AttackSpeedMultiplier", value);
     }
+
+    public void ResetSkill()
+    {
+        Damage = 0f;
+        KnockbackForce = 10f;
+        AttackSpeedMultiplier.Value = 1f;
+        AttackRange = 2f;
+        Duration = 60f;
+    }
+
+    public void OnDisable()
+    {
+        AttackSpeedMultiplier.OnValueChanged -= SetAttackSpeedMultiplier;
+
+    }
+
 }

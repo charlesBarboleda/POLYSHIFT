@@ -4,10 +4,10 @@ using Unity.Netcode;
 using System.Collections.Generic;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
-    Lobby,
     OutLevel,
     InLevel,
     GameOver
@@ -21,11 +21,10 @@ public class GameManager : NetworkBehaviour
     public List<Enemy> SpawnedEnemies = new List<Enemy>();
     public List<GameObject> SpawnedAllies = new List<GameObject>();
     public List<GameObject> AlivePlayers = new List<GameObject>();
-    public GameState CurrentGameState = GameState.Lobby;
+    public GameState CurrentGameState = GameState.OutLevel;
     public List<Transform> _spawnPoints = new List<Transform>();
-    PlayerInfo _localPlayer;
-    Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>();
-    [SerializeField] TMP_InputField _playerNameInput;
+    [SerializeField] GameObject playerPrefab;
+
 
     private void Awake()
     {
@@ -36,10 +35,33 @@ public class GameManager : NetworkBehaviour
     {
         if (IsServer)
         {
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                ulong clientId = client.ClientId;
+
+                // Spawn a new game player prefab for each client
+                GameObject newPlayer = Instantiate(playerPrefab);
+                NetworkObject networkObject = newPlayer.GetComponent<NetworkObject>();
+                networkObject.SpawnAsPlayerObject(clientId);
+
+                // Assign player name from MainMenuManager
+                var playerName = MainMenuManager.Instance.GetPlayerName(clientId);
+                var playerComponent = newPlayer.GetComponent<PlayerInfo>();
+                if (playerComponent != null)
+                {
+                    playerComponent.SetName(playerName);
+                }
+            }
+
             GameLevel.Value = 0;
-            SetCurrentGameState(GameState.Lobby);
+            SetCurrentGameState(GameState.OutLevel);
+            EventManager.Instance.OnPlayerDeath.AddListener(HandleGameOver);
+
+            EnableCountdownTextClientRpc();
+            EnableGameLevelTextClientRpc();
         }
     }
+
 
     public void SetCurrentGameState(GameState state)
     {
@@ -47,13 +69,14 @@ public class GameManager : NetworkBehaviour
 
         switch (CurrentGameState)
         {
-            case GameState.Lobby:
-                // Set game-related lobby logic here
-                break;
             case GameState.InLevel:
+                // Set game-related in-level logic here
+                DisableCountdownTextClientRpc();
                 SpawnerManager.Instance.SpawnEnemies();
                 break;
             case GameState.OutLevel:
+                // Set game-related out-level logic here
+                EnableCountdownTextClientRpc();
                 Countdown();
                 break;
             case GameState.GameOver:
@@ -84,55 +107,34 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void SetLocalPlayer(PlayerInfo playerInfo)
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DisconnectGameServerRpc()
     {
-        _localPlayer = playerInfo;
-
-        // Get name from input field or generate default name
-        string playerName = _playerNameInput.text.Length > 0 ? _playerNameInput.text : "Player " + _localPlayer.OwnerClientId;
-        _localPlayer.SetName(playerName); // Set the name through the PlayerInfo component
-
-        // Hide input field after setting the name
-        _playerNameInput.gameObject.SetActive(false);
-
-        Debug.Log($"Set local player name to {playerName} for client {_localPlayer.OwnerClientId}");
-    }
-
-    public void SetPlayerName(NetworkObject playerObject, string name)
-    {
-        ulong clientId = playerObject.OwnerClientId;
-        if (_playerNames.ContainsKey(clientId))
+        if (IsServer)
         {
-            _playerNames[clientId] = name;
+            NetworkManager.Singleton.Shutdown();
         }
-        else
-        {
-            _playerNames.Add(clientId, name);
-        }
-        Debug.Log($"Player name set for client {clientId}: {name}");
     }
 
 
     [ServerRpc(RequireOwnership = false)]
     public void StartGameServerRpc()
     {
-        SetCurrentGameState(GameState.OutLevel);
-        SetPlayerStatesClientRpc();
+        if (IsServer)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
+        }
     }
+
+
 
     void Countdown()
     {
         StartCoroutine(GameCountdownCoroutine());
     }
 
-    [ClientRpc]
-    void SetPlayerStatesClientRpc()
-    {
-        foreach (GameObject player in AlivePlayers)
-        {
-            player.GetComponent<PlayerStateController>().SetPlayerStateServerRpc(PlayerState.Alive);
-        }
-    }
 
     IEnumerator GameCountdownCoroutine()
     {
@@ -152,8 +154,60 @@ public class GameManager : NetworkBehaviour
             GameCountdown.Value = 30f;
             SetCurrentGameState(GameState.InLevel);
         }
-
     }
+
+    public void HandleGameOver(PlayerNetworkHealth player)
+    {
+        if (AlivePlayers.Count == 0)
+        {
+            SetCurrentGameState(GameState.GameOver);
+
+            // Notify all clients to handle their UI
+            TriggerGameOverClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    private void TriggerGameOverClientRpc()
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var playerStateController = client.PlayerObject.GetComponent<PlayerStateController>();
+            playerStateController.ShowGameOverUI();
+        }
+    }
+
+    [ClientRpc]
+    void EnableCountdownTextClientRpc()
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var playerUIManager = client.PlayerObject.GetComponent<PlayerUIManager>();
+            playerUIManager.EnableCountdownText();
+        }
+    }
+
+    [ClientRpc]
+    void DisableCountdownTextClientRpc()
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var playerUIManager = client.PlayerObject.GetComponent<PlayerUIManager>();
+            playerUIManager.DisableCountdownText();
+        }
+    }
+
+    [ClientRpc]
+    void EnableGameLevelTextClientRpc()
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var playerUIManager = client.PlayerObject.GetComponent<PlayerUIManager>();
+            playerUIManager.EnableGameLevelText();
+        }
+    }
+
+
 
 
 

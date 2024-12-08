@@ -1123,6 +1123,7 @@ MonoBehaviour:
   MoveSpeed: 2
   Agent: {fileID: 0}
   ClosestPlayer: {fileID: 0}
+  CanMove: 1
 --- !u!114 &9077152233927363743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1137,8 +1138,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
-    m_InternalValue: 150
-  MaxHealth: 150
+    m_InternalValue: 100
+  MaxHealth: 100
   HealthRegenRate: 1
   IsDead: 0
   ExperienceDrop: 50

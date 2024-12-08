@@ -27,9 +27,6 @@ public class FlyingEnemy : Enemy
         }
     }
 
-
-
-
     protected override void Attack()
     {
         if (ClosestTarget != null)

@@ -14,4 +14,9 @@ public class ArcanePlagueManager : NetworkBehaviour, ISkillManager
         Damage = 5f;
     }
 
+    public void ResetSkill()
+    {
+        Damage = 5f;
+    }
+
 }

@@ -15,11 +15,20 @@ public class OverloadManager : NetworkBehaviour, ISkillManager
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        Duration = 15f;
+        Duration = 10f;
         animator = GetComponent<Animator>();
         playerWeapon = GetComponent<PlayerWeapon>();
         AttackSpeedMultiplier.Value = 1f;
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
+    }
+
+    public void ResetSkill()
+    {
+        Damage = 0;
+        KnockbackForce = 0;
+        AttackRange = 0;
+        AttackSpeedMultiplier.Value = 1f;
+        Duration = 10f;
     }
 
 

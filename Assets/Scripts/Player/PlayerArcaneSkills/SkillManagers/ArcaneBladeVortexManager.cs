@@ -27,6 +27,15 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
         animator = GetComponent<Animator>();
     }
 
+    public void ResetSkill()
+    {
+        Damage = 5f;
+        Duration = 30f;
+        KnockbackForce = 1f;
+        AttackSpeedMultiplier.Value = 1f;
+        AttackRange = 1f;
+    }
+
     public void ActivateArcaneBladeVortex()
     {
         if (IsOwner)

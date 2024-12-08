@@ -33,9 +33,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             maxHealth.Value = 100f;
             currentHealth.Value = maxHealth.Value;
             healthRegenRate.Value = 1f;
-            GameManager.Instance.SpawnedAllies.Add(gameObject);
-            GameManager.Instance.AlivePlayers.Add(gameObject);
-
         }
 
         currentHealth.OnValueChanged += OnHealthChangedClientRpc;
@@ -57,6 +54,8 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         currentHealth.OnValueChanged -= OnHealthChangedClientRpc;
         maxHealth.OnValueChanged -= OnHealthChangedClientRpc;
 
+
+
     }
 
     void Update()
@@ -73,6 +72,11 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         if (currentHealth.Value < maxHealth.Value)
         {
             RegenerateHealth(healthRegenRate.Value);
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            RequestTakeDamageServerRpc(100, NetworkManager.Singleton.LocalClientId);
         }
     }
 

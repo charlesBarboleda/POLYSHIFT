@@ -24,6 +24,14 @@ public class MimicSentryManager : NetworkBehaviour, ISkillManager
         }
     }
 
+    public void ResetSkill()
+    {
+        Damage = 0;
+        KnockbackForce = 0;
+        AttackRange = 0;
+        AttackSpeedMultiplier.Value = 1f;
+    }
+
     public void OnAttackSpeedChanged(float current)
     {
         if (animator == null)

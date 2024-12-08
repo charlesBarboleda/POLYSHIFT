@@ -8,6 +8,8 @@ public class GlobalUIManager : NetworkBehaviour
     public static GlobalUIManager Instance { get; private set; }
     [SerializeField] TMP_Text _titleText;
     [SerializeField] TMP_Text _waitForHostText;
+    [SerializeField] GameObject _startGameButton;
+    [SerializeField] GameObject _joinCodeText;
 
     void Awake()
     {
@@ -20,13 +22,36 @@ public class GlobalUIManager : NetworkBehaviour
             Destroy(gameObject);
         }
     }
-
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedClientRpc;
         }
+    }
+
+    public void EnableHostLobbyUI()
+    {
+        _titleText.gameObject.SetActive(true);
+        _titleText.DOFade(1, 0.5f);
+
+        _startGameButton.SetActive(true);
+        _startGameButton.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+
+        _joinCodeText.SetActive(true);
+        _joinCodeText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+    }
+
+    public void EnableClientLobbyUI()
+    {
+        _titleText.gameObject.SetActive(true);
+        _titleText.DOFade(1, 0.5f);
+
+        _waitForHostText.gameObject.SetActive(true);
+        _waitForHostText.DOFade(1, 0.5f);
+
+        _joinCodeText.SetActive(true);
+        _joinCodeText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
     }
 
     [ClientRpc]

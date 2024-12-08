@@ -219,6 +219,12 @@ public class TitleScreenUIManager : MonoBehaviour
 
             backButton.gameObject.SetActive(true);
             backButton.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+
+            playerNameInputField.gameObject.SetActive(true);
+            playerNameInputField.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+
+            nameText.gameObject.SetActive(true);
+            nameText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
         });
 
         joinCodeButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>

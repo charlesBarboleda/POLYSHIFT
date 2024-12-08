@@ -25,6 +25,15 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, ISkillManager
         player = GetComponent<PlayerNetworkHealth>().gameObject;
     }
 
+    public void ResetSkill()
+    {
+        AttackRange = 3f;
+        coneAngle = 90f;
+        KnockbackForce = 1f;
+        Damage = 10f;
+        stepDistance = 0.5f;
+    }
+
 
     [ServerRpc]
     public void OnDoubleCrescentSlashSpawnServerRpc()

@@ -6,6 +6,9 @@ public class PlayerUIManager : NetworkBehaviour
 {
     [SerializeField] GameObject firstPersonCanvas;
     [SerializeField] GameObject hotbarUI;
+    [SerializeField] GameObject ammoCountUI;
+    [SerializeField] GameObject countdownText;
+    [SerializeField] GameObject gameLevelText;
     PlayerNetworkMovement playerNetworkMovement;
 
 
@@ -22,20 +25,24 @@ public class PlayerUIManager : NetworkBehaviour
         if (playerNetworkMovement.IsLocalPlayer)
         {
             RectTransform hotbarRectTransform = hotbarUI.GetComponent<RectTransform>();
-            Vector2 targetPosition;
+            RectTransform ammoCountRectTransform = ammoCountUI.GetComponent<RectTransform>();
+            Vector2 hotbarTargetPosition;
+            Vector2 ammoCountTargetPosition;
 
             if (!current)
             {
                 firstPersonCanvas.SetActive(true);
                 firstPersonCanvas.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
 
-                // Adjust the Y position for first-person view
-                targetPosition = new Vector2(hotbarRectTransform.anchoredPosition.x, -140);
+                // Adjust the X, Y position for first-person view
+                hotbarTargetPosition = new Vector2(hotbarRectTransform.anchoredPosition.x, -140);
+                ammoCountTargetPosition = new Vector2(75, 75); // Vector2 position relative to the anchored position
             }
             else
             {
-                // Adjust the Y position for isometric view
-                targetPosition = new Vector2(hotbarRectTransform.anchoredPosition.x, -190);
+                // Adjust the X, Y position for isometric view
+                hotbarTargetPosition = new Vector2(hotbarRectTransform.anchoredPosition.x, -190);
+                ammoCountTargetPosition = new Vector2(395, 75);
 
                 firstPersonCanvas.GetComponent<CanvasGroup>()
                     .DOFade(0, 0.5f)
@@ -43,8 +50,31 @@ public class PlayerUIManager : NetworkBehaviour
             }
 
             // Tween to the new anchored position
-            hotbarRectTransform.DOAnchorPos(targetPosition, 1f);
+            ammoCountRectTransform.DOAnchorPos(ammoCountTargetPosition, 1f);
+            hotbarRectTransform.DOAnchorPos(hotbarTargetPosition, 1f);
         }
+    }
+
+    public void EnableCountdownText()
+    {
+        countdownText.SetActive(true);
+        countdownText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+    }
+
+    public void DisableCountdownText()
+    {
+        countdownText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => countdownText.SetActive(false));
+    }
+
+    public void EnableGameLevelText()
+    {
+        gameLevelText.SetActive(true);
+        gameLevelText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
+    }
+
+    public void DisableGameLevelText()
+    {
+        gameLevelText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => gameLevelText.SetActive(false));
     }
 
 }

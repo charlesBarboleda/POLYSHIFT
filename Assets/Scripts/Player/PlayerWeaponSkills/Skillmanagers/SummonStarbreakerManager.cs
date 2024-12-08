@@ -16,6 +16,14 @@ public class SummonStarbreakerManager : NetworkBehaviour, ISkillManager
         AttackSpeedMultiplier.OnValueChanged += OnAttackSpeedMultiplierChanged;
     }
 
+    public void ResetSkill()
+    {
+        Damage = 0;
+        KnockbackForce = 0f;
+        AttackRange = 0f;
+        AttackSpeedMultiplier.Value = 1f;
+    }
+
     private void OnAttackSpeedMultiplierChanged(float newValue)
     {
         if (animator != null)

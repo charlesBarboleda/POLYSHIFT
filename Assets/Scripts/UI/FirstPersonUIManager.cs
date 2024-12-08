@@ -12,13 +12,14 @@ public class FirstPersonUIManager : MonoBehaviour
 
     private PlayerNetworkHealth playerHealth;
 
-    void OnEnable()
+    void Start()
     {
         // Only proceed if this object is owned by the local client
         playerHealth = GetComponentInParent<PlayerNetworkHealth>();
 
         if (playerHealth != null && playerHealth.IsOwner)
         {
+            Debug.Log("Subscribing to health changes");
             // Subscribe to health changes for this player instance only
             playerHealth.currentHealth.OnValueChanged += UpdateHealthUI;
             playerHealth.maxHealth.OnValueChanged += UpdateHealthUI;
@@ -28,7 +29,7 @@ public class FirstPersonUIManager : MonoBehaviour
         }
         else
         {
-            // Disable this UI component if it is not the local player's UI
+            Debug.Log("Setting health UI inactive");
             gameObject.SetActive(false);
         }
     }

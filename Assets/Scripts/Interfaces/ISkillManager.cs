@@ -9,4 +9,6 @@ public interface ISkillManager
     public float AttackRange { get; set; }
     Animator animator { get; set; }
 
+    public abstract void ResetSkill();
+
 }

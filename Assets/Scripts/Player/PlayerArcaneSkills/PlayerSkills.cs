@@ -13,6 +13,7 @@ public class PlayerSkills : NetworkBehaviour
     [SerializeField] GameObject SkillTreeCanvas;
     [SerializeField] HotbarUIManager hotbarUIManager;
     [SerializeField] SkillTreeManager skillTreeManager;
+    [SerializeField] Skill SingleCrescentSlashInstance;
     ISkillManager[] skillManagers;
     ActiveSkill currentAttack;
     bool canAttack = true;
@@ -24,7 +25,6 @@ public class PlayerSkills : NetworkBehaviour
     PlayerNetworkMovement playerMovement;
     PlayerNetworkRotation playerRotation;
     GolemManager golemManager;
-    [SerializeField] Skill SingleCrescentSlashInstance;
 
     HashSet<Enemy> enemiesInRange = new HashSet<Enemy>();
 
@@ -94,6 +94,23 @@ public class PlayerSkills : NetworkBehaviour
             }
 
         }
+    }
+
+    public void ResetGolems()
+    {
+        golemManager.ResetGolems();
+    }
+
+    public void ResetPlayerSkills()
+    {
+        foreach (var skillManager in skillManagers)
+        {
+            skillManager.ResetSkill();
+        }
+    }
+    public void ResetSkillTree()
+    {
+        skillTreeManager.ResetSkillTree();
     }
     public bool SkillTreeOpen()
     {

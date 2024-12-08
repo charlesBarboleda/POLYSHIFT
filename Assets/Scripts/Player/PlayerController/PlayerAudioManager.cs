@@ -16,15 +16,32 @@ public class PlayerAudioManager : NetworkBehaviour
     [SerializeField] AudioClip arcaneDevilSlamShoutSound;
     [SerializeField] AudioClip reloadSound;
 
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         generalAudioSource = GetComponent<AudioSource>();
-
     }
 
     public void PlayReloadSound()
+    {
+        if (IsServer)
+        {
+            PlayReloadSoundClientRpc();
+        }
+        else
+        {
+            PlayReloadSoundServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayReloadSoundServerRpc()
+    {
+        PlayReloadSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayReloadSoundClientRpc()
     {
         weaponAudioSource.volume = 0.1f;
         weaponAudioSource.PlayOneShot(reloadSound);
@@ -32,16 +49,53 @@ public class PlayerAudioManager : NetworkBehaviour
 
     public void PlayLevelUpSound()
     {
+        if (IsServer)
+        {
+            PlayLevelUpSoundClientRpc();
+        }
+        else
+        {
+            PlayLevelUpSoundServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayLevelUpSoundServerRpc()
+    {
+        PlayLevelUpSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayLevelUpSoundClientRpc()
+    {
         generalAudioSource.PlayOneShot(levelUpSound);
         generalAudioSource.DOFade(0, 5f).OnComplete(() =>
         {
             generalAudioSource.Stop();
             generalAudioSource.volume = 1;
-        }
-        );
+        });
     }
 
     public void PlayFootstepSound()
+    {
+        if (IsServer)
+        {
+            PlayFootstepSoundClientRpc();
+        }
+        else
+        {
+            PlayFootstepSoundServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayFootstepSoundServerRpc()
+    {
+        PlayFootstepSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayFootstepSoundClientRpc()
     {
         footstepAudioSource.pitch = Random.Range(0.9f, 1.1f);
         footstepAudioSource.volume = 0.01f;
@@ -55,11 +109,27 @@ public class PlayerAudioManager : NetworkBehaviour
         }
     }
 
-
-
     public void PlayShootSound()
     {
-        // Set a random pitch within a range, e.g., 0.9 to 1.1 for slight variation
+        if (IsServer)
+        {
+            PlayShootSoundClientRpc();
+        }
+        else
+        {
+            PlayShootSoundServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayShootSoundServerRpc()
+    {
+        PlayShootSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayShootSoundClientRpc()
+    {
         weaponAudioSource.pitch = Random.Range(0.9f, 1.1f);
         weaponAudioSource.volume = 0.1f;
         weaponAudioSource.PlayOneShot(shootSound);
@@ -67,14 +137,51 @@ public class PlayerAudioManager : NetworkBehaviour
 
     public void PlayMeleeSlash1Sound()
     {
+        if (IsServer)
+        {
+            PlayMeleeSlash1SoundClientRpc();
+        }
+        else
+        {
+            PlayMeleeSlash1SoundServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayMeleeSlash1SoundServerRpc()
+    {
+        PlayMeleeSlash1SoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayMeleeSlash1SoundClientRpc()
+    {
         generalAudioSource.volume = 0.1f;
         generalAudioSource.PlayOneShot(meleeSlash1Sound);
     }
 
     public void PlayArcaneDevilSlamShoutSound()
     {
+        if (IsServer)
+        {
+            PlayArcaneDevilSlamShoutSoundClientRpc();
+        }
+        else
+        {
+            PlayArcaneDevilSlamShoutSoundServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayArcaneDevilSlamShoutSoundServerRpc()
+    {
+        PlayArcaneDevilSlamShoutSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayArcaneDevilSlamShoutSoundClientRpc()
+    {
         generalAudioSource.volume = 0.05f;
         generalAudioSource.PlayOneShot(arcaneDevilSlamShoutSound);
     }
-
 }
