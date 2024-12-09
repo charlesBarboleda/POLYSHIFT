@@ -32,12 +32,11 @@ public class PlayerCameraBehavior : NetworkBehaviour
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
         playerState = GetComponent<PlayerStateController>();
 
-
-        isometricCamera.transform.SetParent(null);
         firstPersonCamera.transform.SetParent(null);
-
-        DontDestroyOnLoad(isometricCamera.gameObject);
+        isometricCamera.transform.SetParent(null);
         DontDestroyOnLoad(firstPersonCamera.gameObject);
+        DontDestroyOnLoad(isometricCamera.gameObject);
+
 
         EnableFirstPersonCamera();
     }
@@ -45,7 +44,6 @@ public class PlayerCameraBehavior : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
-
         if (playerState.playerState.Value == PlayerState.Alive)
         {
             if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
@@ -75,7 +73,8 @@ public class PlayerCameraBehavior : NetworkBehaviour
     void FollowPlayerHead()
     {
         // Position the first-person camera at the head's position
-        firstPersonCamera.transform.position = playerHead.position + playerHead.forward * 0.2f;
+        if (firstPersonCamera != null)
+            firstPersonCamera.transform.position = playerHead.position + playerHead.forward * 0.2f;
     }
     void RotateCameraIndependently()
     {
@@ -89,7 +88,8 @@ public class PlayerCameraBehavior : NetworkBehaviour
         verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
 
         // Apply the rotation to the camera
-        firstPersonCamera.transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
+        if (firstPersonCamera != null)
+            firstPersonCamera.transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
 
         // Rotate the player’s body to match only the horizontal rotation of the camera
         transform.rotation = Quaternion.Euler(0f, horizontalRotation, 0f);
@@ -147,4 +147,5 @@ public class PlayerCameraBehavior : NetworkBehaviour
     {
         return playerNetworkMovement.IsIsometric.Value;
     }
+
 }

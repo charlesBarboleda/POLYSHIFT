@@ -3521,7 +3521,7 @@ GameObject:
   - component: {fileID: 5495511749824145539}
   - component: {fileID: 6884542740530318846}
   - component: {fileID: 6263669486862543012}
-  - component: {fileID: 3274687679234048475}
+  - component: {fileID: 7868124601353559061}
   m_Layer: 0
   m_Name: FirstPersonCamera
   m_TagString: Untagged
@@ -3604,7 +3604,7 @@ MonoBehaviour:
   AmplitudeGain: 0
   FrequencyGain: 0
   m_NoiseOffsets: {x: 993.5095, y: 838.2566, z: -884.7759}
---- !u!114 &3274687679234048475
+--- !u!114 &7868124601353559061
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3613,7 +3613,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4638307437606044577}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00a370a167f091c4da79584705a991e4, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c0f554d34aa328428490a4fb03eca19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4706470850095049790
@@ -6871,7 +6871,7 @@ GameObject:
   - component: {fileID: 7120735825513404427}
   - component: {fileID: 1196252550420642997}
   - component: {fileID: 9055562181360171504}
-  - component: {fileID: 7076800340354469250}
+  - component: {fileID: 3453378578653846354}
   m_Layer: 0
   m_Name: IsometricCamera
   m_TagString: Untagged
@@ -7002,7 +7002,7 @@ MonoBehaviour:
   AmplitudeGain: 0
   FrequencyGain: 0
   m_NoiseOffsets: {x: -457.8992, y: -124.2446, z: 545.9242}
---- !u!114 &7076800340354469250
+--- !u!114 &3453378578653846354
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7011,7 +7011,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7676355700152945330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00a370a167f091c4da79584705a991e4, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c0f554d34aa328428490a4fb03eca19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7774058363179130581
@@ -8472,6 +8472,8 @@ MonoBehaviour:
   firstPersonCanvas: {fileID: 2448210542121795043}
   hotbarUI: {fileID: 1870046718290805530}
   ammoCountUI: {fileID: 8985704566807003191}
+  countdownText: {fileID: 7344131681281531619}
+  gameLevelText: {fileID: 8478503047124567952}
 --- !u!136 &7897574073978203413
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -9778,7 +9780,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 874602375071169124, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 0.48235294
       objectReference: {fileID: 0}
     - target: {fileID: 901079399887650386, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_Color.a
@@ -10078,7 +10080,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2014488965093096671, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2022413065770426156, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: skill
@@ -11506,7 +11508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6822420709060541351, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6907708953100263536, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_Color.a
@@ -11758,7 +11760,7 @@ PrefabInstance:
       objectReference: {fileID: 6665239410575251398}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: skillPoints
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: newBeginningsButton

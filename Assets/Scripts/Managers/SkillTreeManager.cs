@@ -152,8 +152,6 @@ public class SkillTreeManager : NetworkBehaviour
 
     void OnLevelUp(int prev, int current)
     {
-        skillPoints++;
-
 
         if (current % 20 == 0)
         {
@@ -216,11 +214,6 @@ public class SkillTreeManager : NetworkBehaviour
                 node.GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
             }
         }
-    }
-
-    public void AddSkillPoint()
-    {
-        skillPoints++;
     }
 
     public void ToggleSkillTree()

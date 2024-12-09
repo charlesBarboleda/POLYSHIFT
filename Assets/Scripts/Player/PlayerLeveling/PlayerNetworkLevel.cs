@@ -90,8 +90,6 @@ public class PlayerNetworkLevel : NetworkBehaviour
 
         skillTreeManager.skillPoints += 1;
 
-
-
     }
 
 

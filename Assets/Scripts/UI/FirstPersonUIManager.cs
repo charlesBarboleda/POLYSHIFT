@@ -23,6 +23,7 @@ public class FirstPersonUIManager : MonoBehaviour
             // Subscribe to health changes for this player instance only
             playerHealth.currentHealth.OnValueChanged += UpdateHealthUI;
             playerHealth.maxHealth.OnValueChanged += UpdateHealthUI;
+            Debug.Log("Subscribed to health changes");
 
             // Initialize health UI with current values
             UpdateHealthUI(0, playerHealth.currentHealth.Value);
@@ -63,8 +64,10 @@ public class FirstPersonUIManager : MonoBehaviour
     {
         if (playerHealth != null)
         {
+            Debug.Log($"Updating health UI: {newHealth} / {playerHealth.maxHealth.Value}");
             healthFill.fillAmount = newHealth / playerHealth.maxHealth.Value;
             healthText.text = $"{Mathf.Round(newHealth)} / {playerHealth.maxHealth.Value}";
+            Debug.Log("Updated health UI");
         }
     }
 }

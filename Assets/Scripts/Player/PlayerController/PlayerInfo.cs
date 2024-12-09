@@ -21,10 +21,13 @@ public class PlayerInfo : NetworkBehaviour
         // Subscribe to name changes
         PlayerName.OnValueChanged += OnPlayerNameChanged;
 
-        // Set the local player name via the GameManager
         if (IsLocalPlayer)
         {
+            // Set the local player name via MainMenuManager
             MainMenuManager.Instance.SetLocalPlayer(this);
+
+            // Update the player name for the server
+            MainMenuManager.Instance.SetPlayerName(GetComponent<NetworkObject>(), PlayerName.Value.ToString());
         }
 
         // Update UI on spawn for all players
@@ -35,7 +38,6 @@ public class PlayerInfo : NetworkBehaviour
     {
         // Update the UI for all clients when the name changes
         UpdatePlayerNameUI(newValue.ToString());
-        Debug.Log($"Player name changed from {previousValue} to {newValue} on client {OwnerClientId}");
     }
 
     private void UpdatePlayerNameUI(string name)
@@ -43,10 +45,6 @@ public class PlayerInfo : NetworkBehaviour
         if (_txtPlayerName != null)
         {
             _txtPlayerName.SetText(name);
-        }
-        else
-        {
-            Debug.LogWarning("Player name text component not assigned.");
         }
     }
 
@@ -64,3 +62,4 @@ public class PlayerInfo : NetworkBehaviour
         PlayerName.OnValueChanged -= OnPlayerNameChanged;
     }
 }
+

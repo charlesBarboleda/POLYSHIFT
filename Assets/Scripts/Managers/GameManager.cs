@@ -46,11 +46,13 @@ public class GameManager : NetworkBehaviour
 
                 // Assign player name from MainMenuManager
                 var playerName = MainMenuManager.Instance.GetPlayerName(clientId);
-                var playerComponent = newPlayer.GetComponent<PlayerInfo>();
-                if (playerComponent != null)
+                var info = newPlayer.GetComponent<PlayerInfo>();
+                if (info != null)
                 {
-                    playerComponent.SetName(playerName);
+                    info.SetName(playerName);
                 }
+                SpawnedAllies.Add(newPlayer);
+                AlivePlayers.Add(newPlayer);
             }
 
             GameLevel.Value = 0;
@@ -91,8 +93,6 @@ public class GameManager : NetworkBehaviour
         {
             SetCurrentGameState(GameState.OutLevel);
         }
-        Debug.Log("Spawned Enemies: " + SpawnedEnemies.Count);
-        Debug.Log("Enemies to spawn: " + SpawnerManager.Instance.EnemiesToSpawn);
     }
 
     private void Singleton()

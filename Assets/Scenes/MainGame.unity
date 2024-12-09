@@ -2334,7 +2334,7 @@ MonoBehaviour:
   - {fileID: 616175629}
   - {fileID: 1985530810}
   - {fileID: 575671122}
-  _playerNameInput: {fileID: 0}
+  playerPrefab: {fileID: 8813290314573825519, guid: 87219a0f2ffff0c4cac04e612f9387c3, type: 3}
 --- !u!4 &2067778255 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400008, guid: c7235ac1b5d8d874bb533f31f4e90879, type: 3}
