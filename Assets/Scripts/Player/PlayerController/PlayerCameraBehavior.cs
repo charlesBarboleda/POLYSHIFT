@@ -8,7 +8,6 @@ public class PlayerCameraBehavior : NetworkBehaviour
     [SerializeField] private CinemachineCamera firstPersonCamera;
     [SerializeField] private CinemachineCamera isometricCamera;
     [SerializeField] private CinemachineCamera freeViewCamera;
-    public Camera MainCamera;
     private PlayerNetworkMovement playerNetworkMovement;
     private PlayerNetworkRotation playerNetworkRotation;
     private PlayerStateController playerState;

@@ -62,7 +62,10 @@ public class GameManager : NetworkBehaviour
             EnableCountdownTextClientRpc();
             EnableGameLevelTextClientRpc();
         }
+
     }
+
+
 
 
     public void SetCurrentGameState(GameState state)
@@ -132,6 +135,9 @@ public class GameManager : NetworkBehaviour
 
     void Countdown()
     {
+        if (IsServer)
+            GameCountdown.Value = 30f;
+
         StartCoroutine(GameCountdownCoroutine());
     }
 
@@ -151,7 +157,6 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             GameLevel.Value++;
-            GameCountdown.Value = 30f;
             SetCurrentGameState(GameState.InLevel);
         }
     }

@@ -535,7 +535,7 @@ MonoBehaviour:
   movementSounds:
   - {fileID: 8300000, guid: 49b2f930b8431f4419c4092e1a9955b9, type: 3}
   jumpRange: 15
-  closeRange: 2
+  closeRange: 1
   attackDamage: 0.5
   jumpForce: 3
   leapProximityDamageRange: 2

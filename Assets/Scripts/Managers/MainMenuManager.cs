@@ -2,6 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 public class MainMenuManager : NetworkBehaviour
 {
@@ -33,17 +34,26 @@ public class MainMenuManager : NetworkBehaviour
                 var playerObject = client.PlayerObject;
                 if (playerObject != null)
                 {
-                    NetworkObject networkObject = playerObject.GetComponent<NetworkObject>();
+                    var networkObject = playerObject.GetComponent<NetworkObject>();
                     if (networkObject != null)
                     {
-                        Debug.Log($"Despawning and destroying player object for client {client.ClientId}");
+                        Debug.Log($"Despawning NetworkObject: {networkObject.name}");
                         networkObject.Despawn(true);
                     }
                 }
             }
-            NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
+
+            // Wait a frame to ensure all objects are despawned
+            StartCoroutine(DelayedSceneTransition());
         }
     }
+
+    IEnumerator DelayedSceneTransition()
+    {
+        yield return null; // Wait for the current frame to complete
+        NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
+    }
+
 
     public void SetLocalPlayer(PlayerInfo playerInfo)
     {

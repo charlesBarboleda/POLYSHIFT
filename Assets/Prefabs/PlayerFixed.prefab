@@ -3521,7 +3521,6 @@ GameObject:
   - component: {fileID: 5495511749824145539}
   - component: {fileID: 6884542740530318846}
   - component: {fileID: 6263669486862543012}
-  - component: {fileID: 7868124601353559061}
   m_Layer: 0
   m_Name: FirstPersonCamera
   m_TagString: Untagged
@@ -3604,18 +3603,6 @@ MonoBehaviour:
   AmplitudeGain: 0
   FrequencyGain: 0
   m_NoiseOffsets: {x: 993.5095, y: 838.2566, z: -884.7759}
---- !u!114 &7868124601353559061
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4638307437606044577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c0f554d34aa328428490a4fb03eca19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4706470850095049790
 GameObject:
   m_ObjectHideFlags: 0
@@ -6871,7 +6858,6 @@ GameObject:
   - component: {fileID: 7120735825513404427}
   - component: {fileID: 1196252550420642997}
   - component: {fileID: 9055562181360171504}
-  - component: {fileID: 3453378578653846354}
   m_Layer: 0
   m_Name: IsometricCamera
   m_TagString: Untagged
@@ -6887,7 +6873,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7676355700152945330}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.33253616, y: 0.33476803, z: -0.1276061, w: 0.87239146}
+  m_LocalRotation: {x: 0.33253616, y: 0.33476806, z: -0.12760614, w: 0.8723914}
   m_LocalPosition: {x: -9, y: 12, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7002,18 +6988,6 @@ MonoBehaviour:
   AmplitudeGain: 0
   FrequencyGain: 0
   m_NoiseOffsets: {x: -457.8992, y: -124.2446, z: 545.9242}
---- !u!114 &3453378578653846354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7676355700152945330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c0f554d34aa328428490a4fb03eca19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7774058363179130581
 GameObject:
   m_ObjectHideFlags: 0
@@ -8185,7 +8159,6 @@ MonoBehaviour:
   firstPersonCamera: {fileID: 6884542740530318846}
   isometricCamera: {fileID: 4014278568486253960}
   freeViewCamera: {fileID: 4192420359116667794}
-  MainCamera: {fileID: 0}
 --- !u!114 &-3596955671001219755
 MonoBehaviour:
   m_ObjectHideFlags: 0

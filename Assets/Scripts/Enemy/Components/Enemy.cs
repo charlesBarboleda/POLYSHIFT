@@ -35,7 +35,7 @@ public abstract class Enemy : NetworkBehaviour
     private AudioSource audioSource;
     private List<string> bloodSplatterEffects = new List<string> { "BloodSplatter1", "BloodSplatter2", "BloodSplatter3", "BloodSplatter4", "BloodSplatter5" };
 
-    protected abstract void Attack();
+    public abstract void Attack();
 
 
     public override void OnNetworkSpawn()

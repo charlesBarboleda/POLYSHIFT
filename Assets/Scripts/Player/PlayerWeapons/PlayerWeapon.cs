@@ -51,11 +51,14 @@ public class PlayerWeapon : NetworkBehaviour
         currentAmmoCount = maxAmmoCount;
         SetWeaponBehavior(WeaponType.SingleShot);
         Camera = Camera.main;
-        ShootRate = 2f;
+        Debug.Log("Setting camera to main camera in scene.");
+        ShootRate = 1f;
         ReloadTime = 4f;
         maxAmmoCount = 10;
         currentAmmoCount = maxAmmoCount;
 
+        // Add a debug log that references the current scene
+        Debug.Log("PlayerWeapon spawned in scene.");
 
     }
 
@@ -63,6 +66,10 @@ public class PlayerWeapon : NetworkBehaviour
     {
         if (!IsOwner) return; // Only the owner can control the weapon
 
+        if (Camera == null)
+        {
+            Camera = Camera.main;
+        }
         if (Input.GetMouseButton(0) && Time.time >= _nextShotTime && !_isReloading && !playerSkills.SkillTreeOpen())
         {
             if (currentAmmoCount > 0)
@@ -92,7 +99,7 @@ public class PlayerWeapon : NetworkBehaviour
             StartCoroutine(Reload());
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && !_isReloading && currentAmmoCount < maxAmmoCount)
         {
             StartCoroutine(Reload());
         }

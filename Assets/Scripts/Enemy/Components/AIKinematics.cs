@@ -14,6 +14,7 @@ public class AIKinematics : NetworkBehaviour
     public Transform ClosestPlayer;
     FLookAnimator lookAnimator;
     Animator animator;
+    Enemy enemy;
     public bool CanMove = true;
 
     public override void OnNetworkSpawn()
@@ -28,7 +29,9 @@ public class AIKinematics : NetworkBehaviour
         animator = GetComponent<Animator>();
         lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<AIPath>();
-        InvokeRepeating("TeleportIfStuck", 5f, 3f);
+        enemy = GetComponent<Enemy>();
+        InvokeRepeating("AttackIfStuck", 0f, 3f);
+        InvokeRepeating("TeleportIfStuck", 0f, 3f);
 
     }
 
@@ -117,16 +120,28 @@ public class AIKinematics : NetworkBehaviour
 
     void TeleportIfStuck()
     {
-        StartCoroutine(CheckIfStuck());
+        StartCoroutine(CheckIfStuck(3f));
     }
 
-    IEnumerator CheckIfStuck()
+    void AttackIfStuck()
+    {
+        StartCoroutine(CheckIfStuck(1f, true));
+    }
+
+    IEnumerator CheckIfStuck(float checkRate, bool isAttack = false)
     {
         Vector3 lastPosition = transform.position;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(checkRate);
         if (Vector3.Distance(transform.position, lastPosition) < 0.5f)
         {
-            RepositionToNearestValidNode();
+            if (isAttack)
+            {
+                enemy.Attack();
+            }
+            else
+            {
+                RepositionToNearestValidNode();
+            }
         }
     }
 
