@@ -11,7 +11,7 @@ public class LevelProgression
         {
             CurrentLevel++;
             CurrentExperience = 0;
-            NeededExperience += (CurrentLevel ^ 20) + (CurrentLevel * 20); // Level progression formula
+            NeededExperience += (CurrentLevel ^ 40) + (CurrentLevel * 40); // Level progression formula
             return true; // Indicating a level up
         }
         return false; // No level up

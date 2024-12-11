@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
+using DG.Tweening;
 
 public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 {
@@ -67,7 +68,10 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 
         if (healthbarFill != null)
         {
-            healthbarFill.fillAmount = current / MaxHealth;
+            float targetFill = current / MaxHealth;
+
+            healthbarFill.DOFillAmount(targetFill, 0.5f).SetEase(Ease.OutQuad);
+
         }
     }
 

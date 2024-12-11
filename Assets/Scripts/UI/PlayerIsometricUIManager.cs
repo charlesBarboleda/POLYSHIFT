@@ -2,6 +2,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
+using DG.Tweening;
 
 public class PlayerIsometricUIManager : MonoBehaviour
 {
@@ -63,7 +64,8 @@ public class PlayerIsometricUIManager : MonoBehaviour
     {
         if (playerLevel != null)
         {
-            experiencebarFill.fillAmount = playerLevel.Experience.Value / playerLevel.NeededExperience.Value;
+            float targetFill = playerLevel.Experience.Value / playerLevel.NeededExperience.Value;
+            experiencebarFill.DOFillAmount(targetFill, 0.5f).SetEase(Ease.OutSine);
         }
     }
 

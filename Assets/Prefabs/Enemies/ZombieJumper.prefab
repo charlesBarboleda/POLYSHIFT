@@ -645,8 +645,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
-    m_InternalValue: 50
-  MaxHealth: 50
+    m_InternalValue: 200
+  MaxHealth: 200
   HealthRegenRate: 5
   IsDead: 0
   ExperienceDrop: 20

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine;
 using FIMSpace.FLook;
+using DG.Tweening;
 
 
 public abstract class Turret : NetworkBehaviour, IDamageable
@@ -46,13 +47,6 @@ public abstract class Turret : NetworkBehaviour, IDamageable
     public virtual void Update()
     {
         if (!IsServer) return;
-
-        // Update stats from the player weapon
-        if (Owner != null)
-        {
-            AttackSpeed = playerWeapon.ShootRate;
-            Damage = playerWeapon.Damage;
-        }
 
 
         Enemy targetEnemy = FindClosestEnemy();
@@ -171,7 +165,10 @@ public abstract class Turret : NetworkBehaviour, IDamageable
     public void OnHealthChanged(float previousValue, float newValue)
     {
         if (healthbarFill != null)
-            healthbarFill.fillAmount = CurrentHealth.Value / MaxHealth.Value;
+        {
+            float targetFill = CurrentHealth.Value / MaxHealth.Value;
+            healthbarFill.DOFillAmount(targetFill, 0.5f).SetEase(Ease.OutQuad);
+        }
     }
 
     public void SetOwner(GameObject owner)

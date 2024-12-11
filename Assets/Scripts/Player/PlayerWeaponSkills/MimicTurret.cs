@@ -11,7 +11,7 @@ public class MimicTurret : Turret
         if (Owner != null)
         {
             AttackSpeed = playerWeapon.ShootRate;
-            Damage = playerWeapon.Damage / 6;
+            Damage = playerWeapon.Damage / 10;
         }
 
     }

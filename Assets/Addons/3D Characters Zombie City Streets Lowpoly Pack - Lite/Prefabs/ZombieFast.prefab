@@ -1555,9 +1555,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  MoveSpeed: 8
+  MoveSpeed: 10
   Agent: {fileID: 0}
   ClosestPlayer: {fileID: 0}
+  CanMove: 1
 --- !u!114 &4610571434406819330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1573,7 +1574,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
     m_InternalValue: 20
-  MaxHealth: 20
+  MaxHealth: 100
   HealthRegenRate: 5
   IsDead: 0
   ExperienceDrop: 10
@@ -1832,6 +1833,10 @@ MonoBehaviour:
   agent: {fileID: 0}
   debuffs: []
   attackCooldown: 1
+  moveSpeedCap: 16
+  maxHealthScalingFactor: 8
+  attackDamageScalingFactor: 2
+  experienceDropScalingFactor: 2
   canAttack: 0
   attackSounds:
   - {fileID: 8300000, guid: fafe06e9adbdba24c9db9cfc565c814c, type: 3}

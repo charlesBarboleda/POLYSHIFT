@@ -4,6 +4,7 @@ using Pathfinding;
 using Unity.Netcode;
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public abstract class Golem : NetworkBehaviour, IDamageable
 {
@@ -216,7 +217,10 @@ public abstract class Golem : NetworkBehaviour, IDamageable
 
     void UpdateHealthbar(float prev, float cur)
     {
-        healthFill.fillAmount = cur / MaxHealth.Value;
+        float fillTarget = cur / MaxHealth.Value;
+
+        healthFill.DOFillAmount(fillTarget, 0.5f).SetEase(Ease.OutQuad);
+
     }
 
     [ServerRpc]

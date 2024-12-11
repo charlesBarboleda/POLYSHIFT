@@ -1646,7 +1646,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
     m_InternalValue: 50
-  MaxHealth: 50
+  MaxHealth: 300
   HealthRegenRate: 3
   IsDead: 0
   ExperienceDrop: 25

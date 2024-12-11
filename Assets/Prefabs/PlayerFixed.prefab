@@ -2786,6 +2786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80cebf8c7c9eb8045bd5652998b57679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   countdownText: {fileID: 2988572485928885002}
   gameLevelText: {fileID: 2779507022657374150}
 --- !u!1 &3657859116904821765
@@ -7642,6 +7643,7 @@ GameObject:
   - component: {fileID: 7403896354492694482}
   - component: {fileID: 8882782200791102054}
   - component: {fileID: 2779507022657374150}
+  - component: {fileID: 7246927716232108230}
   m_Layer: 5
   m_Name: GameLevel
   m_TagString: Untagged
@@ -7767,6 +7769,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!225 &7246927716232108230
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8478503047124567952}
+  m_Enabled: 1
+  m_Alpha: 0.99
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8485490650163359598
 GameObject:
   m_ObjectHideFlags: 0

@@ -128,10 +128,10 @@ public class SpawnerManager : NetworkBehaviour
 
     IEnumerator SpawnEnemiesCoroutine()
     {
-        while (EnemiesToSpawn < MaxEnemies && EnemiesToSpawn > 0)
+        while (EnemiesToSpawn > 0 && GameManager.Instance.SpawnedEnemies.Count <= MaxEnemies)
         {
-            yield return new WaitForSeconds(SpawnRate);
             SpawnEnemy();
+            yield return new WaitForSeconds(SpawnRate);
         }
     }
 

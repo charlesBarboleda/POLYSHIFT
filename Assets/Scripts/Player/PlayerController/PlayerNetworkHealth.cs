@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 {
@@ -79,8 +80,13 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     [ClientRpc]
     void OnHealthChangedClientRpc(float oldHealth, float newHealth)
     {
-        healthbarFill.fillAmount = currentHealth.Value / maxHealth.Value;
+        // Calculate the target fill amount
+        float targetFill = currentHealth.Value / maxHealth.Value;
+
+        // Tween the fill amount to the new target over 0.5 seconds
+        healthbarFill.DOFillAmount(targetFill, 0.5f).SetEase(Ease.OutQuad);
     }
+
 
     [ServerRpc]
     public void HealServerRpc(float amount)

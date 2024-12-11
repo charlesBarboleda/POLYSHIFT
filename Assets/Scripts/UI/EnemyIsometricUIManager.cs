@@ -1,5 +1,6 @@
 using UnityEngine.UI;
 using UnityEngine;
+using DG.Tweening;
 
 public class EnemyIsometricUIManager : MonoBehaviour
 {
@@ -25,10 +26,10 @@ public class EnemyIsometricUIManager : MonoBehaviour
 
     void UpdateHealthBar(float oldHealth, float newHealth)
     {
-        enemyHealthbarFill.fillAmount = newHealth / enemyNetworkHealth.MaxHealth;
-        if (newHealth <= 0)
+        if (enemyHealthbarFill != null)
         {
-            enemyHealthbarFill.fillAmount = 1;
+            float fillAmount = enemyNetworkHealth.CurrentHealth.Value / enemyNetworkHealth.MaxHealth;
+            enemyHealthbarFill.DOFillAmount(fillAmount, 0.5f).SetEase(Ease.OutQuad);
         }
     }
 }

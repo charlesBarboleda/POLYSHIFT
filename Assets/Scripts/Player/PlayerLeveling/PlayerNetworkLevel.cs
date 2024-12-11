@@ -3,7 +3,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
-
+using DG.Tweening;
 
 public class PlayerNetworkLevel : NetworkBehaviour
 {
@@ -55,8 +55,9 @@ public class PlayerNetworkLevel : NetworkBehaviour
     [ClientRpc]
     void UpdateExperienceUIClientRpc(float prev, float current)
     {
-        experienceBar.fillAmount = Experience.Value / NeededExperience.Value;
-        firstPersonExperienceBar.fillAmount = Experience.Value / NeededExperience.Value;
+        float targetFill = Experience.Value / NeededExperience.Value;
+        experienceBar.DOFillAmount(targetFill, 0.5f).SetEase(Ease.OutSine);
+        firstPersonExperienceBar.DOFillAmount(targetFill, 0.5f).SetEase(Ease.OutSine);
     }
 
     public void AddExperience(float experience)

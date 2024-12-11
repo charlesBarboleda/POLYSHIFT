@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
-
+using DG.Tweening;
 public class FirstPersonUIManager : NetworkBehaviour
 {
     [SerializeField] private Image healthFill;
@@ -50,10 +50,11 @@ public class FirstPersonUIManager : NetworkBehaviour
     {
         if (playerHealth != null)
         {
-            Debug.Log($"Updating health UI: {newHealth} / {playerHealth.maxHealth.Value}");
-            healthFill.fillAmount = newHealth / playerHealth.maxHealth.Value;
+            float targetFill = newHealth / playerHealth.maxHealth.Value;
+            healthFill.DOFillAmount(targetFill, 0.5f).SetEase(Ease.OutSine);
+
+
             healthText.text = $"{Mathf.Round(newHealth)} / {playerHealth.maxHealth.Value}";
-            Debug.Log("Updated health UI");
         }
     }
 }
