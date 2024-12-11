@@ -60,6 +60,10 @@ public class MainMenuManager : NetworkBehaviour
         _localPlayer = playerInfo;
 
         // Get name from input field or generate a default name
+        if (_playerNameInput == null)
+        {
+            return;
+        }
         string playerName = _playerNameInput.text.Length > 0 ? _playerNameInput.text : "Player " + _localPlayer.OwnerClientId;
         _localPlayer.SetName(playerName); // Set the name through the PlayerInfo component
 

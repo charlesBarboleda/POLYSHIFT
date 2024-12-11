@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using TMPro;
 
 public enum WeaponType
 {
@@ -19,8 +20,8 @@ public class PlayerWeapon : NetworkBehaviour
     public float Damage = 10f;
     public float ReloadTime = 1f;
     public float ShootRate = 2f;
-    public int maxAmmoCount = 10;
-    public int currentAmmoCount;
+    public VariableWithEvent<int> maxAmmoCount = new VariableWithEvent<int>(10);
+    public VariableWithEvent<int> currentAmmoCount = new VariableWithEvent<int>(10);
     public int maxPierceTargets = 0;
     public Transform bulletSpawnPoint;
     public PlayerNetworkMovement playerNetworkMovement;
@@ -31,6 +32,7 @@ public class PlayerWeapon : NetworkBehaviour
     public float kineticBurstDamageMultiplier = 2f;
     public float kineticBurstRange = 5f;
     public Animator weaponAnimator;
+    [SerializeField] TMP_Text ammoCountText;
     PlayerAudioManager audioManager;
     IWeaponBehavior currentWeaponBehavior;
     WeaponAnimationEvents weaponAnimationEvents;
@@ -48,14 +50,16 @@ public class PlayerWeapon : NetworkBehaviour
         TryGetComponent(out audioManager);
         TryGetComponent(out playerSkills);
         TryGetComponent(out weaponAnimationEvents);
-        currentAmmoCount = maxAmmoCount;
+        currentAmmoCount.Value = maxAmmoCount.Value;
+        currentAmmoCount.OnValueChanged += UpdateAmmoCountText;
+        maxAmmoCount.OnValueChanged += UpdateAmmoCountText;
         SetWeaponBehavior(WeaponType.SingleShot);
         Camera = Camera.main;
         Debug.Log("Setting camera to main camera in scene.");
-        ShootRate = 1f;
+        ShootRate = 0.5f;
         ReloadTime = 4f;
-        maxAmmoCount = 10;
-        currentAmmoCount = maxAmmoCount;
+        maxAmmoCount.Value = 10;
+        currentAmmoCount.Value = maxAmmoCount.Value;
 
         // Add a debug log that references the current scene
         Debug.Log("PlayerWeapon spawned in scene.");
@@ -72,12 +76,12 @@ public class PlayerWeapon : NetworkBehaviour
         }
         if (Input.GetMouseButton(0) && Time.time >= _nextShotTime && !_isReloading && !playerSkills.SkillTreeOpen())
         {
-            if (currentAmmoCount > 0)
+            if (currentAmmoCount.Value > 0)
             {
 
 
                 _nextShotTime = Time.time + 1f * ShootRate;
-                currentAmmoCount--;
+                currentAmmoCount.Value--;
                 if (playerNetworkMovement.IsIsometric.Value)
                     currentWeaponBehavior.FireIsometric(this);
                 else
@@ -93,13 +97,13 @@ public class PlayerWeapon : NetworkBehaviour
             }
 
         }
-        if (currentAmmoCount <= 0 && !_isReloading)
+        if (currentAmmoCount.Value <= 0 && !_isReloading)
         {
             Debug.Log("Out of ammo, reloading...");
             StartCoroutine(Reload());
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && !_isReloading && currentAmmoCount < maxAmmoCount)
+        if (Input.GetKeyDown(KeyCode.R) && !_isReloading && currentAmmoCount.Value < maxAmmoCount.Value)
         {
             StartCoroutine(Reload());
         }
@@ -131,6 +135,11 @@ public class PlayerWeapon : NetworkBehaviour
                 }
             }
         }
+    }
+
+    void UpdateAmmoCountText(int currentAmmo)
+    {
+        ammoCountText.text = $"{currentAmmo} / {maxAmmoCount.Value}";
     }
     private void DualStanceApplyMovementBuffs()
     {
@@ -237,7 +246,7 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (extendedCapacity != null)
         {
-            maxAmmoCount += 2;
+            maxAmmoCount.Value += 2;
             DecreaseFireRateByServerRpc(0.05f);
         }
         else
@@ -488,7 +497,7 @@ public class PlayerWeapon : NetworkBehaviour
 
     IEnumerator Reload()
     {
-        if (currentAmmoCount <= 0)
+        if (currentAmmoCount.Value <= 0)
         {
             // Explode
             if (_kineticBurst)
@@ -503,7 +512,7 @@ public class PlayerWeapon : NetworkBehaviour
         _isReloading = true;
         yield return new WaitForSeconds(ReloadTime);
         weaponAnimationEvents.TurnWeaponWhiteServerRpc();
-        currentAmmoCount = maxAmmoCount;
+        currentAmmoCount.Value = maxAmmoCount.Value;
         _isReloading = false;
     }
 
@@ -513,7 +522,7 @@ public class PlayerWeapon : NetworkBehaviour
         {
             case WeaponType.SingleShot:
                 currentWeaponBehavior = new SingleShot();
-                currentAmmoCount = maxAmmoCount;
+                currentAmmoCount.Value = maxAmmoCount.Value;
                 break;
                 // Add cases for other weapon types...
         }
@@ -521,8 +530,8 @@ public class PlayerWeapon : NetworkBehaviour
 
     public void ResetWeapon()
     {
-        maxAmmoCount = 10;
-        currentAmmoCount = maxAmmoCount;
+        maxAmmoCount.Value = 10;
+        currentAmmoCount.Value = maxAmmoCount.Value;
         ShootRate = 2f;
         ReloadTime = 4f;
         Damage = 10f;

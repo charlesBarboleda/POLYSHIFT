@@ -9,12 +9,19 @@ public class PlayerUIManager : NetworkBehaviour
     [SerializeField] GameObject ammoCountUI;
     [SerializeField] GameObject countdownText;
     [SerializeField] GameObject gameLevelText;
+    [SerializeField] GameObject playAgainButton;
+    [SerializeField] GameObject mainMenuButton;
+    [SerializeField] GameObject waitingForHostText;
+    [SerializeField] GameObject youAreDeadText;
+    [SerializeField] GameObject titleText;
     PlayerNetworkMovement playerNetworkMovement;
+    PlayerWeapon playerWeapon;
 
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        playerWeapon = GetComponent<PlayerWeapon>();
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerNetworkMovement.IsIsometric.OnValueChanged += OnIsometricChanged;
     }
@@ -77,4 +84,19 @@ public class PlayerUIManager : NetworkBehaviour
         gameLevelText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => gameLevelText.SetActive(false));
     }
 
+    public void DisableGameOverUI()
+    {
+        if (IsHost)
+        {
+            playAgainButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => playAgainButton.SetActive(false));
+        }
+        else
+        {
+            waitingForHostText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => waitingForHostText.SetActive(false));
+        }
+
+        titleText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => titleText.SetActive(false));
+        mainMenuButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => mainMenuButton.SetActive(false));
+        youAreDeadText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() => youAreDeadText.SetActive(false));
+    }
 }

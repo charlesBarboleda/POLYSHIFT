@@ -182,6 +182,7 @@ public abstract class Enemy : NetworkBehaviour
     {
         base.OnNetworkDespawn();
         CancelInvoke();
+        StopAllCoroutines();
     }
 
 

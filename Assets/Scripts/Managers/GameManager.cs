@@ -112,22 +112,83 @@ public class GameManager : NetworkBehaviour
 
 
 
-    [ServerRpc(RequireOwnership = false)]
-    public void DisconnectGameServerRpc()
+    public void MainMenu()
     {
-        if (IsServer)
+        if (IsHost)
+        {
+            // Host logic: Notify clients to load MainMenu and then shut down the server
+            NotifyClientsToLoadMainMenuClientRpc();
+            Invoke(nameof(ShutdownServer), 1f); // Allow time for the ClientRpc to propagate
+        }
+        else if (IsClient)
+        {
+            // Client logic: Disconnect and load MainMenu locally
+            DisconnectClient();
+        }
+    }
+
+    // Notify all clients to load the MainMenu scene
+    [ClientRpc]
+    private void NotifyClientsToLoadMainMenuClientRpc()
+    {
+        LoadMainMenuLocally();
+    }
+
+    // Load MainMenu locally for the host and shutdown server after all clients are notified
+    private void ShutdownServer()
+    {
+        LoadMainMenuLocally();
+        NetworkManager.Singleton.Shutdown();
+    }
+
+    // Load the MainMenu scene locally
+    private void LoadMainMenuLocally()
+    {
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+    }
+
+    // Logic for a client to disconnect and load the MainMenu scene locally
+    private void DisconnectClient()
+    {
+        if (NetworkManager.Singleton.IsClient)
         {
             NetworkManager.Singleton.Shutdown();
+            LoadMainMenuLocally();
         }
     }
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void StartGameServerRpc()
+    public void RestartGameServerRpc()
     {
         if (IsServer)
         {
+            SpawnerManager.Instance.KillAllAllies();
+            SpawnerManager.Instance.KillAllEnemies();
+            DestroyAllPlayersServerRpc();
+            DisableGameOverUIClientRpc();
             NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void DestroyAllPlayersServerRpc()
+    {
+        if (IsServer)
+        {
+            // Destroys all player objects
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                var playerObject = client.PlayerObject;
+                if (playerObject != null)
+                {
+                    var networkObject = playerObject.GetComponent<NetworkObject>();
+                    if (networkObject != null)
+                    {
+                        networkObject.Despawn(true);
+                    }
+                }
+            }
         }
     }
 
@@ -209,6 +270,16 @@ public class GameManager : NetworkBehaviour
         {
             var playerUIManager = client.PlayerObject.GetComponent<PlayerUIManager>();
             playerUIManager.EnableGameLevelText();
+        }
+    }
+
+    [ClientRpc]
+    void DisableGameOverUIClientRpc()
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var playerUIManager = client.PlayerObject.GetComponent<PlayerUIManager>();
+            playerUIManager.DisableGameOverUI();
         }
     }
 

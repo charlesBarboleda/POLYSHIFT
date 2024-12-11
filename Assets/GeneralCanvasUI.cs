@@ -1,13 +1,14 @@
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+using Unity.Netcode;
 
-public class GeneralCanvasUI : MonoBehaviour
+public class GeneralCanvasUI : NetworkBehaviour
 {
     [SerializeField] TMP_Text countdownText;
     [SerializeField] TMP_Text gameLevelText;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
         if (GameManager.Instance == null)
         {

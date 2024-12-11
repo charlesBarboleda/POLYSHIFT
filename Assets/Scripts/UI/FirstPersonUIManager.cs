@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 
-public class FirstPersonUIManager : MonoBehaviour
+public class FirstPersonUIManager : NetworkBehaviour
 {
     [SerializeField] private Image healthFill;
     [SerializeField] private TextMeshProUGUI healthText;
@@ -12,7 +12,7 @@ public class FirstPersonUIManager : MonoBehaviour
 
     private PlayerNetworkHealth playerHealth;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
         // Only proceed if this object is owned by the local client
         playerHealth = GetComponentInParent<PlayerNetworkHealth>();
@@ -35,14 +35,7 @@ public class FirstPersonUIManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (playerWeapon != null)
-        {
-            UpdateAmmoUI(0, playerWeapon.currentAmmoCount);
-        }
-    }
-    private void OnDisable()
+    public override void OnNetworkDespawn()
     {
         // Clean up subscriptions if this component is disabled
         if (playerHealth != null)
@@ -52,13 +45,6 @@ public class FirstPersonUIManager : MonoBehaviour
         }
     }
 
-    private void UpdateAmmoUI(int previousAmmo, int newAmmo)
-    {
-        if (playerWeapon != null)
-        {
-            ammoCountText.text = $"{newAmmo} / {playerWeapon.maxAmmoCount}";
-        }
-    }
 
     private void UpdateHealthUI(float previousHealth, float newHealth)
     {

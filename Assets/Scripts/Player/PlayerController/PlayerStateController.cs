@@ -43,8 +43,8 @@ public class PlayerStateController : NetworkBehaviour
         {
             if (GameManager.Instance != null)
             {
-                playAgainButton.GetComponent<Button>().onClick.AddListener(GameManager.Instance.StartGameServerRpc);
-                mainMenuButton.GetComponent<Button>().onClick.AddListener(GameManager.Instance.DisconnectGameServerRpc);
+                playAgainButton.GetComponent<Button>().onClick.AddListener(GameManager.Instance.RestartGameServerRpc);
+                mainMenuButton.GetComponent<Button>().onClick.AddListener(GameManager.Instance.MainMenu);
             }
             playerState.Value = PlayerState.Alive;
         }

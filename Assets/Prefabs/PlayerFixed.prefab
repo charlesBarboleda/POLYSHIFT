@@ -6873,7 +6873,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7676355700152945330}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.33253616, y: 0.33476806, z: -0.12760614, w: 0.8723914}
+  m_LocalRotation: {x: 0.33253616, y: 0.33476803, z: -0.1276061, w: 0.87239146}
   m_LocalPosition: {x: -9, y: 12, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8215,8 +8215,6 @@ MonoBehaviour:
   Damage: 10
   ReloadTime: 1
   ShootRate: 0.1
-  maxAmmoCount: 10
-  currentAmmoCount: 10
   maxPierceTargets: 0
   bulletSpawnPoint: {fileID: 8345376723030177191}
   playerNetworkMovement: {fileID: 7516287321782468021}
@@ -8227,6 +8225,7 @@ MonoBehaviour:
   kineticBurstDamageMultiplier: 2
   kineticBurstRange: 5
   weaponAnimator: {fileID: 1219799933963540870}
+  ammoCountText: {fileID: 4445615298310569475}
 --- !u!114 &4468002526946764731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8447,6 +8446,11 @@ MonoBehaviour:
   ammoCountUI: {fileID: 8985704566807003191}
   countdownText: {fileID: 7344131681281531619}
   gameLevelText: {fileID: 8478503047124567952}
+  playAgainButton: {fileID: 2550975933096298625}
+  mainMenuButton: {fileID: 7868892996610053111}
+  waitingForHostText: {fileID: 1037077348618249946}
+  youAreDeadText: {fileID: 4812142789471699353}
+  titleText: {fileID: 5686329419515382681}
 --- !u!136 &7897574073978203413
 CapsuleCollider:
   m_ObjectHideFlags: 0
