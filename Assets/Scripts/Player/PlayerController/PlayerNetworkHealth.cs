@@ -74,10 +74,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             RegenerateHealth(healthRegenRate.Value);
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            RequestTakeDamageServerRpc(100, NetworkManager.Singleton.LocalClientId);
-        }
     }
 
     [ClientRpc]

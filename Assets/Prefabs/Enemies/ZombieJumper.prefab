@@ -526,6 +526,10 @@ MonoBehaviour:
   agent: {fileID: 0}
   debuffs: []
   attackCooldown: 0.1
+  moveSpeedCap: 12
+  maxHealthScalingFactor: 5
+  attackDamageScalingFactor: 0.01
+  experienceDropScalingFactor: 10
   canAttack: 0
   attackSounds:
   - {fileID: 8300000, guid: fafe06e9adbdba24c9db9cfc565c814c, type: 3}

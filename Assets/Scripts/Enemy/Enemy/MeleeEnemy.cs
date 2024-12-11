@@ -18,11 +18,12 @@ public class MeleeEnemy : Enemy
         if (IsServer)
         {
             health = GetComponent<EnemyNetworkHealth>();
-            health.MaxHealth += GameManager.Instance.GameLevel.Value * 5;
+            health.MaxHealth += GameManager.Instance.GameLevel.Value * maxHealthScalingFactor;
             health.CurrentHealth.Value = health.MaxHealth;
-            attackDamage += GameManager.Instance.GameLevel.Value * 5;
-            health.ExperienceDrop += GameManager.Instance.GameLevel.Value;
+            attackDamage += GameManager.Instance.GameLevel.Value * attackDamageScalingFactor;
+            health.ExperienceDrop += GameManager.Instance.GameLevel.Value * experienceDropScalingFactor;
             enemyMovement.MoveSpeed += Random.Range(GameManager.Instance.GameLevel.Value * 0.1f, GameManager.Instance.GameLevel.Value * 0.2f);
+            enemyMovement.MoveSpeed = Mathf.Clamp(enemyMovement.MoveSpeed, 0f, moveSpeedCap);
         }
     }
 

@@ -130,7 +130,7 @@ public class PlayerAudioManager : NetworkBehaviour
     [ClientRpc]
     private void PlayShootSoundClientRpc()
     {
-        weaponAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        weaponAudioSource.pitch = Random.Range(0.7f, 1.3f);
         weaponAudioSource.volume = 0.1f;
         weaponAudioSource.PlayOneShot(shootSound);
     }

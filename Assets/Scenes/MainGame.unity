@@ -1792,18 +1792,18 @@ MonoBehaviour:
     MaxLevel: 10
     EnemiesWithProbability:
     - EnemyName: ZombieSmall
-      Probability: 0.9
+      Probability: 0.7
     - EnemyName: ZombieBig
-      Probability: 0.1
+      Probability: 0.3
   - MinLevel: 10
     MaxLevel: 15
     EnemiesWithProbability:
     - EnemyName: ZombieSmall
-      Probability: 0.7
+      Probability: 0.5
     - EnemyName: ZombieBig
-      Probability: 0.2
+      Probability: 0.3
     - EnemyName: ZombieFast
-      Probability: 0.1
+      Probability: 0.2
   - MinLevel: 15
     MaxLevel: 20
     EnemiesWithProbability:
@@ -1819,13 +1819,13 @@ MonoBehaviour:
     MaxLevel: 25
     EnemiesWithProbability:
     - EnemyName: ZombieSmall
-      Probability: 0.2
+      Probability: 0.1
     - EnemyName: ZombieBig
       Probability: 0.4
     - EnemyName: ZombieFast
       Probability: 0.2
     - EnemyName: RedDragonFlying
-      Probability: 0.1
+      Probability: 0.2
     - EnemyName: ZombieJumper
       Probability: 0.1
   SpawnRate: 2

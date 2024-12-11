@@ -20,11 +20,12 @@ public class JumperEnemy : Enemy
         if (IsServer)
         {
             health = GetComponent<EnemyNetworkHealth>();
-            health.MaxHealth += GameManager.Instance.GameLevel.Value * 7.5f;
+            health.MaxHealth += GameManager.Instance.GameLevel.Value * maxHealthScalingFactor;
             health.CurrentHealth.Value = health.MaxHealth;
-            attackDamage += GameManager.Instance.GameLevel.Value * 0.01f;
-            health.ExperienceDrop += GameManager.Instance.GameLevel.Value;
+            attackDamage += GameManager.Instance.GameLevel.Value * attackDamageScalingFactor;
+            health.ExperienceDrop += GameManager.Instance.GameLevel.Value * experienceDropScalingFactor;
             enemyMovement.MoveSpeed = Random.Range(GameManager.Instance.GameLevel.Value * 0.5f, GameManager.Instance.GameLevel.Value * 0.7f);
+            enemyMovement.MoveSpeed = Mathf.Clamp(enemyMovement.MoveSpeed, 0f, moveSpeedCap);
         }
     }
 

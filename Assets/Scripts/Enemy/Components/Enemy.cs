@@ -27,6 +27,10 @@ public abstract class Enemy : NetworkBehaviour
     public AIPath agent;
     public List<Debuff> debuffs = new List<Debuff>();
     public float attackCooldown = 3f;
+    public float moveSpeedCap = 6f;
+    public float maxHealthScalingFactor = 8f;
+    public float attackDamageScalingFactor = 2f;
+    public float experienceDropScalingFactor = 2f;
     public bool canAttack = false;
     public List<AudioClip> attackSounds = new List<AudioClip>();
     public List<AudioClip> movementSounds = new List<AudioClip>();

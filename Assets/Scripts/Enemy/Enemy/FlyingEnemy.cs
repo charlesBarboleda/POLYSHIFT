@@ -7,6 +7,7 @@ public class FlyingEnemy : Enemy
     public float attackRange = 10f;
     public float attackDamage = 50f;
     public Transform projectileSpawnPoint;
+    public string projectilePoolTag;
     EnemyNetworkHealth health;
 
 
@@ -18,11 +19,12 @@ public class FlyingEnemy : Enemy
         if (IsServer)
         {
             health = GetComponent<EnemyNetworkHealth>();
-            health.MaxHealth += GameManager.Instance.GameLevel.Value * 8;
+            health.MaxHealth += GameManager.Instance.GameLevel.Value * maxHealthScalingFactor;
             health.CurrentHealth.Value = health.MaxHealth;
-            attackDamage += GameManager.Instance.GameLevel.Value * 5;
-            health.ExperienceDrop += GameManager.Instance.GameLevel.Value * 2;
+            attackDamage += GameManager.Instance.GameLevel.Value * attackDamageScalingFactor;
+            health.ExperienceDrop += GameManager.Instance.GameLevel.Value * experienceDropScalingFactor;
             enemyMovement.MoveSpeed += Random.Range(GameManager.Instance.GameLevel.Value * 0.3f, GameManager.Instance.GameLevel.Value * 0.5f);
+            enemyMovement.MoveSpeed = Mathf.Clamp(enemyMovement.MoveSpeed, 0f, moveSpeedCap);
 
         }
     }
@@ -39,7 +41,7 @@ public class FlyingEnemy : Enemy
     [ServerRpc(RequireOwnership = false)]
     public void SpawnProjectileServerRpc()
     {
-        GameObject projectile = ObjectPooler.Instance.Spawn("RedDragonProjectile", projectileSpawnPoint.position, Quaternion.identity);
+        GameObject projectile = ObjectPooler.Instance.Spawn(projectilePoolTag, projectileSpawnPoint.position, Quaternion.identity);
 
 
         // Calculate the direction to the target

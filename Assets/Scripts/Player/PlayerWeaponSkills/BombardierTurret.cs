@@ -7,8 +7,8 @@ public class BombardierTurret : Turret
     {
         base.OnNetworkSpawn();
         var levels = Owner.GetComponent<PlayerNetworkLevel>();
-        AttackSpeed = Mathf.Max(0.5f, 2f - levels.Level.Value * 0.01f);
-        Damage = levels.Level.Value * 5f;
+        AttackSpeed = Mathf.Max(1f, 2f - levels.Level.Value * 0.01f);
+        Damage = levels.Level.Value * 2.5f;
     }
 
     public override void FireAtEnemy(Enemy enemy)

@@ -1618,7 +1618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 744151059
+  GlobalObjectIdHash: 3672319236
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1777,6 +1777,7 @@ MonoBehaviour:
   MoveSpeed: 5
   Agent: {fileID: 522220704527099941}
   ClosestPlayer: {fileID: 0}
+  CanMove: 1
 --- !u!114 &8080816215498877083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2096,12 +2097,17 @@ MonoBehaviour:
   agent: {fileID: 0}
   debuffs: []
   attackCooldown: 3
+  moveSpeedCap: 10
+  maxHealthScalingFactor: 20
+  attackDamageScalingFactor: 10
+  experienceDropScalingFactor: 10
   canAttack: 0
   attackSounds: []
   movementSounds: []
   attackRange: 25
   attackDamage: 25
   projectileSpawnPoint: {fileID: 8613246779842165903}
+  projectilePoolTag: RedDragonProjectile
 --- !u!1 &176574
 GameObject:
   m_ObjectHideFlags: 0
