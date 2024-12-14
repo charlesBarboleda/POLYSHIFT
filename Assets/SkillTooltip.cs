@@ -9,10 +9,12 @@ public class SkillTooltip : MonoBehaviour
     public Image skillIcon;
 
     private RectTransform tooltipTransform;
+    private Canvas parentCanvas;
 
     private void Start()
     {
         tooltipTransform = GetComponent<RectTransform>();
+        parentCanvas = GetComponentInParent<Canvas>();
         gameObject.SetActive(false);  // Start hidden
     }
 
@@ -22,7 +24,18 @@ public class SkillTooltip : MonoBehaviour
         skillDescriptionText.text = skill.skillDescription;
         skillIcon.sprite = skill.skillIcon;
 
-        tooltipTransform.position = position + new Vector3(0, 50, 0);  // Offset the tooltip slightly above the mouse position
+        // Convert the world position to canvas space (screen point)
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            parentCanvas.GetComponent<RectTransform>(),
+            position,
+            parentCanvas.worldCamera,
+            out Vector2 localPoint
+        );
+
+        // Set the position and adjust
+        tooltipTransform.anchoredPosition = localPoint + new Vector2(0, -75);
+        AdjustTooltipPosition();
+
         gameObject.SetActive(true);
     }
 
@@ -30,4 +43,47 @@ public class SkillTooltip : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    private void AdjustTooltipPosition()
+    {
+        // Get the parent canvas RectTransform
+        RectTransform canvasRect = parentCanvas.GetComponent<RectTransform>();
+
+        // Get the tooltip's RectTransform position relative to the canvas
+        Vector2 anchoredPosition = tooltipTransform.anchoredPosition;
+
+        // Get the size of the tooltip and the canvas
+        Vector2 tooltipSize = tooltipTransform.sizeDelta;
+        Vector2 canvasSize = canvasRect.sizeDelta;
+
+        // Adjust the tooltip's position to fit within canvas bounds
+        // Left edge
+        if (anchoredPosition.x < -canvasSize.x / 2 + tooltipSize.x / 2)
+        {
+            anchoredPosition.x = -canvasSize.x / 2 + tooltipSize.x / 2;
+        }
+
+        // Right edge
+        if (anchoredPosition.x > canvasSize.x / 2 - tooltipSize.x / 2)
+        {
+            anchoredPosition.x = canvasSize.x / 2 - tooltipSize.x / 2;
+        }
+
+        // Bottom edge
+        if (anchoredPosition.y < -canvasSize.y / 2 + tooltipSize.y / 2)
+        {
+            anchoredPosition.y = -canvasSize.y / 2 + tooltipSize.y / 2;
+        }
+
+        // Top edge
+        if (anchoredPosition.y > canvasSize.y / 2 - tooltipSize.y / 2)
+        {
+            anchoredPosition.y = canvasSize.y / 2 - tooltipSize.y / 2;
+        }
+
+        // Apply the adjusted position
+        tooltipTransform.anchoredPosition = anchoredPosition;
+    }
+
+
 }

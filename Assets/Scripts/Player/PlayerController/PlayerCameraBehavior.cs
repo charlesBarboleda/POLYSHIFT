@@ -8,6 +8,8 @@ public class PlayerCameraBehavior : NetworkBehaviour
     [SerializeField] private CinemachineCamera firstPersonCamera;
     [SerializeField] private CinemachineCamera isometricCamera;
     [SerializeField] private CinemachineCamera freeViewCamera;
+    [SerializeField] GameObject skillTreeCanvas;
+
     private PlayerNetworkMovement playerNetworkMovement;
     private PlayerNetworkRotation playerNetworkRotation;
     private PlayerStateController playerState;
@@ -45,7 +47,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
         if (!IsOwner) return;
         if (playerState.playerState.Value == PlayerState.Alive)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown)
+            if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown && !playerNetworkMovement.skillTreeCanvas.activeSelf)
             {
                 playerNetworkMovement.IsIsometric.Value = !playerNetworkMovement.IsIsometric.Value;
                 _lastSwitchTime = Time.time;

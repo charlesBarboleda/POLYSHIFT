@@ -14,6 +14,9 @@ public class PlayerSkills : NetworkBehaviour
     [SerializeField] HotbarUIManager hotbarUIManager;
     [SerializeField] SkillTreeManager skillTreeManager;
     [SerializeField] Skill SingleCrescentSlashInstance;
+    [SerializeField] GameObject firstPersonCanvas;
+    [SerializeField] GameObject hotbarUI;
+    [SerializeField] GameObject ammoCountUI;
     ISkillManager[] skillManagers;
     ActiveSkill currentAttack;
     bool canAttack = true;
@@ -290,69 +293,59 @@ public class PlayerSkills : NetworkBehaviour
         float elapsedTime = 0f;
         float currentRange = initialRange;
 
-        // Dictionary to track how many times each collider has been hit
-        var hitCount = new Dictionary<Collider, int>();
-
-        // Hardcoded maximum number of colliders to process per tick
-        int maxCollidersPerTick = 50;
+        // Track hit counts
+        var hitCounts = new Dictionary<Collider, int>();
 
         while (elapsedTime < duration)
         {
-            // Gradually expand the damage range
+            // Expand the range linearly over time
             currentRange = Mathf.Lerp(initialRange, maxRange, elapsedTime / duration);
 
-            // Collect colliders within the current range
-            Collider[] hitColliders = Physics.OverlapSphere(origin, currentRange);
+            // Visualize and log the sphere
+            Debug.Log($"[Expanding Damage] Checking range {currentRange} at {origin}");
+            Debug.DrawRay(origin, Vector3.up * 5f, Color.red, 1f);
 
-            // Rate limit processing based on the number of colliders
-            int processedCount = 0;
+            // Check colliders in range
+            Collider[] collidersInRange = Physics.OverlapSphere(origin, currentRange);
+            Debug.Log($"[Expanding Damage] Found {collidersInRange.Length} colliders");
 
-            foreach (var collider in hitColliders)
+            foreach (Collider collider in collidersInRange)
             {
-                if (processedCount >= maxCollidersPerTick)
+                if (collider == null)
                 {
-                    Debug.LogWarning($"[Expanding Damage] Too many colliders ({hitColliders.Length}). Capping processing to {maxCollidersPerTick} per tick.");
-                    break;
-                }
-
-                // Ensure the collider is valid and has the required tags
-                if (collider == null || (!collider.CompareTag("Enemy") && !collider.CompareTag("Destroyables")))
-                {
+                    Debug.LogWarning("Null collider detected!");
                     continue;
                 }
 
-                // Check if the collider has been hit fewer times than maxHits
-                if (!hitCount.ContainsKey(collider) || hitCount[collider] < maxHits)
-                {
-                    DealDamage(collider, origin, damage, knockbackForce);
+                Debug.Log($"Found collider: {collider.name}, Tag: {collider.tag}");
 
-                    // Update hit count for this collider
-                    if (!hitCount.ContainsKey(collider))
-                    {
-                        hitCount[collider] = 0;
-                    }
-                    hitCount[collider]++;
-                    processedCount++;
+                // Check valid tags
+                if (!collider.CompareTag("Enemy") && !collider.CompareTag("Destroyables"))
+                {
+                    Debug.Log($"Skipping collider {collider.name} due to invalid tag");
+                    continue;
+                }
+
+                // Hit logic
+                if (!hitCounts.ContainsKey(collider)) hitCounts[collider] = 0;
+
+                if (hitCounts[collider] < maxHits)
+                {
+                    Debug.Log($"Dealing {damage} damage to {collider.name} (hit count: {hitCounts[collider]})");
+                    DealDamage(collider, origin, damage, knockbackForce);
+                    hitCounts[collider]++;
+                }
+                else
+                {
+                    Debug.Log($"Collider {collider.name} reached max hits ({maxHits})");
                 }
             }
 
-            // Debugging to verify collider processing
-            Debug.Log($"[Expanding Damage] Processed {processedCount}/{hitColliders.Length} colliders at range {currentRange}");
-
-            // Dynamically adjust tick rate if necessary
-            if (hitColliders.Length > maxCollidersPerTick)
-            {
-                Debug.LogWarning($"[Expanding Damage] High collider density detected. Increasing tick rate to {tickRate * 2}s.");
-                yield return new WaitForSeconds(tickRate * 50); // Slow down
-            }
-            else
-            {
-                yield return new WaitForSeconds(tickRate);
-            }
-
+            yield return new WaitForSeconds(tickRate);
             elapsedTime += tickRate;
         }
     }
+
 
 
 

@@ -12,13 +12,11 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [Header("Player Movement")]
     public float GhostMoveSpeed = 6f;
     public float MoveSpeed = 2f;
+    public GameObject skillTreeCanvas;
     public VariableWithEvent<bool> IsIsometric = new VariableWithEvent<bool>(false);
     public bool canMove = true;
     private Animator animator;
-    private PlayerNetworkRotation playerNetworkRotation;
-    private PlayerNetworkHealth playerNetworkHealth;
     private PlayerStateController state;
-    [SerializeField] GameObject skillTreeCanvas;
 
 
     private const float movementThreshold = 0.1f;
@@ -28,8 +26,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
         animator = GetComponentInChildren<Animator>();
         if (!IsOwner) return;
 
-        playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
-        playerNetworkHealth = GetComponent<PlayerNetworkHealth>();
         state = GetComponent<PlayerStateController>();
         moveInput = GetComponent<PlayerInput>();
         moveAction = moveInput.actions["Move"];

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -22,6 +23,10 @@ public class SkillTreeManager : NetworkBehaviour
     [SerializeField] Transform lineParent;
     [SerializeField] Image newBeginningsButton;
     [SerializeField] Image newBeginningsContainer;
+    [SerializeField] GameObject firstPersonCanvas;
+    [SerializeField] GameObject hotbarUI;
+    [SerializeField] GameObject ammoCountUI;
+    [SerializeField] PlayerNetworkMovement playerMovement;
     List<GameObject> nodeLines = new List<GameObject>();
     PlayerSkills playerSkills;
 
@@ -123,6 +128,7 @@ public class SkillTreeManager : NetworkBehaviour
     {
         // Instantiate the line and parent it to the lineParent
         GameObject line = Instantiate(linePrefab, lineParent);
+        line.AddComponent<CanvasGroup>();
 
         nodeLines.Add(line);
         // Get the RectTransform of the line
@@ -167,19 +173,23 @@ public class SkillTreeManager : NetworkBehaviour
         for (int i = 0; i < skillNodes.Count; i++)
         {
             Skill skill = skillNodes[i].GetComponent<SkillNodeController>().skill; // Assuming each node has a Skill component or reference
-            Image image = skillNodes[i].GetComponent<Image>();
-            Image button = skillNodes[i].GetComponentInChildren<Image>();
-
-            if (button != null)
+            Button button = skillNodes[i].GetComponentInChildren<Button>();
+            GameObject skillNode = skillNodes[i].gameObject;
+            if (GameManager.Instance != null)
             {
-                button.color = new Color(1, 1, 1, 0.0f);
-            }
 
-            if (image != null)
+                if (skillNode != null)
+                {
+                    skillNode.SetActive(false);
+                }
+                newBeginningsContainer.gameObject.SetActive(true);
+            }
+            else
             {
-                image.color = new Color(1, 1, 1, 0.0f);
+                button.interactable = true;
+                skillNodes[i].GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
+                skillNodes[i].GetComponent<CanvasGroup>().alpha = 1;
             }
-
 
 
             if (skill != null)
@@ -209,6 +219,8 @@ public class SkillTreeManager : NetworkBehaviour
             // Unlock if within specified radius
             if (distance <= unlockRadius)
             {
+                node.gameObject.SetActive(true);
+                node.GetComponent<CanvasGroup>().DOFade(1, 1f);
                 node.GetComponentInChildren<Button>().interactable = true;
                 node.GetComponent<Image>().color = new Color(1, 1, 1, 1);
                 node.GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
@@ -220,12 +232,34 @@ public class SkillTreeManager : NetworkBehaviour
     {
         Cursor.visible = !Cursor.visible;
         gameObject.SetActive(!gameObject.activeSelf);
+        ToggleLocalUI();
+    }
+
+    void ToggleLocalUI()
+    {
+
+        if (gameObject.activeSelf)
+        {
+            firstPersonCanvas.SetActive(false);
+            hotbarUI.SetActive(false);
+            ammoCountUI.SetActive(false);
+        }
+        else
+        {
+            hotbarUI.SetActive(true);
+            ammoCountUI.SetActive(true);
+
+            if (!playerMovement.IsIsometric.Value)
+            {
+                firstPersonCanvas.SetActive(true);
+            }
+        }
     }
 
     public void OnNodePressed()
     {
         confirmationBox.SetActive(true);
-        if (currentSkill.skillName == "Bond Of The Colossus" || currentSkill.skillName == "Devil Slam")
+        if (currentSkill.skillName == "Bond Of The Colossus" || currentSkill.skillName == "Devil Slam" || currentSkill.skillName == "Summon Starbreaker")
         {
             description.text = "Unlocking this skill will disable all other ultimate skills until the next level threshold. Continue?";
         }
