@@ -44,11 +44,21 @@ public class AIKinematics : NetworkBehaviour
         FindClosestPossibleTarget();
         StopAndRotateTowardsTarget();
 
-        if (!CanMove) return;
+        if (!CanMove || enemy.isAttacking)
+        {
+            Agent.isStopped = true;
+            Agent.canMove = false;
+            Agent.enabled = false;
+            return;
+        }
 
-        if (ClosestPlayer != null)
+        if (ClosestPlayer != null && !enemy.isAttacking)
         {
             Agent.destination = ClosestPlayer.position;
+            Agent.isStopped = false;
+            Agent.canMove = true;
+            Agent.enabled = true;
+
         }
 
         if (!Agent.hasPath)
@@ -125,6 +135,7 @@ public class AIKinematics : NetworkBehaviour
 
     void AttackIfStuck()
     {
+        if (enemy.isAttacking) return;
         StartCoroutine(CheckIfStuck(1f, true));
     }
 
@@ -136,7 +147,7 @@ public class AIKinematics : NetworkBehaviour
         {
             if (isAttack)
             {
-                enemy.Attack();
+                StartCoroutine(enemy.Attack());
             }
             else
             {
@@ -168,13 +179,19 @@ public class AIKinematics : NetworkBehaviour
 
     void FindClosestPossibleTarget()
     {
+        if (GameManager.Instance.SpawnedAllies.Count == 0) return;
+        // if the closestplayer is inactive, find the next closest player
+        if (ClosestPlayer != null && !ClosestPlayer.gameObject.activeSelf)
+        {
+            ClosestPlayer = null;
+        }
+        if (ClosestPlayer != null) return;
         float closestDistance = Mathf.Infinity;
         Transform closestTarget = null;
 
         // Iterate through all spawned allies
         foreach (GameObject unit in GameManager.Instance.SpawnedAllies)
         {
-            if (unit == null) continue; // Skip null units
             float distance = Vector3.Distance(transform.position, unit.transform.position);
             if (distance < closestDistance)
             {

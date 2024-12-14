@@ -11,10 +11,10 @@ public class NewBeginnings : PassiveSkill
             return;
         }
         Debug.Log("Applying NewBeginnings skill effect.");
-        user.GetComponent<PlayerNetworkMovement>().MoveSpeed += 0.25f;
-        user.GetComponent<PlayerNetworkHealth>().PermanentHealthIncreaseByServerRpc(10f);
-        user.GetComponent<PlayerSkills>().PermanentMeleeDamageIncreaseByServerRpc(5f);
-        user.GetComponent<PlayerWeapon>().Damage += 2.5f;
+        user.GetComponent<PlayerNetworkMovement>().MoveSpeed += 0.5f;
+        user.GetComponent<PlayerNetworkHealth>().PermanentHealthIncreaseByServerRpc(20f);
+        user.GetComponent<PlayerSkills>().PermanentMeleeDamageIncreaseByServerRpc(10f);
+        user.GetComponent<PlayerWeapon>().Damage += 3f;
     }
 }
 

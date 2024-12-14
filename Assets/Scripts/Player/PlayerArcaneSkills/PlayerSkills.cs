@@ -276,29 +276,85 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    private IEnumerator ExpandingDamageOverTimeCoroutine(Vector3 origin, float initialRange, float maxRange, float damage, float knockbackForce, float duration, float tickRate, int maxHits = 3)
+    private IEnumerator ExpandingDamageOverTimeCoroutine(
+     Vector3 origin,
+     float initialRange,
+     float maxRange,
+     float damage,
+     float knockbackForce,
+     float duration,
+     float tickRate,
+     int maxHits = 3
+ )
     {
         float elapsedTime = 0f;
         float currentRange = initialRange;
+
+        // Dictionary to track how many times each collider has been hit
         var hitCount = new Dictionary<Collider, int>();
+
+        // Hardcoded maximum number of colliders to process per tick
+        int maxCollidersPerTick = 50;
 
         while (elapsedTime < duration)
         {
+            // Gradually expand the damage range
             currentRange = Mathf.Lerp(initialRange, maxRange, elapsedTime / duration);
+
+            // Collect colliders within the current range
             Collider[] hitColliders = Physics.OverlapSphere(origin, currentRange);
+
+            // Rate limit processing based on the number of colliders
+            int processedCount = 0;
 
             foreach (var collider in hitColliders)
             {
-                if ((collider.CompareTag("Enemy") || collider.CompareTag("Destroyables")) && (!hitCount.ContainsKey(collider) || hitCount[collider] < maxHits))
+                if (processedCount >= maxCollidersPerTick)
+                {
+                    Debug.LogWarning($"[Expanding Damage] Too many colliders ({hitColliders.Length}). Capping processing to {maxCollidersPerTick} per tick.");
+                    break;
+                }
+
+                // Ensure the collider is valid and has the required tags
+                if (collider == null || (!collider.CompareTag("Enemy") && !collider.CompareTag("Destroyables")))
+                {
+                    continue;
+                }
+
+                // Check if the collider has been hit fewer times than maxHits
+                if (!hitCount.ContainsKey(collider) || hitCount[collider] < maxHits)
                 {
                     DealDamage(collider, origin, damage, knockbackForce);
-                    hitCount[collider] = hitCount.ContainsKey(collider) ? hitCount[collider] + 1 : 1;
+
+                    // Update hit count for this collider
+                    if (!hitCount.ContainsKey(collider))
+                    {
+                        hitCount[collider] = 0;
+                    }
+                    hitCount[collider]++;
+                    processedCount++;
                 }
             }
-            yield return new WaitForSeconds(tickRate);
+
+            // Debugging to verify collider processing
+            Debug.Log($"[Expanding Damage] Processed {processedCount}/{hitColliders.Length} colliders at range {currentRange}");
+
+            // Dynamically adjust tick rate if necessary
+            if (hitColliders.Length > maxCollidersPerTick)
+            {
+                Debug.LogWarning($"[Expanding Damage] High collider density detected. Increasing tick rate to {tickRate * 2}s.");
+                yield return new WaitForSeconds(tickRate * 50); // Slow down
+            }
+            else
+            {
+                yield return new WaitForSeconds(tickRate);
+            }
+
             elapsedTime += tickRate;
         }
     }
+
+
 
     [ClientRpc]
     private void SpawnSlashImpactClientRpc(string impactName, Vector3 position, Quaternion rotation)
@@ -348,7 +404,7 @@ public class PlayerSkills : NetworkBehaviour
         var vitality = unlockedSkills.Find(skill => skill is Vitality) as Vitality;
         if (vitality != null)
         {
-            PermanentHealthIncreaseByServerRpc(5f);
+            PermanentHealthIncreaseByServerRpc(100f);
         }
         else
         {
@@ -361,7 +417,7 @@ public class PlayerSkills : NetworkBehaviour
         var bloodBond = unlockedSkills.Find(skill => skill is BloodBond) as BloodBond;
         if (bloodBond != null)
         {
-            IncreaseBloodBondRange(3f);
+            IncreaseBloodBondRange(4f);
         }
         else
         {
@@ -376,7 +432,7 @@ public class PlayerSkills : NetworkBehaviour
         {
             var golemManager = GetComponent<GolemManager>();
             golemManager.IncreaseGolemHealth(50f);
-            golemManager.IncreaseGolemDamage(5f);
+            golemManager.IncreaseGolemDamage(80f);
             golemManager.IncreaseGolemAttackRange(0.5f);
             golemManager.IncreaseGolemMovementSpeed(0.5f);
             golemManager.IncreaseBuffRadius(2f);
@@ -393,8 +449,8 @@ public class PlayerSkills : NetworkBehaviour
         if (tempestGuardian != null)
         {
             var golemManager = GetComponent<GolemManager>();
-            golemManager.IncreaseGolemHealth(50f);
-            golemManager.IncreaseGolemDamage(5f);
+            golemManager.IncreaseGolemHealth(100f);
+            golemManager.IncreaseGolemDamage(40f);
             golemManager.IncreaseGolemAttackRange(0.5f);
             golemManager.IncreaseBuffRadius(1f);
         }
@@ -409,7 +465,7 @@ public class PlayerSkills : NetworkBehaviour
         var regenerativeAura = unlockedSkills.Find(skill => skill is RegenerativeAura) as RegenerativeAura;
         if (regenerativeAura != null)
         {
-            playerHealth.PermanentHealthRegenIncreaseByServerRpc(1f);
+            playerHealth.PermanentHealthRegenIncreaseByServerRpc(5f);
         }
         else
         {
@@ -437,8 +493,8 @@ public class PlayerSkills : NetworkBehaviour
         {
             var golemManager = GetComponent<GolemManager>();
             golemManager.IncreaseGolemDamageReduction(0.025f);
-            golemManager.IncreaseGolemHealth(50f);
-            golemManager.IncreaseGolemDamage(5f);
+            golemManager.IncreaseGolemHealth(150f);
+            golemManager.IncreaseGolemDamage(20f);
             golemManager.IncreaseGolemAttackRange(0.5f);
             golemManager.IncreaseGolemMovementSpeed(0.5f);
         }
@@ -455,15 +511,15 @@ public class PlayerSkills : NetworkBehaviour
         if (lifeSurge != null)
         {
             LifeSurgeManager script = GetComponent<LifeSurgeManager>();
-            script.IncreaseHealRadius(2f);
-            script.IncreaseHealStrength(0.05f);
-            playerHealth.PermanentHealthIncreaseByServerRpc(5f);
+            script.IncreaseHealRadius(4f);
+            script.IncreaseHealStrength(0.1f);
+            playerHealth.PermanentHealthIncreaseByServerRpc(20f);
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is LifeSurge lifeSurgeSkill)
                 {
-                    lifeSurgeSkill.Cooldown -= 3f;
+                    lifeSurgeSkill.Cooldown -= 5f;
                     break;
                 }
             }
@@ -480,15 +536,15 @@ public class PlayerSkills : NetworkBehaviour
         if (BladeVortex != null)
         {
             ArcaneBladeVortexManager script = GetComponent<ArcaneBladeVortexManager>();
-            script.Damage += 5f;
-            script.AttackRange += 0.2f;
-            script.Duration += 2f;
+            script.Damage += 10f;
+            script.AttackRange += 0.5f;
+            script.Duration += 5f;
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is ArcaneBladeVortex arcaneBladeVortex)
                 {
-                    arcaneBladeVortex.Cooldown -= 5f;
+                    arcaneBladeVortex.Cooldown -= 10f;
                     break;
                 }
             }
@@ -532,14 +588,14 @@ public class PlayerSkills : NetworkBehaviour
         if (ArcaneCleave != null)
         {
             ArcaneCleaveManager script = GetComponent<ArcaneCleaveManager>();
-            script.Damage += 10f;
-            script.AttackRange += 0.2f;
+            script.Damage += 60f;
+            script.AttackRange += 1f;
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is ArcaneCleave arcaneCleave)
                 {
-                    arcaneCleave.Cooldown -= 0.2f;
+                    arcaneCleave.Cooldown -= 0.5f;
                     break; // Exit loop once ArcaneCleave is found
                 }
             }
@@ -561,13 +617,13 @@ public class PlayerSkills : NetworkBehaviour
         {
             ArcaneBarrierManager script = GetComponent<ArcaneBarrierManager>();
             script.Duration += 5f;
-            script.DamageReduction += 5f;
+            script.DamageReduction += 7.5f;
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is ArcaneBarrier arcaneBarrier)
                 {
-                    arcaneBarrier.Cooldown -= 5f;  // Now accessing Cooldown safely
+                    arcaneBarrier.Cooldown -= 10f;  // Now accessing Cooldown safely
                     break;
                 }
             }
@@ -588,15 +644,15 @@ public class PlayerSkills : NetworkBehaviour
         if (doubleCrescentSlashSkill != null)
         {
             DoubleCrescentSlashManager script = GetComponent<DoubleCrescentSlashManager>();
-            script.Damage += 5f;
+            script.Damage += 20f;
             script.coneAngle += 5f;
-            script.AttackRange += 0.2f;
+            script.AttackRange += 0.5f;
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is DoubleCrescentSlash doubleCrescentSlash)
                 {
-                    doubleCrescentSlash.Cooldown -= 0.2f;  // Safely accessing Cooldown
+                    doubleCrescentSlash.Cooldown -= 0.4f;  // Safely accessing Cooldown
                     break;
                 }
             }
@@ -614,13 +670,13 @@ public class PlayerSkills : NetworkBehaviour
         if (relentlessOnslaughtSkill != null)
         {
             RelentlessOnslaughtManager script = GetComponent<RelentlessOnslaughtManager>();
-            script.Duration += 2.5f;
+            script.Duration += 5f;
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is RelentlessOnslaught relentlessOnslaught)
                 {
-                    relentlessOnslaught.Cooldown -= 5f;
+                    relentlessOnslaught.Cooldown -= 10f;
                     break;
                 }
             }
@@ -633,8 +689,9 @@ public class PlayerSkills : NetworkBehaviour
     }
     public void PermanentTravelNodeStatIncrease()
     {
-        PermanentMeleeDamageIncreaseByServerRpc(2f);
-        playerWeapon.Damage += 0.5f;
+        PermanentMeleeDamageIncreaseByServerRpc(7.5f);
+        playerWeapon.Damage += 1.5f;
+        PermanentAttackSpeedIncreaseByServerRpc(0.03f);
         PermanentHealthIncreaseByServerRpc(2.5f);
         playerMovement.MoveSpeed += 0.1f;
     }

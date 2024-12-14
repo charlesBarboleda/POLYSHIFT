@@ -106848,6 +106848,13 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0
+    functionName: Invulnerable
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0
     functionName: OnArcaneDevilSlamSpawnServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -106868,7 +106875,14 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 4.883333
+  - time: 4.866667
+    functionName: Vulnerable
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 4.866667
     functionName: DisablePortalsServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}

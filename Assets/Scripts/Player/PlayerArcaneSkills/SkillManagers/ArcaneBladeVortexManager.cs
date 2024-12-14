@@ -17,23 +17,19 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
 
     public override void OnNetworkSpawn()
     {
-        Damage = 5f;
-        Duration = 30f;
-        KnockbackForce = 1f;
-        AttackSpeedMultiplier.Value = 1f;
+        ResetSkill();
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
-        AttackRange = 1f;
         PlayerSkills = GetComponent<PlayerSkills>();
         animator = GetComponent<Animator>();
     }
 
     public void ResetSkill()
     {
-        Damage = 5f;
-        Duration = 30f;
-        KnockbackForce = 1f;
+        Damage = 15f;
+        Duration = 45f;
+        KnockbackForce = 3f;
         AttackSpeedMultiplier.Value = 1f;
-        AttackRange = 1f;
+        AttackRange = 2f;
     }
 
     public void ActivateArcaneBladeVortex()
@@ -50,9 +46,9 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
         if (BladeVortex == null)
         {
             BladeVortex = ObjectPooler.Instance.Spawn("ArcaneBladeVortex", transform.position + transform.up, transform.rotation);
-            BladeVortex.GetComponent<BladeVortexCollisionHandler>().SetStats(Damage, Mathf.Max(0.35f - (AttackSpeedMultiplier.Value / 20), 0.05f));
+            BladeVortex.GetComponent<BladeVortexCollisionHandler>().SetStats(Damage, Mathf.Max(0.35f - (AttackSpeedMultiplier.Value / 60), 0.05f));
             SpawnCastingEffects();
-            BladeVortex.transform.localScale = new Vector3(AttackRange, AttackRange, AttackRange);
+            BladeVortex.transform.localScale = new Vector3(AttackRange / 5, AttackRange / 5, AttackRange / 5);
             BladeVortex.GetComponent<NetworkObject>().Spawn();
             BladeVortex.transform.SetParent(transform);
             StartBladeVortexDespawnClientRpc(Duration);

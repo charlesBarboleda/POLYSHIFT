@@ -5,7 +5,7 @@ using DG.Tweening;
 public class DayNightManager : NetworkBehaviour
 {
     NetworkVariable<float> _fogDensity = new NetworkVariable<float>(0.03f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    NetworkVariable<float> _sunIntensity = new NetworkVariable<float>(2f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [SerializeField] NetworkVariable<float> _sunIntensity = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] Light _sun;
 
     float _currentTime = 0f;

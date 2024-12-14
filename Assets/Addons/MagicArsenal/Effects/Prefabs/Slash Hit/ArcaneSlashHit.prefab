@@ -14481,6 +14481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b14331a3d029645bc7ae8a2ee7597d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToReturn: 1
+  ShowTopMostFoldoutHeaderGroup: 1
+  timeToReturn: 3
   tagName: MeleeSlash1Hit
   isNetworkedObject: 1

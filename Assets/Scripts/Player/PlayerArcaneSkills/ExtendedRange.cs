@@ -11,6 +11,7 @@ public class ExtendedRange : PassiveSkill
             return;
         }
         Debug.Log("Applying ExtendedRange skill effect.");
-        user.GetComponent<PlayerSkills>().PermanentMeleeRangeIncreaseByServerRpc(1f);
+        user.GetComponent<PlayerNetworkMovement>().MoveSpeed += 1.5f;
+        user.GetComponent<PlayerSkills>().PermanentMeleeRangeIncreaseByServerRpc(3f);
     }
 }

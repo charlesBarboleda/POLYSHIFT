@@ -39,20 +39,21 @@ public class GameManager : NetworkBehaviour
             {
                 ulong clientId = client.ClientId;
 
-                // Spawn a new game player prefab for each client
+                // Spawn the player prefab
                 GameObject newPlayer = Instantiate(playerPrefab);
                 NetworkObject networkObject = newPlayer.GetComponent<NetworkObject>();
                 networkObject.SpawnAsPlayerObject(clientId);
-
-                // Assign player name from MainMenuManager
-                var playerName = MainMenuManager.Instance.GetPlayerName(clientId);
-                var info = newPlayer.GetComponent<PlayerInfo>();
-                if (info != null)
-                {
-                    info.SetName(playerName);
-                }
-                SpawnedAllies.Add(newPlayer);
                 AlivePlayers.Add(newPlayer);
+                SpawnedAllies.Add(newPlayer);
+
+                // Assign the name to the player
+                string playerName = MainMenuManager.Instance.GetPlayerName(clientId);
+                PlayerInfo playerInfo = newPlayer.GetComponent<PlayerInfo>();
+                if (playerInfo != null)
+                {
+                    playerInfo.SetName(playerName);
+                    Debug.Log($"GameManager: Assigned name '{playerName}' to Client {clientId}");
+                }
             }
 
             GameLevel.Value = 0;
@@ -65,7 +66,17 @@ public class GameManager : NetworkBehaviour
 
     }
 
+    private void AssignPlayerName(GameObject playerObject, ulong clientId)
+    {
+        string playerName = MainMenuManager.Instance.GetPlayerName(clientId);
 
+        PlayerInfo playerInfo = playerObject.GetComponent<PlayerInfo>();
+        if (playerInfo != null)
+        {
+            playerInfo.SetName(playerName);
+            Debug.Log($"AssignPlayerName: Client {clientId}'s name set to '{playerName}'");
+        }
+    }
 
 
     public void SetCurrentGameState(GameState state)

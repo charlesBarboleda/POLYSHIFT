@@ -992,7 +992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 857240174
+  GlobalObjectIdHash: 1395735324
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1138,9 +1138,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
-    m_InternalValue: 150
-  MaxHealth: 150
-  HealthRegenRate: 1
+    m_InternalValue: 100
+  MaxHealth: 100
+  HealthRegenRate: 0
   IsDead: 0
   ExperienceDrop: 50
   enemyName: ZombieBig

@@ -19,17 +19,17 @@ public class SingleCrescentSlashManager : NetworkBehaviour, ISkillManager
         animator = GetComponent<Animator>();
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
 
-        AttackRange = 3f;
+        AttackRange = 5f;
         coneAngle = 90f;
-        KnockbackForce = 1f;
+        KnockbackForce = 3f;
     }
 
     public void ResetSkill()
     {
-        AttackRange = 3f;
+        AttackRange = 5f;
         coneAngle = 90f;
-        KnockbackForce = 1f;
-        Damage = 10f;
+        KnockbackForce = 3f;
+        Damage = 20f;
     }
 
 

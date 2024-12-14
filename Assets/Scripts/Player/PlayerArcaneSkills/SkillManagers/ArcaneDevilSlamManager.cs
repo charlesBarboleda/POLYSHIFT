@@ -22,21 +22,18 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, ISkillManager
         Devil = null;
         DevilPortal = null;
         DevilPortal2 = null;
-        Damage = 300f;
-        KnockbackForce = 5f;
-        AttackSpeedMultiplier.Value = 1f;
+        ResetSkill();
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
         cameraController = GetComponent<CameraController>();
-        AttackRange = 3f;
         animator = GetComponent<Animator>();
     }
 
     public void ResetSkill()
     {
-        Damage = 300f;
-        KnockbackForce = 5f;
+        Damage = 1000f;
+        KnockbackForce = 10f;
         AttackSpeedMultiplier.Value = 1f;
-        AttackRange = 3f;
+        AttackRange = 5f;
     }
 
     [ServerRpc]

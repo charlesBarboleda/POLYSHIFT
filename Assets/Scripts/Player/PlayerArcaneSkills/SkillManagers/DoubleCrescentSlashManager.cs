@@ -23,15 +23,17 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, ISkillManager
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
         PlayerSkills = GetComponent<PlayerSkills>();
         player = GetComponent<PlayerNetworkHealth>().gameObject;
+
+        ResetSkill();
     }
 
     public void ResetSkill()
     {
-        AttackRange = 3f;
+        AttackRange = 4f;
         coneAngle = 90f;
-        KnockbackForce = 1f;
-        Damage = 10f;
-        stepDistance = 0.5f;
+        KnockbackForce = 5f;
+        Damage = 30f;
+        stepDistance = 1f;
     }
 
 

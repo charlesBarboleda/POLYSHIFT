@@ -32,6 +32,7 @@ public abstract class Enemy : NetworkBehaviour
     public float attackDamageScalingFactor = 2f;
     public float experienceDropScalingFactor = 2f;
     public bool canAttack = false;
+    public bool isAttacking = false;
     public List<AudioClip> attackSounds = new List<AudioClip>();
     public List<AudioClip> movementSounds = new List<AudioClip>();
 
@@ -39,7 +40,7 @@ public abstract class Enemy : NetworkBehaviour
     private AudioSource audioSource;
     private List<string> bloodSplatterEffects = new List<string> { "BloodSplatter1", "BloodSplatter2", "BloodSplatter3", "BloodSplatter4", "BloodSplatter5" };
 
-    public abstract void Attack();
+    public abstract IEnumerator Attack();
 
 
     public override void OnNetworkSpawn()
@@ -63,6 +64,8 @@ public abstract class Enemy : NetworkBehaviour
         }
         if (IsServer)
         {
+            isAttacking = false;
+            canAttack = true;
             GameManager.Instance.SpawnedEnemies.Add(this);
         }
 
@@ -93,11 +96,11 @@ public abstract class Enemy : NetworkBehaviour
             if (flatDistance <= agent.endReachedDistance)
             {
                 agent.isStopped = true;
-                if (elapsedCooldown <= 0 && canAttack)
+                if (elapsedCooldown <= 0 && canAttack && !isAttacking)
                 {
                     RotateTowardsTarget();
                     PlayRandomAttackSound();
-                    Attack();
+                    StartCoroutine(Attack());
                     elapsedCooldown = attackCooldown;
                 }
             }
@@ -114,16 +117,7 @@ public abstract class Enemy : NetworkBehaviour
             elapsedCooldown -= Time.deltaTime;
         }
     }
-    void StartMoving()
-    {
-        agent.isStopped = false;
-        enemyMovement.CanMove = true;
-    }
-    void StopMoving()
-    {
-        agent.isStopped = true;
-        enemyMovement.CanMove = false;
-    }
+
 
     void RotateTowardsTarget()
     {

@@ -11,6 +11,6 @@ public class RegenerativeAura : PassiveSkill
             return;
         }
         Debug.Log("Applying RegenerativeAura skill effect.");
-        user.GetComponent<PlayerNetworkHealth>().PermanentHealthRegenIncreaseByServerRpc(5f);
+        user.GetComponent<PlayerNetworkHealth>().PermanentHealthRegenIncreaseByServerRpc(20f);
     }
 }

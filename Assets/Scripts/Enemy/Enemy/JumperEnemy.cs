@@ -29,10 +29,10 @@ public class JumperEnemy : Enemy
         }
     }
 
-    public override void Attack()
+    public override IEnumerator Attack()
     {
-        if (ClosestTarget == null) return;
-
+        if (ClosestTarget == null) yield break;
+        isAttacking = true;
         float distanceToTarget = Vector3.Distance(transform.position, ClosestTarget.position);
 
         if (distanceToTarget <= closeRange)
@@ -41,7 +41,8 @@ public class JumperEnemy : Enemy
         }
         else if (distanceToTarget <= jumpRange && !isJumping)
         {
-            StartCoroutine(JumpAttack());
+            yield return StartCoroutine(JumpAttack());
+            isAttacking = false;
         }
     }
 
@@ -72,6 +73,8 @@ public class JumperEnemy : Enemy
         yield return new WaitForSeconds(jumpCooldown);
         isJumping = false;
     }
+
+
 
     private IEnumerator CheckProximityDuringLeap()
     {

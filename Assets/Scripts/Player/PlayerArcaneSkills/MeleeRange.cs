@@ -11,6 +11,6 @@ public class MeleeRange : PassiveSkill
             return;
         }
         Debug.Log("Applying MeleeRange skill effect.");
-        user.GetComponent<PlayerSkills>().PermanentMeleeRangeIncreaseByServerRpc(0.1f);
+        user.GetComponent<PlayerSkills>().PermanentMeleeRangeIncreaseByServerRpc(0.5f);
     }
 }

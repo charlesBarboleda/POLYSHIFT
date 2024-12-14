@@ -7,7 +7,6 @@ using System.Collections;
 public class MainMenuManager : NetworkBehaviour
 {
     public static MainMenuManager Instance { get; private set; }
-    PlayerInfo _localPlayer;
     [SerializeField] TMPro.TMP_InputField _playerNameInput;
     private Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>();
 
@@ -55,41 +54,28 @@ public class MainMenuManager : NetworkBehaviour
     }
 
 
-    public void SetLocalPlayer(PlayerInfo playerInfo)
+    // Called to set the player's name from the input field
+    public void SetLocalPlayerName()
     {
-        _localPlayer = playerInfo;
+        ulong clientId = NetworkManager.Singleton.LocalClientId;
+        string playerName = (_playerNameInput != null && _playerNameInput.text.Length > 0)
+            ? _playerNameInput.text
+            : $"Player {clientId}";
 
-        // Get name from input field or generate a default name
-        if (_playerNameInput == null)
-        {
-            return;
-        }
-        string playerName = _playerNameInput.text.Length > 0 ? _playerNameInput.text : "Player " + _localPlayer.OwnerClientId;
-        _localPlayer.SetName(playerName); // Set the name through the PlayerInfo component
-
-        // Add the player's name to the dictionary
-        SetPlayerName(_localPlayer.GetComponent<NetworkObject>(), playerName);
-
-        // Hide input field after setting the name
-        _playerNameInput.gameObject.SetActive(false);
-
-        Debug.Log($"Set local player name to {playerName} for client {_localPlayer.OwnerClientId}");
-    }
-
-    public void SetPlayerName(NetworkObject playerObject, string name)
-    {
-        ulong clientId = playerObject.OwnerClientId;
+        // Save the name in the dictionary
         if (_playerNames.ContainsKey(clientId))
         {
-            _playerNames[clientId] = name;
+            _playerNames[clientId] = playerName;
         }
         else
         {
-            _playerNames.Add(clientId, name);
+            _playerNames.Add(clientId, playerName);
         }
-        Debug.Log($"Player name set for client {clientId}: {name}");
+
+        Debug.Log($"SetLocalPlayerName: Client {clientId} set name to {playerName}");
     }
 
+    // Retrieve a player's name by clientId
     public string GetPlayerName(ulong clientId)
     {
         return _playerNames.ContainsKey(clientId) ? _playerNames[clientId] : "Player";

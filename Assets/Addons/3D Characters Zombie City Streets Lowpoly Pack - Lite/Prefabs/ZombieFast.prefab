@@ -1457,7 +1457,7 @@ MonoBehaviour:
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1471953126
-    DestinationState: -541236894
+    DestinationState: 1080829965
     TransitionDuration: 0.25
     TriggerNameHash: 973584577
     TransitionIndex: 0
@@ -1577,7 +1577,7 @@ MonoBehaviour:
   MaxHealth: 100
   HealthRegenRate: 5
   IsDead: 0
-  ExperienceDrop: 10
+  ExperienceDrop: 50
   enemyName: ZombieFast
   healthbarFill: {fileID: 7205474720082911563}
 --- !u!114 &4193483003308945599
@@ -1833,11 +1833,12 @@ MonoBehaviour:
   agent: {fileID: 0}
   debuffs: []
   attackCooldown: 1
-  moveSpeedCap: 16
+  moveSpeedCap: 7
   maxHealthScalingFactor: 8
   attackDamageScalingFactor: 2
-  experienceDropScalingFactor: 2
+  experienceDropScalingFactor: 5
   canAttack: 0
+  isAttacking: 0
   attackSounds:
   - {fileID: 8300000, guid: fafe06e9adbdba24c9db9cfc565c814c, type: 3}
   - {fileID: 8300000, guid: 9e4011a99791cbc4aaefd4c07a521b26, type: 3}

@@ -177,26 +177,6 @@ public class NetworkManagerUI : MonoBehaviour
     }
 
 
-    public void StartClient()
-    {
-        if (!_clientAuthenticated)
-        {
-            Debug.LogError("Client not authenticated.");
-            return;
-        }
-
-        if (_joinCodeText.text.Length <= 0)
-        {
-            Debug.LogError("Join code is empty.");
-            return;
-        }
-
-
-
-        StartCoroutine(ConfigureUseCodeJoinClient(_inputCodeText.text));
-
-    }
-
     public void JoinHost()
     {
         if (!_clientAuthenticated)
@@ -206,10 +186,52 @@ public class NetworkManagerUI : MonoBehaviour
         }
 
         StartCoroutine(ConfigureGetCodeAndJoinHost());
-        Debug.Log(_joinCodeText.text);
+        Debug.Log("Hosting lobby...");
 
-        _joinCodeText.gameObject.SetActive(false);
+        // Allow host to set name after spawning
+        NetworkManager.Singleton.OnClientConnectedCallback += OnHostConnected;
+    }
 
+    private void OnHostConnected(ulong clientId)
+    {
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            Debug.Log("Host connected. Setting local name...");
+            MainMenuManager.Instance.SetLocalPlayerName();
+        }
+
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnHostConnected;
+    }
+
+    public void StartClient()
+    {
+        if (!_clientAuthenticated)
+        {
+            Debug.LogError("Client not authenticated.");
+            return;
+        }
+
+        if (_inputCodeText.text.Length <= 0)
+        {
+            Debug.LogError("Join code is empty.");
+            return;
+        }
+
+        StartCoroutine(ConfigureUseCodeJoinClient(_inputCodeText.text));
+
+        // Allow client to set name after connecting
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            Debug.Log("Client connected. Setting local name...");
+            MainMenuManager.Instance.SetLocalPlayerName();
+        }
+
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
     }
 
 

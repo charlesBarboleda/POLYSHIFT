@@ -29,14 +29,23 @@ public class FlyingEnemy : Enemy
         }
     }
 
-    public override void Attack()
+    public override IEnumerator Attack()
     {
         if (ClosestTarget != null)
         {
-            Debug.Log("Attacking");
+            isAttacking = true;
             animator.SetTrigger("isAttacking");
+
+            // Wait until the attack animation starts
+            yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"));
+
+            // Wait for the duration of the attack animation
+            yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+
+            isAttacking = false;
         }
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void SpawnProjectileServerRpc()

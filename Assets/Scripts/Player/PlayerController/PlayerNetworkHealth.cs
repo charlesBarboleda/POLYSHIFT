@@ -12,6 +12,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> healthRegenRate = new NetworkVariable<float>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public float DamageReduction = 0;
     public bool IsDead;
+    public bool IsInvulnerable = false;
     bool ironResolve = false;
     float ironResolveDamageReduction = 0.50f;
     Animator animator;
@@ -184,9 +185,20 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         TakeDamage(damage, clientId);
     }
 
+    public void Vulnerable()
+    {
+        IsInvulnerable = false;
+    }
+
+    public void Invulnerable()
+    {
+        IsInvulnerable = true;
+    }
+
     public void TakeDamage(float damage, ulong clientId)
     {
         if (IsDead) return;
+        if (IsInvulnerable) return;
         if (IsServer)
         {
             // Check if the player is below 30% health to apply extra damage reduction

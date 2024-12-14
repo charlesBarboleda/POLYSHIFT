@@ -17,19 +17,16 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
     {
         animator = GetComponent<Animator>();
         PlayerSkills = GetComponent<PlayerSkills>();
-        Damage = 30f;
-        KnockbackForce = 1f;
-        AttackSpeedMultiplier.Value = 1f;
+        ResetSkill();
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
-        AttackRange = 2f;
     }
 
     public void ResetSkill()
     {
-        Damage = 30f;
-        KnockbackForce = 1f;
-        AttackSpeedMultiplier.Value = 1f;
-        AttackRange = 2f;
+        Damage = 150f;
+        KnockbackForce = 10f;
+        AttackSpeedMultiplier.Value = 1.5f;
+        AttackRange = 4f;
     }
 
     [ServerRpc(RequireOwnership = false)]

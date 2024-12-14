@@ -5,11 +5,11 @@ using Unity.Collections;
 
 public class PlayerInfo : NetworkBehaviour
 {
-    [SerializeField] TMP_Text _txtPlayerName;
+    [SerializeField] private TMP_Text _txtPlayerName;
 
-    // NetworkVariable for the player's name, with owner write permission
+    // NetworkVariable to synchronize the player's name
     public NetworkVariable<FixedString64Bytes> PlayerName = new NetworkVariable<FixedString64Bytes>(
-        new FixedString64Bytes("Player Name"),
+        new FixedString64Bytes("Player"),
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
@@ -21,22 +21,23 @@ public class PlayerInfo : NetworkBehaviour
         // Subscribe to name changes
         PlayerName.OnValueChanged += OnPlayerNameChanged;
 
-        if (IsLocalPlayer)
-        {
-            // Set the local player name via MainMenuManager
-            MainMenuManager.Instance.SetLocalPlayer(this);
-
-            // Update the player name for the server
-            MainMenuManager.Instance.SetPlayerName(GetComponent<NetworkObject>(), PlayerName.Value.ToString());
-        }
-
-        // Update UI on spawn for all players
+        // Update the UI immediately
         UpdatePlayerNameUI(PlayerName.Value.ToString());
+    }
+
+    // Called to set the player's name
+    public void SetName(string name)
+    {
+        if (IsOwner)
+        {
+            PlayerName.Value = new FixedString64Bytes(name);
+            Debug.Log($"PlayerInfo: Set name to {name}");
+        }
     }
 
     private void OnPlayerNameChanged(FixedString64Bytes previousValue, FixedString64Bytes newValue)
     {
-        // Update the UI for all clients when the name changes
+        Debug.Log($"PlayerInfo: Name changed from {previousValue} to {newValue}");
         UpdatePlayerNameUI(newValue.ToString());
     }
 
@@ -44,15 +45,7 @@ public class PlayerInfo : NetworkBehaviour
     {
         if (_txtPlayerName != null)
         {
-            _txtPlayerName.SetText(name);
-        }
-    }
-
-    public void SetName(string name)
-    {
-        if (IsOwner)
-        {
-            PlayerName.Value = new FixedString64Bytes(name);
+            _txtPlayerName.text = name;
         }
     }
 
@@ -62,4 +55,3 @@ public class PlayerInfo : NetworkBehaviour
         PlayerName.OnValueChanged -= OnPlayerNameChanged;
     }
 }
-

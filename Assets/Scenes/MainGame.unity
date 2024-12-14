@@ -3113,6 +3113,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  _sunIntensity:
+    m_InternalValue: 1
   _sun: {fileID: 267061550}
 --- !u!4 &2067778255 stripped
 Transform:

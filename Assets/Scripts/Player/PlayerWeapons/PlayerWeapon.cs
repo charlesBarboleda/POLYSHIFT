@@ -143,29 +143,29 @@ public class PlayerWeapon : NetworkBehaviour
     }
     private void DualStanceApplyMovementBuffs()
     {
-        Damage *= 1.3f;
-        playerNetworkMovement.MoveSpeed *= 1.3f;
+        Damage *= 1.5f;
+        playerNetworkMovement.MoveSpeed *= 1.5f;
         Debug.Log("Movement buffs applied.");
     }
 
     private void DualStanceRemoveMovementBuffs()
     {
-        Damage /= 1.3f;
-        playerNetworkMovement.MoveSpeed /= 1.3f;
+        Damage /= 1.5f;
+        playerNetworkMovement.MoveSpeed /= 1.5f;
         Debug.Log("Movement buffs removed.");
     }
 
     private void DualStanceApplyStandingStillBuffs()
     {
-        ShootRate *= 0.7f;  // 50% decreased fire rate = 0.7 multiplier
-        ReloadTime *= 0.7f; // 50% decreased reload time = 0.7 multiplier
+        ShootRate *= 0.5f;  // 50% decreased fire rate = 0.7 multiplier
+        ReloadTime *= 0.5f; // 50% decreased reload time = 0.7 multiplier
         Debug.Log("Standing-still buffs applied.");
     }
 
     private void DualStanceRemoveStandingStillBuffs()
     {
-        ShootRate /= 0.7f;  // Reset to original fire rate
-        ReloadTime /= 0.7f; // Reset to original reload time
+        ShootRate /= 0.5f;  // Reset to original fire rate
+        ReloadTime /= 0.5f; // Reset to original reload time
         Debug.Log("Standing-still buffs removed.");
     }
 
@@ -179,7 +179,7 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (dualStance != null)
         {
-            Damage += 5f;
+            Damage += 7.5f;
             DecreaseReloadTimeByServerRpc(0.05f);
             DecreaseFireRateByServerRpc(0.05f);
         }
@@ -195,8 +195,8 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (bombardierSentry != null)
         {
-            Damage += 6f;
-            DecreaseFireRateByServerRpc(0.025f);
+            Damage += 10f;
+            DecreaseFireRateByServerRpc(0.05f);
         }
         else
         {
@@ -210,7 +210,7 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (mimicSentry != null)
         {
-            Damage += 3f;
+            Damage += 5f;
             DecreaseFireRateByServerRpc(0.05f);
         }
         else
@@ -230,9 +230,9 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (kineticBurst != null)
         {
-            kineticBurstKnockbackForce += 2f;
-            kineticBurstDamageMultiplier += 2f;
-            kineticBurstRange += 1f;
+            kineticBurstKnockbackForce += 3f;
+            kineticBurstDamageMultiplier += 4f;
+            kineticBurstRange += 2f;
         }
         else
         {
@@ -246,7 +246,7 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (extendedCapacity != null)
         {
-            maxAmmoCount.Value += 2;
+            maxAmmoCount.Value += 3;
             DecreaseFireRateByServerRpc(0.05f);
         }
         else
@@ -262,7 +262,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (piercingBullets != null)
         {
             maxPierceTargets += 1;
-            Damage += 3f;
+            Damage += 5f;
         }
         else
         {
@@ -293,9 +293,9 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (weaponMastery != null)
         {
-            Damage += 2f;
-            DecreaseReloadTimeByServerRpc(0.05f);
-            DecreaseFireRateByServerRpc(0.05f);
+            Damage += 7.5f;
+            DecreaseReloadTimeByServerRpc(0.1f);
+            DecreaseFireRateByServerRpc(0.1f);
         }
         else
         {

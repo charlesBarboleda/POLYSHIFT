@@ -17,8 +17,8 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
     {
         base.OnNetworkSpawn();
         Damage = 0f;
-        Duration = 30f;
-        KnockbackForce = 5f;
+        Duration = 60f;
+        KnockbackForce = 10f;
         AttackSpeedMultiplier.Value = 1f;
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
         AttackRange = 5f;
@@ -32,7 +32,7 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
         KnockbackForce = 0;
         AttackRange = 0;
         AttackSpeedMultiplier.Value = 1f;
-        Duration = 30f;
+        Duration = 60f;
     }
 
 
@@ -57,7 +57,7 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
         if (arcaneAuraInstance == null)
         {
             arcaneAuraInstance = ObjectPooler.Instance.Spawn("ArcaneAura", transform.position, Quaternion.Euler(-90, 0, 90));
-            arcaneAuraInstance.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            arcaneAuraInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             arcaneAuraInstance.GetComponent<NetworkObject>().Spawn();
             arcaneAuraInstance.transform.SetParent(transform);
 
@@ -74,9 +74,9 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
         // Only apply the buffs if this client is the target client
         if (NetworkManager.Singleton.LocalClientId == targetClientId)
         {
-            PlayerSkills.IncreaseMeleeDamageByServerRpc(2f, Duration);
-            PlayerSkills.IncreaseAttackSpeedByServerRpc(2f, Duration);
-            PlayerSkills.ReduceCooldownsByServerRpc(0.5f, Duration);
+            PlayerSkills.IncreaseMeleeDamageByServerRpc(6f, Duration);
+            PlayerSkills.IncreaseAttackSpeedByServerRpc(6f, Duration);
+            PlayerSkills.ReduceCooldownsByServerRpc(0.25f, Duration);
         }
     }
 

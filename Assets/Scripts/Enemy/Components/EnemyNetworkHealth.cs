@@ -146,7 +146,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         if (kinematics != null)
         {
             kinematics.Agent.maxSpeed = 0f;
-            kinematics.enabled = false;
+            kinematics.CanMove = false;
         }
         else
         {
@@ -169,7 +169,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         yield return new WaitForSeconds(3f);
         healthbarFill.transform.parent.gameObject.SetActive(true);
         enemy.enabled = true;
-        kinematics.enabled = true;
+        kinematics.CanMove = true;
         GetComponent<NetworkObject>().Despawn(false);
         ObjectPooler.Instance.Despawn(enemyName, gameObject);
     }

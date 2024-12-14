@@ -14,14 +14,13 @@ public class LifeSurgeManager : NetworkBehaviour, ISkillManager
     {
         animator = GetComponent<Animator>();
         AttackSpeedMultiplier.OnValueChanged += SetAttackSpeedMultiplier;
-        healRadius = 10f;
-        healStrength = 0.5f;
+        ResetSkill();
     }
 
     public void ResetSkill()
     {
         healRadius = 10f;
-        healStrength = 0.5f;
+        healStrength = 0.6f;
     }
 
     public void IncreaseHealStrength(float amount)
