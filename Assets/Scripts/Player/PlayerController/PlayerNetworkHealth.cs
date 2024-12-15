@@ -78,6 +78,8 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     }
 
+
+
     [ClientRpc]
     void OnHealthChangedClientRpc(float oldHealth, float newHealth)
     {
@@ -92,6 +94,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     [ServerRpc]
     public void HealServerRpc(float amount)
     {
+        PopUpNumberManager.Instance.SpawnHealNumber(transform.position + transform.up * 2, amount);
         currentHealth.Value += amount;
     }
 

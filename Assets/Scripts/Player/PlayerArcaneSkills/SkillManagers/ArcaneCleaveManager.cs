@@ -38,6 +38,17 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
             cleave.transform.localScale = new Vector3(AttackRange / 5, AttackRange / 5, AttackRange / 5);
             // Ensure each instance has its own unique Damage value
             var cleaveCollision = cleave.GetComponent<ArcaneCleaveCollision>();
+            // Reduce cleave particle speed by 50%
+            ParticleSystem[] childParticleSystems = cleave.GetComponentsInChildren<ParticleSystem>();
+            ParticleSystem mainParticleSystem = cleave.GetComponent<ParticleSystem>();
+
+            var mainModule = mainParticleSystem.main;
+            mainModule.simulationSpeed = 0.5f; // Adjust this value to slow down
+            foreach (ParticleSystem ps in childParticleSystems)
+            {
+                var mainModule2 = ps.main;
+                mainModule2.simulationSpeed = 0.5f; // Adjust this value to slow down
+            }
             if (cleaveCollision != null)
             {
                 cleaveCollision.SetDamage(Damage); // Uncomment and verify this line
@@ -49,13 +60,11 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
     }
     public void DealExpandingDamage()
     {
-        PlayerSkills.DealDamageInExpandingCircle(transform.position, 0, AttackRange * 4, Damage, KnockbackForce, 0.1f * AttackRange, 0.05f);
+        PlayerSkills.DealDamageInExpandingCircle(transform.position, 0, AttackRange * 4, Damage, KnockbackForce, 0.1f * AttackRange, 0.05f, 1);
     }
 
     void SetAttackSpeedMultiplier(float AttackSpeedMultiplier)
     {
         animator.SetFloat("AttackSpeedMultiplier", AttackSpeedMultiplier);
     }
-
-
 }

@@ -1439,7 +1439,7 @@ MonoBehaviour:
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1471953126
-    DestinationState: -541236894
+    DestinationState: 1080829965
     TransitionDuration: 0.25
     TriggerNameHash: 973584577
     TransitionIndex: 0
@@ -1540,9 +1540,10 @@ MonoBehaviour:
   CurrentHealth:
     m_InternalValue: 15
   MaxHealth: 15
-  HealthRegenRate: 1
+  HealthRegenRate: 0
   IsDead: 0
   ExperienceDrop: 3
+  height: 3
   enemyName: ZombieSmall
   healthbarFill: {fileID: 2726886102658222419}
 --- !u!136 &563338668290707213

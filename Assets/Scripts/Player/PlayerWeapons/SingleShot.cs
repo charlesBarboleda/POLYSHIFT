@@ -1,3 +1,4 @@
+
 using Unity.Netcode;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ public class SingleShot : IWeaponBehavior
                         if (hit.collider.CompareTag("Player")) continue; // Skip the player object
 
                         weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
-
+                        PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, hit.collider.CompareTag("Destroyables") ? 1f : weapon.Damage);
                         // Spawn the blood splatter effect if the hit object is an enemy
                         Enemy enemy = hit.collider.GetComponent<Enemy>();
                         if (enemy != null)
@@ -112,18 +113,17 @@ public class SingleShot : IWeaponBehavior
                             if (targetNetworkObject != null)
                             {
                                 weapon.ApplyDamageServerRpc(targetNetworkObject.NetworkObjectId);
-                                if (targetNetworkObject.GetComponent<Enemy>() != null)
-                                {
-                                    targetNetworkObject.GetComponent<Enemy>().OnRaycastHitServerRpc(hit.point, hit.normal);
-                                }
+                                targetNetworkObject.GetComponent<Enemy>().OnRaycastHitServerRpc(hit.point, hit.normal);
+                                PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, weapon.Damage);
+
+
                             }
                             else
                             {
                                 weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
-                                if (networkObject.GetComponent<Enemy>() != null)
-                                {
-                                    networkObject.GetComponent<Enemy>().OnRaycastHitServerRpc(hit.point, hit.normal);
-                                }
+                                networkObject.GetComponent<Enemy>().OnRaycastHitServerRpc(hit.point, hit.normal);
+                                PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, weapon.Damage);
+
                             }
 
                             // Spawn impact visual at the hit point

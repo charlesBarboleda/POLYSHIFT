@@ -11892,7 +11892,7 @@ PrefabInstance:
       objectReference: {fileID: 6665239410575251398}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: skillPoints
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7781067003129154739, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: playerMovement

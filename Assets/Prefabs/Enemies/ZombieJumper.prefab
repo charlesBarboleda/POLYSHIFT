@@ -531,6 +531,7 @@ MonoBehaviour:
   attackDamageScalingFactor: 0.01
   experienceDropScalingFactor: 10
   canAttack: 0
+  isAttacking: 0
   attackSounds:
   - {fileID: 8300000, guid: fafe06e9adbdba24c9db9cfc565c814c, type: 3}
   - {fileID: 8300000, guid: 9e4011a99791cbc4aaefd4c07a521b26, type: 3}
@@ -650,6 +651,7 @@ MonoBehaviour:
   HealthRegenRate: 5
   IsDead: 0
   ExperienceDrop: 20
+  height: 4
   enemyName: ZombieJumper
   healthbarFill: {fileID: 5447326365606282892}
 --- !u!114 &6748692871989674293

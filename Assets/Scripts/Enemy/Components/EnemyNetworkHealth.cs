@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 {
@@ -13,6 +14,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     public float HealthRegenRate;
     public bool IsDead;
     public float ExperienceDrop = 10f;
+    public float height = 2f;
     Animator animator;
     AIKinematics kinematics;
     Enemy enemy;
@@ -163,6 +165,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
 
         animator.SetTrigger("isDead");
+        PopUpNumberManager.Instance.SpawnXPNumber(transform.position + transform.up * height, ExperienceDrop);
         healthbarFill.transform.parent.gameObject.SetActive(false);
         GameManager.Instance.SpawnedEnemies.Remove(enemy);
         EventManager.Instance.EnemyDespawnedEvent(enemy);

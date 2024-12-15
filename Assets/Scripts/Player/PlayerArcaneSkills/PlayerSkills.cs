@@ -145,7 +145,7 @@ public class PlayerSkills : NetworkBehaviour
                     // If this is a new enemy within range, increase health regen
                     if (!enemiesInRange.Contains(enemy))
                     {
-                        playerHealth.PermanentHealthRegenIncreaseByServerRpc(0.5f);
+                        playerHealth.PermanentHealthRegenIncreaseByServerRpc(2f);
                     }
                 }
             }
@@ -156,7 +156,7 @@ public class PlayerSkills : NetworkBehaviour
         {
             if (!currentEnemiesInRange.Contains(enemy))
             {
-                playerHealth.PermanentHealthRegenIncreaseByServerRpc(-0.5f);
+                playerHealth.PermanentHealthRegenIncreaseByServerRpc(-2f);
             }
         }
 
@@ -214,6 +214,7 @@ public class PlayerSkills : NetworkBehaviour
         if (damageable != null)
         {
             SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
+            PopUpNumberManager.Instance.SpawnMeleeDamageNumber(collider.transform.position, damage);
             damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
         }
 
@@ -251,9 +252,9 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    public void DealDamageInExpandingCircle(Vector3 origin, float initialRange, float maxRange, float damage, float knockbackForce, float duration, float tickRate)
+    public void DealDamageInExpandingCircle(Vector3 origin, float initialRange, float maxRange, float damage, float knockbackForce, float duration, float tickRate, int maxHits = 3)
     {
-        StartCoroutine(ExpandingDamageOverTimeCoroutine(origin, initialRange, maxRange, damage, knockbackForce, duration, tickRate));
+        StartCoroutine(ExpandingDamageOverTimeCoroutine(origin, initialRange, maxRange, damage, knockbackForce, duration, tickRate, maxHits));
     }
 
     public void DealPeriodicDamageInCircle(Vector3 origin, float attackRange, float damage, float knockbackForce, float duration, float tickRate)
@@ -582,7 +583,7 @@ public class PlayerSkills : NetworkBehaviour
         {
             ArcaneCleaveManager script = GetComponent<ArcaneCleaveManager>();
             script.Damage += 60f;
-            script.AttackRange += 1f;
+            script.AttackRange += 0.5f;
 
             foreach (Skill skill in unlockedSkills)
             {
@@ -645,7 +646,7 @@ public class PlayerSkills : NetworkBehaviour
             {
                 if (skill is DoubleCrescentSlash doubleCrescentSlash)
                 {
-                    doubleCrescentSlash.Cooldown -= 0.4f;  // Safely accessing Cooldown
+                    doubleCrescentSlash.Cooldown -= 0.5f;  // Safely accessing Cooldown
                     break;
                 }
             }

@@ -1578,6 +1578,7 @@ MonoBehaviour:
   HealthRegenRate: 5
   IsDead: 0
   ExperienceDrop: 50
+  height: 3
   enemyName: ZombieFast
   healthbarFill: {fileID: 7205474720082911563}
 --- !u!114 &4193483003308945599

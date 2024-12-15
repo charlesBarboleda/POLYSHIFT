@@ -71,6 +71,7 @@ public class SkillTreeManager : NetworkBehaviour
             foreach (var ultimateSkill in ultimateSkills)
             {
                 ultimateSkill.interactable = false;
+                ultimateSkill.GetComponent<CanvasGroup>().DOFade(0, 0.5f);
             }
         }
         // Find the RectTransform of the unlocked node
@@ -164,6 +165,8 @@ public class SkillTreeManager : NetworkBehaviour
             foreach (var ultimateSkill in ultimateSkills)
             {
                 ultimateSkill.interactable = true;
+                ultimateSkill.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                ultimateSkill.GetComponent<CanvasGroup>().alpha = 1;
             }
         }
     }
@@ -263,7 +266,10 @@ public class SkillTreeManager : NetworkBehaviour
         {
             description.text = "Unlocking this skill will disable all other ultimate skills until the next level threshold. Continue?";
         }
-        description.text = "Unlock " + currentSkill.skillName + "?";
+        else
+        {
+            description.text = "Unlock " + currentSkill.skillName + "?";
+        }
         yesButton.onClick.RemoveAllListeners();
         yesButton.onClick.AddListener(() =>
         {

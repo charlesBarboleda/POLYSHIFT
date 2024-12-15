@@ -1022,7 +1022,7 @@ MonoBehaviour:
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1471953126
-    DestinationState: -541236894
+    DestinationState: 1080829965
     TransitionDuration: 0.25
     TriggerNameHash: 973584577
     TransitionIndex: 0
@@ -1143,6 +1143,7 @@ MonoBehaviour:
   HealthRegenRate: 0
   IsDead: 0
   ExperienceDrop: 50
+  height: 6
   enemyName: ZombieBig
   healthbarFill: {fileID: 8874573290306728651}
 --- !u!114 &2645762297186770900
@@ -1383,6 +1384,7 @@ MonoBehaviour:
   attackDamageScalingFactor: 10
   experienceDropScalingFactor: 10
   canAttack: 0
+  isAttacking: 0
   attackSounds:
   - {fileID: 8300000, guid: fafe06e9adbdba24c9db9cfc565c814c, type: 3}
   - {fileID: 8300000, guid: 9e4011a99791cbc4aaefd4c07a521b26, type: 3}

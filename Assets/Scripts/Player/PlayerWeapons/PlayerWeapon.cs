@@ -391,8 +391,6 @@ public class PlayerWeapon : NetworkBehaviour
 
 
 
-
-
     [ServerRpc]
     public void FireSingleShotServerRpc(Vector3 startPoint, Vector3 hitPoint)
     {
