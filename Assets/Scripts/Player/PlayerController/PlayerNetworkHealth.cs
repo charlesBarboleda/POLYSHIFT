@@ -24,7 +24,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     [SerializeField] Image healthbarFill;
     [SerializeField] GameObject hotbarUI;
     [SerializeField] GameObject infoCanvas;
-    [SerializeField] GameObject firstPersonCanvas;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -71,10 +70,11 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             RegenerateHealth(healthRegenRate.Value);
         }
 
-        if (currentHealth.Value < maxHealth.Value)
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            RegenerateHealth(healthRegenRate.Value);
+            RequestTakeDamageServerRpc(100, NetworkManager.LocalClientId);
         }
+
 
     }
 

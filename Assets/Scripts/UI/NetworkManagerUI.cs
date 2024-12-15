@@ -181,6 +181,7 @@ public class NetworkManagerUI : MonoBehaviour
     {
         if (!_clientAuthenticated)
         {
+            // Authenticate the client before joining
             Debug.LogError("Client not authenticated.");
             return;
         }

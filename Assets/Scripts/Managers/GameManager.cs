@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using Unity.Services.Authentication;
 
 public enum GameState
 {
@@ -125,48 +126,85 @@ public class GameManager : NetworkBehaviour
 
     public void MainMenu()
     {
-        if (IsHost)
+        if (NetworkManager.Singleton.IsHost)
         {
-            // Host logic: Notify clients to load MainMenu and then shut down the server
-            NotifyClientsToLoadMainMenuClientRpc();
-            Invoke(nameof(ShutdownServer), 1f); // Allow time for the ClientRpc to propagate
+            // Host handles both their own shutdown and notifying clients
+            StartCoroutine(HostMainMenuTransition());
         }
-        else if (IsClient)
+        else
         {
-            // Client logic: Disconnect and load MainMenu locally
-            DisconnectClient();
+            // Clients disconnect and transition locally
+            StartCoroutine(ClientMainMenuTransition());
         }
     }
 
-    // Notify all clients to load the MainMenu scene
-    [ClientRpc]
-    private void NotifyClientsToLoadMainMenuClientRpc()
-    {
-        LoadMainMenuLocally();
-    }
 
-    // Load MainMenu locally for the host and shutdown server after all clients are notified
-    private void ShutdownServer()
+    private IEnumerator HostMainMenuTransition()
     {
-        LoadMainMenuLocally();
-        NetworkManager.Singleton.Shutdown();
-    }
+        Debug.Log("Host: Notifying clients and shutting down server...");
 
-    // Load the MainMenu scene locally
-    private void LoadMainMenuLocally()
-    {
+        // Notify clients to return to lobby
+        NotifyClientsToDisconnectClientRpc();
+
+        // Shutdown server
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.Shutdown();
+            yield return new WaitForSeconds(0.5f); // Ensure shutdown completes
+            Destroy(NetworkManager.Singleton.gameObject);
+            Debug.Log("Host: NetworkManager destroyed.");
+        }
+
+        // Sign out the host's authentication session
+        if (AuthenticationService.Instance.IsSignedIn)
+        {
+            Debug.Log("Host: Signing out...");
+            AuthenticationService.Instance.SignOut();
+        }
+
+        // Load the lobby scene
+        Debug.Log("Host: Loading lobby scene...");
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
-    // Logic for a client to disconnect and load the MainMenu scene locally
-    private void DisconnectClient()
+
+
+    private IEnumerator ClientMainMenuTransition()
     {
-        if (NetworkManager.Singleton.IsClient)
+        Debug.Log("Client: Disconnecting...");
+
+        // Disconnect the client
+        if (NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.Shutdown();
-            LoadMainMenuLocally();
+            yield return new WaitForSeconds(0.5f); // Ensure shutdown completes
+            Destroy(NetworkManager.Singleton.gameObject);
+            Debug.Log("Client: NetworkManager destroyed.");
         }
+
+        // Sign out the client's authentication session
+        if (AuthenticationService.Instance.IsSignedIn)
+        {
+            Debug.Log("Client: Signing out...");
+            AuthenticationService.Instance.SignOut();
+        }
+
+        // Load the lobby scene
+        Debug.Log("Client: Loading lobby scene...");
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
+
+
+
+    [ClientRpc]
+    private void NotifyClientsToDisconnectClientRpc()
+    {
+        Debug.Log("Client: Received disconnect notification from host...");
+        StartCoroutine(ClientMainMenuTransition());
+    }
+
+
+
 
 
     [ServerRpc(RequireOwnership = false)]

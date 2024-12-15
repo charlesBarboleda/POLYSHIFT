@@ -185,6 +185,11 @@ public class AIKinematics : NetworkBehaviour
         {
             ClosestPlayer = null;
         }
+        if (ClosestPlayer != null && !GameManager.Instance.SpawnedAllies.Contains(ClosestPlayer.gameObject))
+        {
+            ClosestPlayer = null;
+        }
+
         if (ClosestPlayer != null) return;
         float closestDistance = Mathf.Infinity;
         Transform closestTarget = null;

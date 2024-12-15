@@ -121,8 +121,7 @@ public class SingleShot : IWeaponBehavior
                             else
                             {
                                 weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId);
-                                networkObject.GetComponent<Enemy>().OnRaycastHitServerRpc(hit.point, hit.normal);
-                                PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, weapon.Damage);
+                                PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, 1);
 
                             }
 

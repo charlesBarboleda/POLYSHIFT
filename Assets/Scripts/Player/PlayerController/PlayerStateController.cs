@@ -86,6 +86,7 @@ public class PlayerStateController : NetworkBehaviour
 
     void HandleDeathState()
     {
+        if (!IsOwner) return;
         youDiedText.gameObject.SetActive(true);
         youDiedText.GetComponent<CanvasGroup>()?.DOFade(1, 0.5f);
 
