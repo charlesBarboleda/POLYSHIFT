@@ -44,9 +44,7 @@ public class SingleShot : IWeaponBehavior
                     }
 
                     // Spawn visual effects for the shot
-                    Debug.Log("Calling FireSingleShotServerRpc from SingleShot");
                     weapon.FireSingleShotServerRpc(startPoint, hit.point);
-                    Debug.Log("Finished FireSingleShotServerRpc from SingleShot");
                     pierceCount++;
                 }
                 else

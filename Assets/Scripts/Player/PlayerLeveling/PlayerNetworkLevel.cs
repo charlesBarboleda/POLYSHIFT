@@ -31,7 +31,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerWeapon = GetComponent<PlayerWeapon>();
         Level.OnValueChanged += OnLevelUp;
-        meleeSkillsManager = GetComponentsInChildren<ISkillManager>();
+        meleeSkillsManager = GetComponents<ISkillManager>();
         if (IsServer)
         {
 
@@ -80,8 +80,8 @@ public class PlayerNetworkLevel : NetworkBehaviour
         playerNetworkHealth.maxHealth.Value += Level.Value;
         playerNetworkHealth.currentHealth.Value = playerNetworkHealth.maxHealth.Value;
         playerNetworkMovement.MoveSpeed += 0.05f;
-        playerWeapon.Damage += 1;
-        playerWeapon.DecreaseFireRateByServerRpc(0.01f);
+        playerWeapon.Damage += 1.5f;
+        playerWeapon.DecreaseFireRateByServerRpc(0.02f);
 
         foreach (ISkillManager skill in meleeSkillsManager)
         {
@@ -90,6 +90,11 @@ public class PlayerNetworkLevel : NetworkBehaviour
         }
 
         skillTreeManager.skillPoints += 1;
+
+        if (current % 20 == 0)
+        {
+            skillTreeManager.UnlockUltimateSkills();
+        }
 
     }
 

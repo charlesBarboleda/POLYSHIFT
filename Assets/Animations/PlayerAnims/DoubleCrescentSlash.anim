@@ -107086,6 +107086,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
+    functionName: PlayMeleeSlash1Sound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0
     functionName: DisableMovementAndRotation
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -107094,13 +107101,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0
     functionName: TurnWeaponMagentaServerRpc
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.33333334
-    functionName: PlayMeleeSlash1Sound
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -107127,7 +107127,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.0166667
+  - time: 0.73333335
     functionName: PlayMeleeSlash1Sound
     data: 
     objectReferenceParameter: {fileID: 0}

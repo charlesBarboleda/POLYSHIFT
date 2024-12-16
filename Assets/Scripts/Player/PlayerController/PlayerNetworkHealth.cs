@@ -72,7 +72,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            RequestTakeDamageServerRpc(100, NetworkManager.LocalClientId);
+
         }
 
 

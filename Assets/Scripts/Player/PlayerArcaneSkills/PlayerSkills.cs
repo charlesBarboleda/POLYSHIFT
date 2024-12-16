@@ -582,7 +582,7 @@ public class PlayerSkills : NetworkBehaviour
         if (ArcaneCleave != null)
         {
             ArcaneCleaveManager script = GetComponent<ArcaneCleaveManager>();
-            script.Damage += 60f;
+            script.Damage += 30f;
             script.AttackRange += 0.5f;
 
             foreach (Skill skill in unlockedSkills)
@@ -684,7 +684,7 @@ public class PlayerSkills : NetworkBehaviour
     public void PermanentTravelNodeStatIncrease()
     {
         PermanentMeleeDamageIncreaseByServerRpc(7.5f);
-        playerWeapon.Damage += 1.5f;
+        playerWeapon.Damage += 2.5f;
         PermanentAttackSpeedIncreaseByServerRpc(0.03f);
         PermanentHealthIncreaseByServerRpc(2.5f);
         playerMovement.MoveSpeed += 0.1f;

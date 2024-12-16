@@ -15,6 +15,7 @@ public class PlayerAudioManager : NetworkBehaviour
     [SerializeField] AudioClip meleeSlash1Sound;
     [SerializeField] AudioClip arcaneDevilSlamShoutSound;
     [SerializeField] AudioClip reloadSound;
+    [SerializeField] AudioClip arcaneCleaveSound;
 
     public override void OnNetworkSpawn()
     {
@@ -184,4 +185,31 @@ public class PlayerAudioManager : NetworkBehaviour
         generalAudioSource.volume = 0.05f;
         generalAudioSource.PlayOneShot(arcaneDevilSlamShoutSound);
     }
+
+    [ClientRpc]
+    private void PlayArcaneCleaveSoundClientRpc()
+    {
+        generalAudioSource.volume = 0.05f;
+        generalAudioSource.PlayOneShot(arcaneCleaveSound);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayArcaneCleaveSoundServerRpc()
+    {
+        PlayArcaneCleaveSoundClientRpc();
+    }
+
+    public void PlayArcaneCleaveSound()
+    {
+        if (IsServer)
+        {
+            PlayArcaneCleaveSoundClientRpc();
+        }
+        else
+        {
+            PlayArcaneCleaveSoundServerRpc();
+        }
+    }
+
+
 }

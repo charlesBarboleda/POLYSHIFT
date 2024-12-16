@@ -23,10 +23,10 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
 
     public void ResetSkill()
     {
-        Damage = 150f;
+        Damage = 100f;
         KnockbackForce = 10f;
-        AttackSpeedMultiplier.Value = 1f;
-        AttackRange = 4f;
+        AttackSpeedMultiplier.Value = 0.5f;
+        AttackRange = 3f;
     }
 
     [ServerRpc(RequireOwnership = false)]

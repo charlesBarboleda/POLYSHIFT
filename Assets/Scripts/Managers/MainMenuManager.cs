@@ -28,6 +28,15 @@ public class MainMenuManager : NetworkBehaviour
     {
         if (IsServer)
         {
+            foreach (var networkObject in FindObjectsByType<NetworkObject>(FindObjectsSortMode.None))
+            {
+                if (networkObject.GetComponent<MainMenuManager>() != null)
+                {
+                    continue;
+                }
+                networkObject.Despawn(true);
+            }
+
             foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
             {
                 var playerObject = client.PlayerObject;

@@ -8214,7 +8214,6 @@ MonoBehaviour:
   healthbarFill: {fileID: 333921539961543992}
   hotbarUI: {fileID: 1870046718290805530}
   infoCanvas: {fileID: 1276427289537575300}
-  firstPersonCanvas: {fileID: 2448210542121795043}
 --- !u!114 &4552583738861525909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8444,6 +8443,7 @@ MonoBehaviour:
   meleeSlash1Sound: {fileID: 8300000, guid: 60887ffe25f99e04097887e2ca6f15af, type: 3}
   arcaneDevilSlamShoutSound: {fileID: 8300000, guid: 2a47385abaa7f4040b5713f6932f9706, type: 3}
   reloadSound: {fileID: 8300000, guid: c314498c201acf9418880756187aaacb, type: 3}
+  arcaneCleaveSound: {fileID: 8300000, guid: a161527766be241efad062d931d302c5, type: 3}
 --- !u!114 &3023023807594702307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8532,7 +8532,7 @@ MonoBehaviour:
   ParentalReferenceBone: {fileID: 0}
   DestroyMomentTargetOnMaxDistance: 1
   OverrideRotations: 0
-  BackBonesCount: 4
+  BackBonesCount: 1
   _preBackBonesCount: 0
   LookBones:
   - Transform: {fileID: 4052199038485143699}
@@ -8572,69 +8572,9 @@ MonoBehaviour:
     initLocalRot: {x: -4.2968946e-16, y: -1.8466413e-15, z: 0.0417333, w: 0.9991288}
     targetDelayPosition: {x: 0, y: 0, z: 0}
     animatedDelayPosition: {x: 0, y: 0, z: 0}
-    lookWeight: 0.38359374
+    lookWeight: 0.71171874
     lookWeightB: 1
-    motionWeight: 0.38359374
-  - Transform: {fileID: 8076298970900226959}
-    animatedStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    targetStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    localStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    animatedTargetRotation: {x: 0, y: 0, z: 0, w: 0}
-    targetRotation: {x: 0, y: 0, z: 0, w: 0}
-    correctionOffset: {x: 0, y: 0, z: 0}
-    finalRotation: {x: 0, y: 0, z: 0, w: 0}
-    lastKeyframeRotation: {x: 0, y: 0, z: 0, w: 0}
-    lastFinalLocalRotation: {x: 0, y: 0, z: 0, w: 0}
-    forward: {x: 0.075962216, y: 0.9971107, z: -0.00000005122274}
-    right: {x: -0.00000011920929, y: -7.044975e-16, z: -1.0000001}
-    up: {x: 0.9971107, y: 0.075962126, z: 3.768679e-15}
-    initLocalPos: {x: -0.17903724, y: 2.2204459e-17, z: 7.509725e-17}
-    initLocalRot: {x: 0.9938103, y: -0.11109032, z: -3.483493e-17, w: -6.5507636e-17}
-    targetDelayPosition: {x: 0, y: 0, z: 0}
-    animatedDelayPosition: {x: 0, y: 0, z: 0}
-    lookWeight: 0.28234378
-    lookWeightB: 1
-    motionWeight: 0.28234378
-  - Transform: {fileID: 6981589492481248956}
-    animatedStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    targetStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    localStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    animatedTargetRotation: {x: 0, y: 0, z: 0, w: 0}
-    targetRotation: {x: 0, y: 0, z: 0, w: 0}
-    correctionOffset: {x: 0, y: 0, z: 0}
-    finalRotation: {x: 0, y: 0, z: 0, w: 0}
-    lastKeyframeRotation: {x: 0, y: 0, z: 0, w: 0}
-    lastFinalLocalRotation: {x: 0, y: 0, z: 0, w: 0}
-    forward: {x: -0.14608014, y: -0.9892728, z: 0.000000007450581}
-    right: {x: -0.00000011920929, y: -2.7354048e-16, z: 1.0000001}
-    up: {x: 0.9892728, y: 0.14608014, z: -3.842928e-15}
-    initLocalPos: {x: -0.18151169, y: 1.5543122e-17, z: -7.101073e-17}
-    initLocalRot: {x: 0.99518615, y: -0.098002784, z: -6.0366487e-16, w: -1.2097554e-16}
-    targetDelayPosition: {x: 0, y: 0, z: 0}
-    animatedDelayPosition: {x: 0, y: 0, z: 0}
-    lookWeight: 0.1785625
-    lookWeightB: 1
-    motionWeight: 0.1785625
-  - Transform: {fileID: 8853575331627887859}
-    animatedStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    targetStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    localStaticRotation: {x: 0, y: 0, z: 0, w: 0}
-    animatedTargetRotation: {x: 0, y: 0, z: 0, w: 0}
-    targetRotation: {x: 0, y: 0, z: 0, w: 0}
-    correctionOffset: {x: 0, y: 0, z: 0}
-    finalRotation: {x: 0, y: 0, z: 0, w: 0}
-    lastKeyframeRotation: {x: 0, y: 0, z: 0, w: 0}
-    lastFinalLocalRotation: {x: 0, y: 0, z: 0, w: 0}
-    forward: {x: 0.04969547, y: 0.9987644, z: 0.000000019092113}
-    right: {x: -0.00000011920929, y: -1.224647e-16, z: -1.0000001}
-    up: {x: 0.99876446, y: 0.049695373, z: 2.648731e-15}
-    initLocalPos: {x: -0.10393265, y: 1.3322676e-17, z: 4.6155368e-17}
-    initLocalRot: {x: 0.9950197, y: -0.09967895, z: 1.3224718e-15, w: 7.094358e-17}
-    targetDelayPosition: {x: 0, y: 0, z: 0}
-    animatedDelayPosition: {x: 0, y: 0, z: 0}
-    lookWeight: 0.13705
-    lookWeightB: 1
-    motionWeight: 0.13705
+    motionWeight: 0.71171874
   NoTargetHeadStops: 0
   _editor_hideEyes: 0
   _editor_displayName: Look Animator 2
@@ -11275,6 +11215,10 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5269229295813796982, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2175129618
+      objectReference: {fileID: 0}
     - target: {fileID: 5291922177557235934, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: m_Color.a
       value: 1
@@ -12975,6 +12919,9 @@ PrefabInstance:
       insertIndex: 29
       addedObject: {fileID: 5251614344390939688}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2014488965093096671, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2302639695053403115}
     - targetCorrespondingSourceObject: {fileID: 7179287283577635541, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7701008335056637565}
@@ -14191,6 +14138,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2014488965093096671, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
   m_PrefabInstance: {fileID: 1014181125064848358}
   m_PrefabAsset: {fileID: 0}
+--- !u!225 &2302639695053403115
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578510940342849337}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &1598873558237565279 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1739321135753241273, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}

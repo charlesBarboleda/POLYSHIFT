@@ -19,18 +19,17 @@ public class FirstPersonUIManager : NetworkBehaviour
 
         if (playerHealth != null && playerHealth.IsOwner)
         {
-            Debug.Log("Subscribing to health changes");
+
             // Subscribe to health changes for this player instance only
             playerHealth.currentHealth.OnValueChanged += UpdateHealthUI;
             playerHealth.maxHealth.OnValueChanged += UpdateHealthUI;
-            Debug.Log("Subscribed to health changes");
+
 
             // Initialize health UI with current values
             UpdateHealthUI(0, playerHealth.currentHealth.Value);
         }
         else
         {
-            Debug.Log("Setting health UI inactive");
             gameObject.SetActive(false);
         }
     }

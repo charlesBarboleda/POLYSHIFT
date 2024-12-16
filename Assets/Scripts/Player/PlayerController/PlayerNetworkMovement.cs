@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using NUnit.Framework;
 
 public class PlayerNetworkMovement : NetworkBehaviour
 {
@@ -86,7 +87,26 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             moveDirection = GetFirstPersonMoveDirection(inputDirection);
 
-            Cursor.visible = skillTreeCanvas.activeSelf;
+            float movementMagnitude = moveDirection.magnitude;
+            bool isMoving = movementMagnitude > movementThreshold;
+            animator.SetBool("IsMoving", false);
+            animator.SetBool("isMovingFirstPerson", isMoving);
+
+            // If moving, update movement direction parameters
+            if (isMoving)
+            {
+                // Use input direction to determine movement type
+                animator.SetFloat("HorizontalDirection", inputDirection.x);
+                animator.SetFloat("VerticalDirection", inputDirection.y);
+
+                transform.position += Time.deltaTime * MoveSpeed * moveDirection;
+            }
+            else
+            {
+                // Reset direction parameters when idle
+                animator.SetFloat("HorizontalDirection", 0);
+                animator.SetFloat("VerticalDirection", 0);
+            }
 
             if (skillTreeCanvas.activeSelf)
             {
@@ -96,30 +116,30 @@ public class PlayerNetworkMovement : NetworkBehaviour
             {
                 Cursor.lockState = CursorLockMode.Locked;
             }
+
+            Cursor.visible = skillTreeCanvas.activeSelf;
+
         }
         else
         {
             moveDirection = GetIsometricMoveDirection(inputDirection);
+
+            animator.SetBool("isMovingFirstPerson", false);
+            float movementMagnitude = moveDirection.magnitude;
+            bool isMoving = movementMagnitude > movementThreshold;
+
+            animator.SetBool("IsMoving", isMoving);
+            if (isMoving)
+            {
+                transform.position += Time.deltaTime * MoveSpeed * moveDirection;
+            }
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.Confined;
         }
 
-        float movementMagnitude = moveDirection.magnitude;
-        bool isMoving = movementMagnitude > movementThreshold;
-        animator.SetBool("IsMoving", isMoving);
 
-        if (isMoving)
-        {
-            animator.SetFloat("HorizontalDirection", inputDirection.x);
-            animator.SetFloat("VerticalDirection", inputDirection.y);
 
-            transform.position += moveDirection * Time.deltaTime * MoveSpeed;
-        }
-        else
-        {
-            animator.SetFloat("HorizontalDirection", 0);
-            animator.SetFloat("VerticalDirection", 0);
-        }
+
     }
 
     public void MoveSpeedIncreaseBy(float amount)

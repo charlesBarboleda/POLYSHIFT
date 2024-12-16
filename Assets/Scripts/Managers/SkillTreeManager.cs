@@ -34,8 +34,15 @@ public class SkillTreeManager : NetworkBehaviour
     {
         confirmationBox.SetActive(false);
         noButton.onClick.AddListener(() => confirmationBox.SetActive(false));
+        if (GameManager.Instance != null)
+        {
+            skillPoints = 1;
+        }
+        else
+        {
+            skillPoints = 100;
+        }
         InitializeSkillNodeMap();
-        playerLevel.Level.OnValueChanged += OnLevelUp;
 
     }
 
@@ -70,9 +77,12 @@ public class SkillTreeManager : NetworkBehaviour
         {
             foreach (var ultimateSkill in ultimateSkills)
             {
+                if (ultimateSkill.GetComponent<SkillNodeController>().skill == skill) continue;
+
                 ultimateSkill.interactable = false;
-                ultimateSkill.GetComponent<CanvasGroup>().DOFade(0, 0.5f);
+                ultimateSkill.GetComponentInParent<Image>().gameObject.SetActive(false);
             }
+
         }
         // Find the RectTransform of the unlocked node
         if (skillNodeMap.TryGetValue(skill, out RectTransform newNode))
@@ -157,18 +167,35 @@ public class SkillTreeManager : NetworkBehaviour
     }
 
 
-    void OnLevelUp(int prev, int current)
-    {
 
-        if (current % 20 == 0)
+    public void UnlockUltimateSkills()
+    {
+        gameObject.SetActive(true);
+        gameObject.GetComponent<CanvasGroup>().alpha = 0;
+        Debug.Log("Unlocking ultimate skills...");
+        foreach (var ultimateSkill in ultimateSkills)
         {
-            foreach (var ultimateSkill in ultimateSkills)
+            Debug.Log("Setting ultimate skill active.");
+            ultimateSkill.transform.parent.gameObject.SetActive(true);
+            Debug.Log($"Ultimate skill status: {ultimateSkill.gameObject.activeSelf}");
+            Debug.Log("Setting alpha to 1.");
+            var canvasGroup = ultimateSkill.GetComponentInParent<CanvasGroup>();
+            if (canvasGroup != null)
             {
-                ultimateSkill.interactable = true;
-                ultimateSkill.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                ultimateSkill.GetComponent<CanvasGroup>().alpha = 1;
+                canvasGroup.alpha = 1;
             }
+            else
+            {
+                Debug.Log("CanvasGroup is null.");
+            }
+            Debug.Log("Setting color to full opacity.");
+            ultimateSkill.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            Debug.Log("Setting button interactable.");
+            ultimateSkill.interactable = true;
         }
+        gameObject.GetComponent<CanvasGroup>().alpha = 1;
+        gameObject.SetActive(false);
+        Debug.Log("Ultimate skills unlocked.");
     }
 
     void InitializeSkillNodeMap()
@@ -185,7 +212,7 @@ public class SkillTreeManager : NetworkBehaviour
                 {
                     skillNode.SetActive(false);
                 }
-                newBeginningsContainer.gameObject.SetActive(true);
+
             }
             else
             {
@@ -200,6 +227,7 @@ public class SkillTreeManager : NetworkBehaviour
                 skillNodeMap[skill] = skillNodes[i];
             }
         }
+        newBeginningsContainer.gameObject.SetActive(true);
         newBeginningsButton.color = new Color(1, 1, 1, 1);
         newBeginningsContainer.color = new Color(1, 1, 1, 1);
     }
@@ -265,10 +293,13 @@ public class SkillTreeManager : NetworkBehaviour
         if (currentSkill.skillName == "Bond Of The Colossus" || currentSkill.skillName == "Devil Slam" || currentSkill.skillName == "Summon Starbreaker")
         {
             description.text = "Unlocking this skill will disable all other ultimate skills until the next level threshold. Continue?";
+            description.fontSize = 8;
         }
         else
         {
             description.text = "Unlock " + currentSkill.skillName + "?";
+            description.fontSize = 12;
+
         }
         yesButton.onClick.RemoveAllListeners();
         yesButton.onClick.AddListener(() =>
@@ -316,4 +347,5 @@ public class SkillTreeManager : NetworkBehaviour
         playerSkills.unlockedSkills.Clear();
 
     }
+
 }

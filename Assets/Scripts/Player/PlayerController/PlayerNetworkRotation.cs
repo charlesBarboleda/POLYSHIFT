@@ -5,12 +5,14 @@ public class PlayerNetworkRotation : NetworkBehaviour
 {
     public float FirstPersonTurnSpeed = 5f;
     private PlayerNetworkMovement playerNetworkMovement;
+    private PlayerSkills playerSkills;
     public bool canRotate = true;
 
 
     public override void OnNetworkSpawn()
     {
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
+        playerSkills = GetComponent<PlayerSkills>();
     }
 
     void Update()

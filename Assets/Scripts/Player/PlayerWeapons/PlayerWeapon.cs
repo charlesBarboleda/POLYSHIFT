@@ -407,22 +407,14 @@ public class PlayerWeapon : NetworkBehaviour
     [ClientRpc]
     void SpawnMuzzleFlashClientRpc()
     {
-        Debug.Log("Spawning muzzle flash");
 
         // Spawn the muzzle flash prefab
         GameObject muzzleFlash = ObjectPooler.Instance.Spawn("LaserMuzzleFlash", bulletSpawnPoint.position, Quaternion.identity);
 
-        if (muzzleFlash == null)
-        {
-            Debug.LogError("Failed to spawn muzzle flash!");
-            return;
-        }
 
         // Align the muzzle flash with the bullet spawn point
         muzzleFlash.transform.position = bulletSpawnPoint.position;
         muzzleFlash.transform.rotation = Quaternion.LookRotation(bulletSpawnPoint.forward);
-
-        Debug.Log($"Muzzle flash spawned at position: {bulletSpawnPoint.position}, forward: {bulletSpawnPoint.forward}");
 
         // Spawn the muzzle flash as a networked object
         muzzleFlash.GetComponent<NetworkObject>().Spawn();

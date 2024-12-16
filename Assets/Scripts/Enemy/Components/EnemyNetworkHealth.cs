@@ -30,8 +30,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         {
             CurrentHealth.Value = MaxHealth;
             UpdateHealthbar(MaxHealth, MaxHealth);
-            IsDead = false;
         }
+        IsDead = false;
         animator = GetComponent<Animator>();
         kinematics = GetComponent<AIKinematics>();
         enemy = GetComponent<Enemy>();
@@ -102,15 +102,14 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     public void TakeDamage(float damage, ulong networkObjectId)
     {
         if (!IsServer) return;
+
+        CurrentHealth.Value -= damage;
+        if (CurrentHealth.Value <= 0)
         {
-            if (IsDead) return;
-            CurrentHealth.Value -= damage;
-            if (CurrentHealth.Value <= 0)
-            {
-                IsDead = true;
-                HandleDeathClientRpc(networkObjectId);
-            }
+            HandleDeathClientRpc(networkObjectId);
+            IsDead = true;
         }
+
     }
 
     [ServerRpc]

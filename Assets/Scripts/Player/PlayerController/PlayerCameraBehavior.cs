@@ -47,7 +47,7 @@ public class PlayerCameraBehavior : NetworkBehaviour
         if (!IsOwner) return;
         if (playerState.playerState.Value == PlayerState.Alive)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && Time.time - _lastSwitchTime > switchCooldown && !playerNetworkMovement.skillTreeCanvas.activeSelf)
+            if (Input.GetKeyDown(KeyCode.Tab) && Time.time - _lastSwitchTime > switchCooldown && !playerNetworkMovement.skillTreeCanvas.activeSelf)
             {
                 playerNetworkMovement.IsIsometric.Value = !playerNetworkMovement.IsIsometric.Value;
                 _lastSwitchTime = Time.time;

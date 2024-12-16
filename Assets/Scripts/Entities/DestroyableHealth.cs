@@ -30,7 +30,6 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         // Register OnValueChanged to update Destructible component.
         Health.OnValueChanged += (prev, current) =>
         {
-            Debug.Log($"[Client] Health changed: {prev} -> {current}");
             destructible?.SyncHealth(current);
         };
     }
@@ -48,8 +47,6 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
 
         // Reduce health value on the server.
         float newValue = Health.Value - 1;
-        Debug.Log($"[Server] TakeDamage: {gameObject.name} health from {Health.Value} to {newValue}");
-
         Health.Value = newValue; // Synchronize health with the network.
         destructible?.SyncHealth(newValue); // Sync health with the destructible system.
 

@@ -6,6 +6,7 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
+using System;
 
 public enum GameState
 {
@@ -216,9 +217,14 @@ public class GameManager : NetworkBehaviour
             SpawnerManager.Instance.KillAllEnemies();
             DestroyAllPlayersServerRpc();
             DisableGameOverUIClientRpc();
+            foreach (var networkObject in FindObjectsByType<NetworkObject>(FindObjectsSortMode.None))
+            {
+                networkObject.Despawn(true);
+            }
             NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
         }
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     void DestroyAllPlayersServerRpc()
