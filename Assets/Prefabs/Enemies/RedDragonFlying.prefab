@@ -1650,6 +1650,7 @@ MonoBehaviour:
   HealthRegenRate: 3
   IsDead: 0
   ExperienceDrop: 150
+  height: 2
   enemyName: RedDragonFlying
   healthbarFill: {fileID: 7001901919099574090}
 --- !u!114 &6864688473901307346
@@ -1669,14 +1670,14 @@ MonoBehaviour:
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1902684158
-    DestinationState: 1131611408
+    DestinationState: 1080829965
     TransitionDuration: 0.25
     TriggerNameHash: 973584577
     TransitionIndex: 0
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1526582494
-    DestinationState: 1131611408
+    DestinationState: 1080829965
     TransitionDuration: 0.25
     TriggerNameHash: 973584577
     TransitionIndex: 1
@@ -2070,10 +2071,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 4.436595
-  m_Height: 8.87319
+  m_Radius: 3.02
+  m_Height: 6.59
   m_Direction: 1
-  m_Center: {x: 0, y: 1.7595491, z: -0.9271029}
+  m_Center: {x: 0, y: 1.7595491, z: -1.38}
 --- !u!114 &3502266585516132888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2344,9 +2345,10 @@ GameObject:
   m_Component:
   - component: {fileID: 463148}
   - component: {fileID: 13775546}
+  - component: {fileID: 8149094610336448164}
   m_Layer: 7
   m_Name: DragonSoulEater
-  m_TagString: Untagged
+  m_TagString: Head
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2479,6 +2481,29 @@ SkinnedMeshRenderer:
     m_Center: {x: 17.107727, y: -41.969696, z: 15.215744}
     m_Extent: {x: 528.9893, y: 309.98465, z: 290.71405}
   m_DirtyAABB: 0
+--- !u!136 &8149094610336448164
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186996}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 176.47
+  m_Height: 327.5
+  m_Direction: 1
+  m_Center: {x: 15.215742, y: 22991.8, z: 206}
 --- !u!1 &187566
 GameObject:
   m_ObjectHideFlags: 0

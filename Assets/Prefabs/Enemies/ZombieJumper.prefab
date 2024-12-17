@@ -195,6 +195,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: -4020390418855135517, guid: 63880ad51f3f369469e01ff2abea315e, type: 3}
+      propertyPath: m_TagString
+      value: Head
+      objectReference: {fileID: 0}
     - target: {fileID: -3799395697873186154, guid: 63880ad51f3f369469e01ff2abea315e, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -467,6 +471,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 63880ad51f3f369469e01ff2abea315e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8225188569828338195}
+    - targetCorrespondingSourceObject: {fileID: -4020390418855135517, guid: 63880ad51f3f369469e01ff2abea315e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5623184710628007170}
   m_SourcePrefab: {fileID: 100100000, guid: 63880ad51f3f369469e01ff2abea315e, type: 3}
 --- !u!4 &694646516253015749 stripped
 Transform:
@@ -1025,10 +1032,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.24
-  m_Height: 2.117534
+  m_Radius: 0.35
+  m_Height: 1.5
   m_Direction: 1
-  m_Center: {x: 0.03243515, y: 1.0465912, z: -0.021093488}
+  m_Center: {x: 0.03243515, y: 0.8, z: -0.021093488}
 --- !u!82 &8225188569828338195
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1151,6 +1158,34 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -3321919801592875672, guid: 63880ad51f3f369469e01ff2abea315e, type: 3}
   m_PrefabInstance: {fileID: 1804904713068338881}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5852704178955921442 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4020390418855135517, guid: 63880ad51f3f369469e01ff2abea315e, type: 3}
+  m_PrefabInstance: {fileID: 1804904713068338881}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &5623184710628007170
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5852704178955921442}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.31
+  m_Height: 0.86
+  m_Direction: 1
+  m_Center: {x: -0.00000033220005, y: 1.85, z: -0.018197235}
 --- !u!1001 &6068402244817640968
 PrefabInstance:
   m_ObjectHideFlags: 0

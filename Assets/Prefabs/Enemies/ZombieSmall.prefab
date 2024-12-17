@@ -41,9 +41,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 972592444290671025}
+  - component: {fileID: 4251018286344536333}
   m_Layer: 7
   m_Name: Zombie_Cartoon_Reference
-  m_TagString: Untagged
+  m_TagString: Head
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -64,6 +65,29 @@ Transform:
   - {fileID: 5232908402279716860}
   m_Father: {fileID: 2080388518522351425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &4251018286344536333
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68991711289389832}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.37
+  m_Height: 1.04
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.68, z: 0}
 --- !u!1 &288808642084738316
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,7 +863,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.38
+  m_Radius: 0.16
   m_Height: 0.7600001
   m_Direction: 1
   m_Center: {x: 0.0000000031063934, y: 0.48000205, z: 0}
@@ -1565,10 +1589,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2.1063535
+  m_Radius: 0.34
+  m_Height: 1.29
   m_Direction: 1
-  m_Center: {x: 0.0000000037911363, y: 1.0068243, z: 0}
+  m_Center: {x: -2.1132096e-10, y: 0.71492094, z: 0}
 --- !u!114 &5529486097797468100
 MonoBehaviour:
   m_ObjectHideFlags: 0

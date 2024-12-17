@@ -362,12 +362,12 @@ public class PlayerWeapon : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void ApplyDamageServerRpc(ulong targetNetworkObjectId)
+    public void ApplyDamageServerRpc(ulong targetNetworkObjectId, float damage)
     {
         NetworkObject targetObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[targetNetworkObjectId];
         if (targetObject != null && targetObject.TryGetComponent(out IDamageable iDamageable))
         {
-            iDamageable.RequestTakeDamageServerRpc(Damage, NetworkObjectId); // Pass NetworkObjectId instead of clientId
+            iDamageable.RequestTakeDamageServerRpc(damage, NetworkObjectId); // Pass NetworkObjectId instead of clientId
             ApplyDebuffsOnHitServerRpc(targetNetworkObjectId);
         }
     }

@@ -57,6 +57,11 @@ public class SpawnerManager : NetworkBehaviour
                 {
                     networkObject.Spawn();
                 }
+                GameObject zombieBig = ObjectPooler.Instance.Spawn("ZombieBig", Vector3.zero, Quaternion.identity);
+                if (zombieBig.TryGetComponent(out NetworkObject networkObject2))
+                {
+                    networkObject2.Spawn();
+                }
             }
             if (GameManager.Instance.SpawnedEnemies.Count < MaxEnemies && EnemiesToSpawn > 0)
             {
@@ -118,7 +123,7 @@ public class SpawnerManager : NetworkBehaviour
         int gameLevel = GameManager.Instance.GameLevel.Value;
         int playersAlive = GameManager.Instance.AlivePlayers.Count;
         Debug.Log("Trying to spawn enemies");
-        EnemiesToSpawn = gameLevel * 10 * playersAlive;
+        EnemiesToSpawn = gameLevel * 5 * playersAlive;
         Debug.Log($"Spawning {EnemiesToSpawn} enemies for {playersAlive} players at level {gameLevel}");
         SpawnRate = Mathf.Max(0.1f, 2f - gameLevel * 0.1f);
 
