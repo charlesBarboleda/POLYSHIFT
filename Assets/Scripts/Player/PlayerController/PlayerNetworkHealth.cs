@@ -21,6 +21,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     PlayerNetworkMovement playerNetworkMovement;
     PlayerStateController playerStateController;
     PlayerNetworkRotation playerNetworkRotation;
+    PlayerAudioManager playeraudio;
     [SerializeField] Image healthbarFill;
     [SerializeField] GameObject hotbarUI;
     [SerializeField] GameObject infoCanvas;
@@ -45,6 +46,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         playerLobbyController = GetComponent<PlayerLobbyController>();
         playerCameraBehavior = GetComponent<PlayerCameraBehavior>();
         playerNetworkRotation = GetComponent<PlayerNetworkRotation>();
+        playeraudio = GetComponent<PlayerAudioManager>();
 
     }
 
@@ -101,7 +103,6 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     [ServerRpc]
     public void PermanentHealthIncreaseByServerRpc(float healthIncrease)
     {
-        Debug.Log($"PermanentHealthIncreaseByServerRpc called with healthIncrease: {healthIncrease}");
         maxHealth.Value += healthIncrease;
         currentHealth.Value += healthIncrease;
     }
@@ -219,6 +220,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             }
 
             currentHealth.Value -= damage;
+            playeraudio.PlayOnPlayerHitSound();
 
             if (currentHealth.Value <= 0)
             {

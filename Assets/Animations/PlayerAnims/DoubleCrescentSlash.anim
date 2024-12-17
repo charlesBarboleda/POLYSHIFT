@@ -107099,7 +107099,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0
+  - time: 0.2
     functionName: TurnWeaponMagentaServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -107127,7 +107127,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.73333335
+  - time: 0.8833333
     functionName: PlayMeleeSlash1Sound
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -107156,14 +107156,14 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 1.8833333
-    functionName: EnableMovementAndRotation
+    functionName: TurnWeaponWhiteServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 1.8833333
-    functionName: TurnWeaponWhiteServerRpc
+    functionName: EnableMovementAndRotation
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

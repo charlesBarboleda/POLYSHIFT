@@ -108,16 +108,26 @@ public class PlayerNetworkMovement : NetworkBehaviour
                 animator.SetFloat("VerticalDirection", 0);
             }
 
-            if (skillTreeCanvas.activeSelf)
+
+
+            if (GameManager.Instance != null)
             {
-                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = skillTreeCanvas.activeSelf;
+
+                if (skillTreeCanvas.activeSelf)
+                {
+                    Cursor.lockState = CursorLockMode.Confined;
+                }
+                {
+                    // Cursor.lockState = CursorLockMode.Locked;
+                }
             }
             else
             {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
 
-            Cursor.visible = skillTreeCanvas.activeSelf;
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.Confined;
+            }
 
         }
         else

@@ -49,7 +49,7 @@ public class PlayerUIManager : NetworkBehaviour
             {
                 // Adjust the X, Y position for isometric view
                 hotbarTargetPosition = new Vector2(hotbarRectTransform.anchoredPosition.x, -190);
-                ammoCountTargetPosition = new Vector2(395, 75);
+                ammoCountTargetPosition = new Vector2(405, 75);
 
                 firstPersonCanvas.GetComponent<CanvasGroup>()
                     .DOFade(0, 0.5f)

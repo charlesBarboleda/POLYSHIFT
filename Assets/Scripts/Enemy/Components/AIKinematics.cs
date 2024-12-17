@@ -15,6 +15,7 @@ public class AIKinematics : NetworkBehaviour
     FLookAnimator lookAnimator;
     Animator animator;
     Enemy enemy;
+    EnemyNetworkHealth enemyHealth;
     public bool CanMove = true;
 
     public override void OnNetworkSpawn()
@@ -26,6 +27,7 @@ public class AIKinematics : NetworkBehaviour
             enabled = false;
         }
         CanMove = true;
+        enemyHealth = GetComponent<EnemyNetworkHealth>();
         animator = GetComponent<Animator>();
         lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<AIPath>();
@@ -44,20 +46,33 @@ public class AIKinematics : NetworkBehaviour
         FindClosestPossibleTarget();
         StopAndRotateTowardsTarget();
 
+        if (enemyHealth.IsDead)
+        {
+            // Explicitly stop movement when dead
+            Agent.isStopped = true;
+            Agent.canMove = false;
+            Agent.destination = transform.position; // Lock the agent in place
+            return; // Avoid unnecessary updates when dead
+        }
+
         if (!CanMove || enemy.isAttacking)
         {
             Agent.isStopped = true;
             Agent.canMove = false;
-            Agent.enabled = false;
-            return;
         }
+        else if (ClosestPlayer != null)
+        {
+
+            Agent.isStopped = false;
+            Agent.canMove = true;
+        }
+
 
         if (ClosestPlayer != null && !enemy.isAttacking)
         {
-            Agent.destination = ClosestPlayer.position;
+
             Agent.isStopped = false;
             Agent.canMove = true;
-            Agent.enabled = true;
 
         }
 
@@ -73,7 +88,7 @@ public class AIKinematics : NetworkBehaviour
 
         animator.SetBool("IsMoving", Agent.velocity.magnitude != 0);
         Agent.maxSpeed = MoveSpeed;
-
+        Agent.destination = ClosestPlayer.position;
     }
     void RepositionToNearestValidNode()
     {
@@ -143,6 +158,7 @@ public class AIKinematics : NetworkBehaviour
     {
         Vector3 lastPosition = transform.position;
         yield return new WaitForSeconds(checkRate);
+        if (enemy.isAttacking) yield break;
         if (Vector3.Distance(transform.position, lastPosition) < 0.5f)
         {
             if (isAttack)
@@ -180,23 +196,19 @@ public class AIKinematics : NetworkBehaviour
     void FindClosestPossibleTarget()
     {
         if (GameManager.Instance.SpawnedAllies.Count == 0) return;
-        // if the closestplayer is inactive, find the next closest player
-        if (ClosestPlayer != null && !ClosestPlayer.gameObject.activeSelf)
-        {
-            ClosestPlayer = null;
-        }
+
         if (ClosestPlayer != null && !GameManager.Instance.SpawnedAllies.Contains(ClosestPlayer.gameObject))
         {
             ClosestPlayer = null;
         }
 
-        if (ClosestPlayer != null) return;
         float closestDistance = Mathf.Infinity;
         Transform closestTarget = null;
 
-        // Iterate through all spawned allies
         foreach (GameObject unit in GameManager.Instance.SpawnedAllies)
         {
+            if (!unit.activeSelf) continue; // Skip inactive units
+
             float distance = Vector3.Distance(transform.position, unit.transform.position);
             if (distance < closestDistance)
             {
@@ -204,9 +216,12 @@ public class AIKinematics : NetworkBehaviour
                 closestTarget = unit.transform;
             }
         }
-        ClosestPlayer = closestTarget;
 
+        ClosestPlayer = closestTarget;
     }
+
+
+
 
     public void MoveSpeedIncreaseByPercentage(float amount)
     {

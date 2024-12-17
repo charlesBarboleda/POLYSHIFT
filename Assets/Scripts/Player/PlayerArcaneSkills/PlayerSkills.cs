@@ -639,7 +639,6 @@ public class PlayerSkills : NetworkBehaviour
         {
             DoubleCrescentSlashManager script = GetComponent<DoubleCrescentSlashManager>();
             script.Damage += 20f;
-            script.coneAngle += 5f;
             script.AttackRange += 0.5f;
 
             foreach (Skill skill in unlockedSkills)

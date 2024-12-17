@@ -230,9 +230,9 @@ public class PlayerWeapon : NetworkBehaviour
 
         if (kineticBurst != null)
         {
-            kineticBurstKnockbackForce += 3f;
-            kineticBurstDamageMultiplier += 4f;
-            kineticBurstRange += 2f;
+            kineticBurstKnockbackForce += 1f;
+            kineticBurstDamageMultiplier += 1f;
+            kineticBurstRange += 1f;
         }
         else
         {

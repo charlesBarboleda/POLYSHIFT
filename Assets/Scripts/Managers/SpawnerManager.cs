@@ -28,6 +28,7 @@ public class SpawnerManager : NetworkBehaviour
     public float SpawnRate = 1f;
     public int MaxEnemies = 100;
     public int EnemiesToSpawn = 0;
+    public bool IsSpawning = false;
     public List<Transform> spawnPositions = new List<Transform>();
 
     private Dictionary<string, float> currentSpawnProbabilities = new Dictionary<string, float>();
@@ -51,13 +52,23 @@ public class SpawnerManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.L))
             {
                 // Spawn a ZombieSmall
-                // GameObject zombieSmall = ObjectPooler.Instance.Spawn("ZombieSmall", Vector3.zero, Quaternion.identity);
-                // if (zombieSmall.TryGetComponent(out NetworkObject networkObject))
-                // {
-                //     networkObject.Spawn();
-                // }
+                GameObject zombieSmall = ObjectPooler.Instance.Spawn("ZombieSmall", Vector3.zero, Quaternion.identity);
+                if (zombieSmall.TryGetComponent(out NetworkObject networkObject))
+                {
+                    networkObject.Spawn();
+                }
             }
+            if (GameManager.Instance.SpawnedEnemies.Count < MaxEnemies && EnemiesToSpawn > 0)
+            {
+                if (!IsSpawning)
+                {
+                    StartCoroutine(SpawnEnemiesCoroutine());
+                }
+            }
+
         }
+
+
     }
 
     public void KillAllAllies()
@@ -109,7 +120,7 @@ public class SpawnerManager : NetworkBehaviour
         Debug.Log("Trying to spawn enemies");
         EnemiesToSpawn = gameLevel * 10 * playersAlive;
         Debug.Log($"Spawning {EnemiesToSpawn} enemies for {playersAlive} players at level {gameLevel}");
-        SpawnRate = Mathf.Max(0.01f / 7f, 2f - gameLevel * 0.1f);
+        SpawnRate = Mathf.Max(0.1f, 2f - gameLevel * 0.1f);
 
         UpdateSpawnProbabilitiesForLevel(gameLevel);
     }
@@ -135,11 +146,13 @@ public class SpawnerManager : NetworkBehaviour
 
     IEnumerator SpawnEnemiesCoroutine()
     {
+        IsSpawning = true;
         while (EnemiesToSpawn > 0 && GameManager.Instance.SpawnedEnemies.Count <= MaxEnemies)
         {
             SpawnEnemy();
             yield return new WaitForSeconds(SpawnRate);
         }
+        IsSpawning = false;
     }
 
     void SpawnEnemy()
