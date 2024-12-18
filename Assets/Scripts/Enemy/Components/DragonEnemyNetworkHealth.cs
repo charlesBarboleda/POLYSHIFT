@@ -2,10 +2,12 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEditor.Animations;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class DragonEnemyNetworkHealth : BossEnemyNetworkHealth
 {
-    bool Grounded = true;
+    public bool Grounded = true;
+    bool isMaxAltitude = false;
 
     public override void OnNetworkSpawn()
     {
@@ -14,6 +16,10 @@ public class DragonEnemyNetworkHealth : BossEnemyNetworkHealth
         {
             CurrentHealth.Value = MaxHealth;
             Grounded = true;
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            kinematics.MoveSpeed = 6f;
+            animator.SetBool("IsFlying", !Grounded);
         }
     }
     protected override void Update()
@@ -26,6 +32,15 @@ public class DragonEnemyNetworkHealth : BossEnemyNetworkHealth
             {
                 transform.position = new Vector3(transform.position.x, 0, transform.position.z);
             }
+            if (isMaxAltitude && !IsDead)
+            {
+                transform.position = new Vector3(transform.position.x, 7.5f, transform.position.z);
+            }
+            else if (IsDead)
+            {
+                rb.isKinematic = false;
+                rb.useGravity = true;
+            }
         }
     }
     public override void TakeDamage(float damage, ulong attackerId)
@@ -33,8 +48,6 @@ public class DragonEnemyNetworkHealth : BossEnemyNetworkHealth
         base.TakeDamage(damage, attackerId);
         if (IsServer)
         {
-
-
             if (CurrentHealth.Value <= MaxHealth / 2)
             {
                 if (Grounded)
@@ -45,8 +58,8 @@ public class DragonEnemyNetworkHealth : BossEnemyNetworkHealth
 
     public override void OnHitAnimation(float prev, float current)
     {
-        // If the current hp is less than half
-        if (CurrentHealth.Value >= MaxHealth / 2)
+        // Play the hit animation only if the dragon is not flying
+        if (Grounded)
         {
             animator.SetTrigger("isHit");
         }
@@ -55,11 +68,16 @@ public class DragonEnemyNetworkHealth : BossEnemyNetworkHealth
     void FlyUp()
     {
         Grounded = false;
+        animator.SetBool("IsFlying", !Grounded);
+        animator.SetTrigger("FlyUp");
+        Debug.Log($"Root Motion: {animator.hasRootMotion}");
         rb.useGravity = false;
         rb.isKinematic = true;
-        animator.SetTrigger("FlyUp");
-        // Set the state machine default state to the fly up state  
 
-        transform.DOMoveY(10, animator.GetAnimatorTransitionInfo(0).duration).SetEase(Ease.InOutQuad);
+        transform.DOMoveY(7.5f, 5f).SetEase(Ease.InOutQuad).OnComplete(() =>
+        {
+            isMaxAltitude = true;
+            kinematics.MoveSpeed = 10f;
+        });
     }
 }

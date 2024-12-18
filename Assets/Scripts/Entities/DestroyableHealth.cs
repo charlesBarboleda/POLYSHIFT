@@ -67,12 +67,9 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     {
         if (!IsServer) return;
 
-        Debug.Log("[Server] Destructible Destroy called");
 
         // Ensure the object is marked as destroyed in the Destructible system.
         destructible?.Destroy();
-        Debug.Log("[Server] Destructible Destroy completed");
-        Debug.Log("[Server] Spawning destruction effect");
         // Spawn the destruction effect based on the size
         switch (destroyableSize)
         {
@@ -86,23 +83,17 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
                 SpawnEffect("LargeDebrisDestruction");
                 break;
         }
-        Debug.Log("[Server] Destruction effect spawned");
 
-        Debug.Log("[Server] Updating graphs");
 
         UpdateGraphs(); // Update pathfinding graphs.
-        Debug.Log("[Server] Graphs updated");
 
-        Debug.Log("[Server] Notifying clients to despawn");
 
         // Notify clients to despawn the object and handle the server-side despawn.
         NotifyClientsToDespawn();
-        Debug.Log("[Server] Clients notified to despawn");
     }
 
     private void NotifyClientsToDespawn()
     {
-        Debug.Log("[Server] Notifying Clients to Despawn");
         // Notify clients to despawn the object.
         NotifyDespawnClientRpc();
 
@@ -113,13 +104,11 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     [ClientRpc]
     private void NotifyDespawnClientRpc()
     {
-        Debug.Log($"[Client] Despawning object: {gameObject.name}");
         DestroyObjectLocally();
     }
 
     private void DestroyObjectLocally()
     {
-        Debug.Log($"[Client] Destroying local object: {gameObject.name}");
 
         // Destroy all child objects
         foreach (Transform child in transform)
@@ -133,12 +122,10 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
 
     private IEnumerator DelayedDespawn()
     {
-        Debug.Log($"[Server] Starting DelayedDespawn for {gameObject.name}");
         yield return null; // Wait a frame for sync.
         var networkObject = GetComponent<NetworkObject>();
         if (networkObject != null && networkObject.IsSpawned)
         {
-            Debug.Log($"[Server] Despawning {gameObject.name}");
             networkObject.Despawn(false);
         }
     }
@@ -153,7 +140,6 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
 
     private void UpdateGraphs()
     {
-        Debug.Log("[Server] Updating pathfinding graphs.");
 
         // Attempt to get the parent collider bounds
         Collider parentCollider = GetComponent<Collider>();
@@ -161,18 +147,15 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         Bounds bounds;
         if (parentCollider != null)
         {
-            Debug.Log("[Server] Parent collider found, using its bounds.");
             bounds = parentCollider.bounds;
         }
         else
         {
-            Debug.LogWarning("[Server] Parent collider not found. Calculating combined bounds of child colliders.");
 
             // Combine the bounds of all child colliders
             Collider[] childColliders = GetComponentsInChildren<Collider>();
             if (childColliders.Length == 0)
             {
-                Debug.LogError("[Server] No colliders found on parent or children. Cannot update graphs.");
                 return; // Exit if there are no colliders to calculate bounds
             }
 
@@ -183,13 +166,11 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
             }
         }
 
-        Debug.Log($"[Server] Calculated bounds: {bounds}");
 
         // Update the graph with the calculated bounds
         var guo = new GraphUpdateObject(bounds) { updatePhysics = true };
         AstarPath.active.UpdateGraphs(guo);
 
-        Debug.Log("[Server] Pathfinding graphs updated.");
     }
 
 

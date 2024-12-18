@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Netcode;
 
 public class BossDragonEnemy : Enemy
 {
@@ -10,13 +11,16 @@ public class BossDragonEnemy : Enemy
     public float meleeAttackDamage = 150f;
     private List<string> AttacksFirstPhase;
     private List<string> AttacksSecondPhase;
+    private DragonEnemyNetworkHealth health;
     [SerializeField] GameObject mouth;
+    [SerializeField] ParticleSystem fireBreathParticles;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         AttacksFirstPhase = new List<string> { "BodySlam", "Bite" };
         AttacksSecondPhase = new List<string> { "FireBreath" };
+        health = GetComponent<DragonEnemyNetworkHealth>();
 
     }
 
@@ -24,7 +28,7 @@ public class BossDragonEnemy : Enemy
     {
         if (ClosestTarget != null)
         {
-            if (enemyHealth.CurrentHealth.Value <= enemyHealth.MaxHealth / 2)
+            if (!health.Grounded)
             {
                 isAttacking = true;
                 animator.SetTrigger(AttacksSecondPhase[0]);
@@ -64,18 +68,35 @@ public class BossDragonEnemy : Enemy
         animator.applyRootMotion = false;
     }
 
-    public void SpawnFireBreath()
+    [ServerRpc]
+    public void SpawnFireBreathServerRpc()
     {
-        if (ClosestTarget != null &&
-            Vector3.Distance(mouth.transform.position, ClosestTarget.position) <= rangedAttackRange)
-        {
-            var damageable = ClosestTarget.GetComponent<IDamageable>();
-            if (damageable != null)
-            {
-                damageable.RequestTakeDamageServerRpc(rangedAttackDamage, NetworkObjectId);
-            }
-        }
+        SpawnFireBreathClientRpc();
     }
+
+    [ClientRpc]
+    void SpawnFireBreathClientRpc()
+    {
+        StartCoroutine(SpawnFireBreath());
+    }
+
+    IEnumerator SpawnFireBreath()
+    {
+        // Set damage and spawn it
+        fireBreathParticles.gameObject.SetActive(true);
+        fireBreathParticles.GetComponentInChildren<FireDamage>().SetDamage(rangedAttackDamage);
+        fireBreathParticles.Play();
+
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds(1f);
+
+        // Despawn after the animation ends
+        fireBreathParticles.Stop();
+        yield return new WaitForSeconds(1f);
+        fireBreathParticles.gameObject.SetActive(false);
+
+    }
+
 
 
     public void DealDamageMouth()
@@ -104,10 +125,11 @@ public class BossDragonEnemy : Enemy
             }
         }
     }
+
     public void DealDamageBodySlam()
     {
         if (ClosestTarget != null &&
-            Vector3.Distance(transform.position, ClosestTarget.position) <= meleeAttackRange + 1f)
+            Vector3.Distance(mouth.transform.position, ClosestTarget.position) <= meleeAttackRange + 1f)
         {
             var damageable = ClosestTarget.GetComponent<IDamageable>();
             if (damageable != null)
@@ -117,7 +139,7 @@ public class BossDragonEnemy : Enemy
         }
 
         // AoE Damage
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, meleeAttackRange);
+        Collider[] hitColliders = Physics.OverlapSphere(mouth.transform.position, meleeAttackRange);
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Destroyables"))

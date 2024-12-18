@@ -104,7 +104,7 @@ public class GameManager : NetworkBehaviour
         if (enemy.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
         {
             bossName.gameObject.SetActive(false);
-            bossHealth.transform.parent.gameObject.SetActive(false);
+            bossHealthbarContainer.SetActive(false);
             bossHealth.CurrentHealth.OnValueChanged -= UpdateBossHealthBar;
         }
     }

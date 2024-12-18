@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode.Components;
 using Pathfinding;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(AIKinematics))]
 [RequireComponent(typeof(ClientNetworkAnimator))]
@@ -35,6 +36,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     [SerializeField] Collider headCollider;
     [SerializeField] string enemyName;
     [SerializeField] Image healthbarFill;
+    AudioSource audioSource;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -44,6 +46,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
             CurrentHealth.Value = MaxHealth;
             UpdateHealthbar(MaxHealth, MaxHealth);
         }
+        audioSource = GetComponent<AudioSource>();
         IsDead = false;
         animator = GetComponent<Animator>();
         kinematics = GetComponent<AIKinematics>();
@@ -52,6 +55,10 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         collider = GetComponent<Collider>();
         collider.enabled = true;
         headCollider.enabled = true;
+        kinematics.Agent.isStopped = false;
+        kinematics.Agent.canMove = true;
+        kinematics.CanMove = true;
+        enemy.isAttacking = false;
         CurrentHealth.OnValueChanged += OnHitAnimation;
         CurrentHealth.OnValueChanged += OnHitEffects;
         if (healthbarFill != null)
@@ -155,6 +162,11 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
             }
         }
 
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
+
         if (enemy != null)
         {
             enemy.enabled = false;
@@ -168,6 +180,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         {
             kinematics.Agent.maxSpeed = 0f;
             kinematics.CanMove = false;
+            kinematics.Agent.isStopped = true;
+            kinematics.Agent.canMove = false;
         }
         else
         {
@@ -188,11 +202,13 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 
         animator.SetTrigger("isDead");
         PopUpNumberManager.Instance.SpawnXPNumber(transform.position + transform.up * height, ExperienceDrop);
-        healthbarFill.transform.parent.gameObject.SetActive(false);
+        if (healthbarFill != null)
+            healthbarFill.transform.parent.gameObject.SetActive(false);
         GameManager.Instance.SpawnedEnemies.Remove(enemy);
         EventManager.Instance.EnemyDespawnedEvent(enemy);
         yield return new WaitForSeconds(3f);
-        healthbarFill.transform.parent.gameObject.SetActive(true);
+        if (healthbarFill != null)
+            healthbarFill.transform.parent.gameObject.SetActive(true);
         enemy.enabled = true;
         kinematics.CanMove = true;
         GetComponent<NetworkObject>().Despawn(false);

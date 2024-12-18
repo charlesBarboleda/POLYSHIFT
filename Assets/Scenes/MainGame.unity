@@ -2561,6 +2561,10 @@ MonoBehaviour:
     prefab: {fileID: 116688, guid: 09ade59177310454ba3c93ae4b7dc125, type: 3}
     initialSize: 5
     autoExpand: 1
+  - itemName: DragonFlameBreath
+    prefab: {fileID: 100006, guid: 5d6e9124605bcc547828e0c06484fb9b, type: 3}
+    initialSize: 5
+    autoExpand: 1
 --- !u!4 &1511268788 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400008, guid: c7235ac1b5d8d874bb533f31f4e90879, type: 3}
