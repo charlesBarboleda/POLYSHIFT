@@ -1144,6 +1144,7 @@ MonoBehaviour:
   IsDead: 0
   ExperienceDrop: 50
   height: 6
+  headCollider: {fileID: 3093324494976519848}
   enemyName: ZombieBig
   healthbarFill: {fileID: 8874573290306728651}
 --- !u!114 &2645762297186770900

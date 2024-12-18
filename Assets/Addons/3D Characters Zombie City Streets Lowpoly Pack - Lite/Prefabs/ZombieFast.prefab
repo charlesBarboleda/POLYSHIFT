@@ -1603,6 +1603,7 @@ MonoBehaviour:
   IsDead: 0
   ExperienceDrop: 50
   height: 3
+  headCollider: {fileID: 8188437750451277275}
   enemyName: ZombieFast
   healthbarFill: {fileID: 7205474720082911563}
 --- !u!114 &4193483003308945599

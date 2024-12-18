@@ -99,9 +99,6 @@ public class PlayerNetworkLevel : NetworkBehaviour
     }
 
 
-
-
-
     [ClientRpc]
     void LevelUpAnimClientRpc()
     {

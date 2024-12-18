@@ -6,7 +6,19 @@ using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
 using Unity.VisualScripting;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
+using Unity.Netcode.Components;
+using Pathfinding;
 
+[RequireComponent(typeof(AIKinematics))]
+[RequireComponent(typeof(ClientNetworkAnimator))]
+[RequireComponent(typeof(ClientNetworkTransform))]
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(NetworkRigidbody))]
+[RequireComponent(typeof(DebuffManager))]
+[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(Seeker))]
+[RequireComponent(typeof(AIPath))]
 public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 {
     public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
@@ -15,11 +27,12 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     public bool IsDead;
     public float ExperienceDrop = 10f;
     public float height = 2f;
-    Animator animator;
-    AIKinematics kinematics;
-    Enemy enemy;
-    Rigidbody rb;
-    Collider collider;
+    protected Animator animator;
+    protected AIKinematics kinematics;
+    protected Enemy enemy;
+    protected Rigidbody rb;
+    protected Collider collider;
+    [SerializeField] Collider headCollider;
     [SerializeField] string enemyName;
     [SerializeField] Image healthbarFill;
     public override void OnNetworkSpawn()
@@ -38,9 +51,13 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
         collider.enabled = true;
+        headCollider.enabled = true;
         CurrentHealth.OnValueChanged += OnHitAnimation;
         CurrentHealth.OnValueChanged += OnHitEffects;
-        CurrentHealth.OnValueChanged += UpdateHealthbar;
+        if (healthbarFill != null)
+        {
+            CurrentHealth.OnValueChanged += UpdateHealthbar;
+        }
         EventManager.Instance.EnemySpawnedEvent(enemy);
     }
 
@@ -48,12 +65,15 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
         CurrentHealth.OnValueChanged -= OnHitAnimation;
         CurrentHealth.OnValueChanged -= OnHitEffects;
-        CurrentHealth.OnValueChanged -= UpdateHealthbar;
+        if (healthbarFill != null)
+        {
+            CurrentHealth.OnValueChanged -= UpdateHealthbar;
+        }
 
     }
 
 
-    void Update()
+    protected virtual void Update()
     {
         if (!IsServer) return;
 
@@ -77,7 +97,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         }
     }
 
-    void OnHitEffects(float prev, float current)
+    public virtual void OnHitEffects(float prev, float current)
     {
         if (prev > current)
         {
@@ -86,7 +106,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         }
     }
 
-    void OnHitAnimation(float prev, float current)
+    public virtual void OnHitAnimation(float prev, float current)
     {
         if (prev > current)
         {
@@ -99,7 +119,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         TakeDamage(damage, networkObjectId);
     }
 
-    public void TakeDamage(float damage, ulong networkObjectId)
+    public virtual void TakeDamage(float damage, ulong networkObjectId)
     {
         if (!IsServer) return;
 
@@ -124,7 +144,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     {
         HandleDeath(networkObjectId);
     }
-    public void HandleDeath(ulong networkObjectId)
+    public virtual void HandleDeath(ulong networkObjectId)
     {
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out var networkObject))
         {
@@ -155,6 +175,9 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         }
         if (collider != null)
             collider.enabled = false;
+
+        if (headCollider != null)
+            headCollider.enabled = false;
 
         StartCoroutine(DeathAnim());
     }

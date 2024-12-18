@@ -659,6 +659,7 @@ MonoBehaviour:
   IsDead: 0
   ExperienceDrop: 20
   height: 4
+  headCollider: {fileID: 5623184710628007170}
   enemyName: ZombieJumper
   healthbarFill: {fileID: 5447326365606282892}
 --- !u!114 &6748692871989674293
@@ -758,14 +759,14 @@ MonoBehaviour:
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -843511639
-    DestinationState: -326931890
+    DestinationState: 567580192
     TransitionDuration: 0.25
     TriggerNameHash: 973584577
     TransitionIndex: 0
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -843511639
-    DestinationState: 1886386442
+    DestinationState: 1080829965
     TransitionDuration: 0.25
     TriggerNameHash: -357477766
     TransitionIndex: 1

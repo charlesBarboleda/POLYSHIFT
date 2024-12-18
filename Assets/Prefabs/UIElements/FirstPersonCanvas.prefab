@@ -116,6 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 273478465e64cf24bbd37a3daeb52be7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   healthFill: {fileID: 0}
   healthText: {fileID: 4568249716186392295}
   ammoCountText: {fileID: 0}

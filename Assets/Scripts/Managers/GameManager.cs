@@ -7,6 +7,7 @@ using DG.Tweening;
 using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
 using System;
+using UnityEngine.UI;
 
 public enum GameState
 {
@@ -26,6 +27,9 @@ public class GameManager : NetworkBehaviour
     public GameState CurrentGameState = GameState.OutLevel;
     public List<Transform> _spawnPoints = new List<Transform>();
     [SerializeField] GameObject playerPrefab;
+    [SerializeField] Image bossHealthbar;
+    [SerializeField] TMP_Text bossName;
+    [SerializeField] GameObject bossHealthbarContainer;
 
 
     private void Awake()
@@ -60,6 +64,8 @@ public class GameManager : NetworkBehaviour
 
             GameLevel.Value = 0;
             SetCurrentGameState(GameState.OutLevel);
+            EventManager.Instance.OnEnemySpawned.AddListener(OnBossSpawned);
+            EventManager.Instance.OnEnemyDespawned.AddListener(OnBossDespawned);
             EventManager.Instance.OnPlayerDeath.AddListener(HandleGameOver);
 
             EnableCountdownTextClientRpc();
@@ -67,6 +73,8 @@ public class GameManager : NetworkBehaviour
         }
 
     }
+
+
 
     private void AssignPlayerName(GameObject playerObject, ulong clientId)
     {
@@ -77,6 +85,43 @@ public class GameManager : NetworkBehaviour
         {
             playerInfo.SetName(playerName);
             Debug.Log($"AssignPlayerName: Client {clientId}'s name set to '{playerName}'");
+        }
+    }
+
+    public void OnBossSpawned(Enemy enemy)
+    {
+        if (enemy.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
+        {
+            bossName.gameObject.SetActive(true);
+            bossHealthbarContainer.SetActive(true);
+            bossName.text = bossHealth.BossName;
+            bossHealth.CurrentHealth.OnValueChanged += UpdateBossHealthBar;
+        }
+    }
+
+    public void OnBossDespawned(Enemy enemy)
+    {
+        if (enemy.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
+        {
+            bossName.gameObject.SetActive(false);
+            bossHealth.transform.parent.gameObject.SetActive(false);
+            bossHealth.CurrentHealth.OnValueChanged -= UpdateBossHealthBar;
+        }
+    }
+
+    public void UpdateBossHealthBar(float currentHealth, float maxHealth)
+    {
+        bossHealthbar.DOFillAmount(currentHealth / maxHealth, 0.5f);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsServer)
+        {
+            EventManager.Instance.OnEnemySpawned.RemoveListener(OnBossSpawned);
+            EventManager.Instance.OnEnemyDespawned.RemoveListener(OnBossDespawned);
+            EventManager.Instance.OnPlayerDeath.RemoveListener(HandleGameOver);
         }
     }
 
@@ -124,9 +169,38 @@ public class GameManager : NetworkBehaviour
     }
 
 
+    [ClientRpc]
+    public void HealAllPlayersClientRpc()
+    {
+        foreach (var ally in SpawnedAllies)
+        {
+            var networkHealth = ally.GetComponent<PlayerNetworkHealth>();
+            if (networkHealth != null)
+            {
+                networkHealth.HealServerRpc(networkHealth.maxHealth.Value);
+            }
+        }
+    }
+
+
+    [ClientRpc]
+    public void GiveAllPlayersLevelClientRpc(int level)
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var playerLevel = client.PlayerObject.GetComponent<PlayerNetworkLevel>();
+            playerLevel.Level.Value += level;
+        }
+    }
+
+
 
     public void MainMenu()
     {
+        foreach (var networkObject in FindObjectsByType<NetworkObject>(FindObjectsSortMode.None))
+        {
+            networkObject.Despawn(true);
+        }
         if (NetworkManager.Singleton.IsHost)
         {
             // Host handles both their own shutdown and notifying clients
@@ -142,6 +216,8 @@ public class GameManager : NetworkBehaviour
 
     private IEnumerator HostMainMenuTransition()
     {
+
+
         Debug.Log("Host: Notifying clients and shutting down server...");
 
         // Notify clients to return to lobby

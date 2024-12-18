@@ -51,17 +51,13 @@ public class SpawnerManager : NetworkBehaviour
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-                // Spawn a ZombieSmall
-                GameObject zombieSmall = ObjectPooler.Instance.Spawn("ZombieSmall", Vector3.zero, Quaternion.identity);
-                if (zombieSmall.TryGetComponent(out NetworkObject networkObject))
+                // Spawn a BossMelee
+                GameObject BossDragon = ObjectPooler.Instance.Spawn("BossDragon", Vector3.zero, Quaternion.identity);
+                if (BossDragon.TryGetComponent(out NetworkObject networkObject))
                 {
                     networkObject.Spawn();
                 }
-                GameObject zombieBig = ObjectPooler.Instance.Spawn("ZombieBig", Vector3.zero, Quaternion.identity);
-                if (zombieBig.TryGetComponent(out NetworkObject networkObject2))
-                {
-                    networkObject2.Spawn();
-                }
+
             }
             if (GameManager.Instance.SpawnedEnemies.Count < MaxEnemies && EnemiesToSpawn > 0)
             {
@@ -122,12 +118,46 @@ public class SpawnerManager : NetworkBehaviour
     {
         int gameLevel = GameManager.Instance.GameLevel.Value;
         int playersAlive = GameManager.Instance.AlivePlayers.Count;
-        Debug.Log("Trying to spawn enemies");
         EnemiesToSpawn = gameLevel * 5 * playersAlive;
+        if (gameLevel % 10 == 0)
+        {
+            Invoke(nameof(SpawnBossServerRpc), Random.Range(10, 60));
+
+        }
         Debug.Log($"Spawning {EnemiesToSpawn} enemies for {playersAlive} players at level {gameLevel}");
         SpawnRate = Mathf.Max(0.1f, 2f - gameLevel * 0.1f);
 
         UpdateSpawnProbabilitiesForLevel(gameLevel);
+    }
+
+    [ServerRpc]
+    void SpawnBossServerRpc()
+    {
+        if (IsServer)
+        {
+            if (GameManager.Instance.GameLevel.Value == 10)
+            {
+                SpawnBoss("BossMelee", 5000);
+            }
+            else if (GameManager.Instance.GameLevel.Value == 20)
+            {
+                SpawnBoss("BossDragon", 15000);
+            }
+        }
+    }
+
+    void SpawnBoss(string bossName, float bossHealth)
+    {
+        GameObject Boss = ObjectPooler.Instance.Spawn(bossName, spawnPositions[Random.Range(0, spawnPositions.Count)].position, Quaternion.identity);
+        if (Boss.TryGetComponent(out BossEnemyNetworkHealth enemyHealth))
+        {
+            enemyHealth.MaxHealth = bossHealth * GameManager.Instance.AlivePlayers.Count;
+            enemyHealth.CurrentHealth.Value = enemyHealth.MaxHealth;
+        }
+        if (Boss.TryGetComponent(out NetworkObject networkObject))
+        {
+            networkObject.Spawn();
+        }
     }
 
     void UpdateSpawnProbabilitiesForLevel(int gameLevel)
@@ -157,6 +187,7 @@ public class SpawnerManager : NetworkBehaviour
             SpawnEnemy();
             yield return new WaitForSeconds(SpawnRate);
         }
+
         IsSpawning = false;
     }
 

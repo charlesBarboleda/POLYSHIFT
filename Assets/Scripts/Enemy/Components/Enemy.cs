@@ -88,11 +88,13 @@ public abstract class Enemy : NetworkBehaviour
         if (ClosestTarget != null)
         {
 
+            // Check if the target is within attack range
             float flatDistance = Vector3.Distance(
                 new Vector3(agent.destination.x, transform.position.y, agent.destination.z),
                 transform.position
             );
 
+            // If the target is within attack range, stop the agent and attack
             if (flatDistance <= agent.endReachedDistance)
             {
                 agent.isStopped = true;

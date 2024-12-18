@@ -43,6 +43,7 @@ public class TitleScreenUIManager : MonoBehaviour
     {
         AnimateTitleScreen();
         audioSource = GetComponent<AudioSource>();
+        startGameButton.onClick.AddListener(MainMenuManager.Instance.StartGameServerRpc);
     }
 
     void AnimateTitleScreen()

@@ -46,7 +46,7 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
             return;
 
         // Reduce health value on the server.
-        float newValue = Health.Value - 1;
+        float newValue = Health.Value - damage;
         Health.Value = newValue; // Synchronize health with the network.
         destructible?.SyncHealth(newValue); // Sync health with the destructible system.
 
