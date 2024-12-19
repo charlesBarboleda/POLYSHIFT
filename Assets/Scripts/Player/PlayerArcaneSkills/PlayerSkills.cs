@@ -99,6 +99,11 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
+    public void GiveSkillPoints(int points)
+    {
+        skillTreeManager.AddSkillPoint(points);
+    }
+
     public void ResetGolems()
     {
         golemManager.ResetGolems();

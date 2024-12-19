@@ -47,12 +47,12 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
             UpdateHealthbar(MaxHealth, MaxHealth);
         }
         audioSource = GetComponent<AudioSource>();
-        IsDead = false;
         animator = GetComponent<Animator>();
         kinematics = GetComponent<AIKinematics>();
         enemy = GetComponent<Enemy>();
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
+        IsDead = false;
         collider.enabled = true;
         headCollider.enabled = true;
         kinematics.Agent.isStopped = false;

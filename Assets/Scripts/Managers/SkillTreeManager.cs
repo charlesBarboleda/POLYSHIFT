@@ -135,6 +135,11 @@ public class SkillTreeManager : NetworkBehaviour
         return closestNode;
     }
 
+    public void AddSkillPoint(int amount)
+    {
+        skillPoints += amount;
+    }
+
     void DrawLineBetweenNodes(RectTransform node1, RectTransform node2)
     {
         // Instantiate the line and parent it to the lineParent

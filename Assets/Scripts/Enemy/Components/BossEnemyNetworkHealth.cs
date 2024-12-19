@@ -15,8 +15,8 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth
 
         if (IsServer)
         {
-            GameManager.Instance.HealAllPlayersClientRpc();
             GameManager.Instance.GiveAllPlayersLevelClientRpc(4);
+            GameManager.Instance.GiveAllPlayersSkillPointsClientRpc(4);
             StartCoroutine(SpawnDeathEffects());
             audioSource.volume = 0.75f;
             audioSource.PlayOneShot(onDeathSound);

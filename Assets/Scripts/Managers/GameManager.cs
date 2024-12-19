@@ -68,6 +68,8 @@ public class GameManager : NetworkBehaviour
             EventManager.Instance.OnEnemyDespawned.AddListener(OnBossDespawned);
             EventManager.Instance.OnPlayerDeath.AddListener(HandleGameOver);
 
+
+
             EnableCountdownTextClientRpc();
             EnableGameLevelTextClientRpc();
         }
@@ -95,7 +97,10 @@ public class GameManager : NetworkBehaviour
             bossName.gameObject.SetActive(true);
             bossHealthbarContainer.SetActive(true);
             bossName.text = bossHealth.BossName;
+            bossHealthbar.fillAmount = 1f;
+            Debug.Log("Boss spawned... Setting up health bar");
             bossHealth.CurrentHealth.OnValueChanged += UpdateBossHealthBar;
+            Debug.Log("Healthbar setup complete");
         }
     }
 
@@ -111,7 +116,9 @@ public class GameManager : NetworkBehaviour
 
     public void UpdateBossHealthBar(float currentHealth, float maxHealth)
     {
+        Debug.Log("Updating boss health bar with " + currentHealth + " / " + maxHealth);
         bossHealthbar.DOFillAmount(currentHealth / maxHealth, 0.5f);
+        Debug.Log("Health bar updated");
     }
 
     public override void OnNetworkDespawn()
@@ -182,6 +189,17 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void GiveAllPlayersSkillPointsClientRpc(int skillPoints)
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var playerSkills = client.PlayerObject.GetComponent<PlayerSkills>();
+            playerSkills.GiveSkillPoints(skillPoints);
+        }
+
+
+    }
 
     [ClientRpc]
     public void GiveAllPlayersLevelClientRpc(int level)

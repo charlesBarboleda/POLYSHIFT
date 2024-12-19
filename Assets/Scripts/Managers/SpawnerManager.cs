@@ -137,11 +137,11 @@ public class SpawnerManager : NetworkBehaviour
         {
             if (GameManager.Instance.GameLevel.Value == 10)
             {
-                SpawnBoss("BossMelee", 5000);
+                SpawnBoss("BossMelee", 15000);
             }
             else if (GameManager.Instance.GameLevel.Value == 20)
             {
-                SpawnBoss("BossDragon", 15000);
+                SpawnBoss("BossDragon", 45000);
             }
         }
     }
