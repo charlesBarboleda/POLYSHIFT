@@ -430,8 +430,8 @@ public class PlayerSkills : NetworkBehaviour
         if (blastforgedGuardian != null)
         {
             var golemManager = GetComponent<GolemManager>();
-            golemManager.IncreaseGolemHealth(50f);
-            golemManager.IncreaseGolemDamage(80f);
+            golemManager.IncreaseGolemHealth(100f);
+            golemManager.IncreaseGolemDamage(150f);
             golemManager.IncreaseGolemAttackRange(0.5f);
             golemManager.IncreaseGolemMovementSpeed(0.5f);
             golemManager.IncreaseBuffRadius(2f);
@@ -448,8 +448,8 @@ public class PlayerSkills : NetworkBehaviour
         if (tempestGuardian != null)
         {
             var golemManager = GetComponent<GolemManager>();
-            golemManager.IncreaseGolemHealth(100f);
-            golemManager.IncreaseGolemDamage(40f);
+            golemManager.IncreaseGolemHealth(150f);
+            golemManager.IncreaseGolemDamage(100f);
             golemManager.IncreaseGolemAttackRange(0.5f);
             golemManager.IncreaseBuffRadius(1f);
         }
@@ -492,8 +492,8 @@ public class PlayerSkills : NetworkBehaviour
         {
             var golemManager = GetComponent<GolemManager>();
             golemManager.IncreaseGolemDamageReduction(0.025f);
-            golemManager.IncreaseGolemHealth(150f);
-            golemManager.IncreaseGolemDamage(20f);
+            golemManager.IncreaseGolemHealth(300f);
+            golemManager.IncreaseGolemDamage(60f);
             golemManager.IncreaseGolemAttackRange(0.5f);
             golemManager.IncreaseGolemMovementSpeed(0.5f);
         }

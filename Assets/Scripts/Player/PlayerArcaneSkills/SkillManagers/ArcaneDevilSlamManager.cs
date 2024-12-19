@@ -30,7 +30,7 @@ public class ArcaneDevilSlamManager : NetworkBehaviour, ISkillManager
 
     public void ResetSkill()
     {
-        Damage = 1000f;
+        Damage = 10000f;
         KnockbackForce = 10f;
         AttackSpeedMultiplier.Value = 1f;
         AttackRange = 5f;
