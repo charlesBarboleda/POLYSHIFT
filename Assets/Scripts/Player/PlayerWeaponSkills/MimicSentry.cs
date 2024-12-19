@@ -6,7 +6,7 @@ public class MimicSentry : ActiveSkill
     public override void Initialize(Animator animator)
     {
         base.Initialize(animator);
-        Cooldown = 240f;
+        Cooldown = 180f;
     }
     public override void ExecuteAttack()
     {

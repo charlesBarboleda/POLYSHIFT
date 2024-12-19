@@ -185,6 +185,17 @@ public abstract class Enemy : NetworkBehaviour
         StopAllCoroutines();
     }
 
+    public void ApplyRootMotion()
+    {
+        animator.applyRootMotion = true;
+
+    }
+
+    public void DisableRootMotion()
+    {
+        animator.applyRootMotion = false;
+    }
+
 
 
 

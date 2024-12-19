@@ -790,7 +790,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116688}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 999999
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -1041,8 +1041,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4c137aee8b1536948b3232409a4a1bc6, type: 3}
   meleeAttackRange: 7
   rangedAttackRange: 20
-  rangedAttackDamage: 30
-  meleeAttackDamage: 250
+  rangedAttackDamage: 50
+  meleeAttackDamage: 500
   mouth: {fileID: 137948}
   fireBreathParticles: {fileID: 8730181180941377346}
 --- !u!136 &5411948245027177522
@@ -1083,7 +1083,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   CurrentHealth:
     m_InternalValue: 0
-  MaxHealth: 30
+  MaxHealth: 20
   HealthRegenRate: 50
   IsDead: 0
   ExperienceDrop: 99999
@@ -1097,7 +1097,6 @@ MonoBehaviour:
   - {fileID: 6930110267447780587}
   - {fileID: 1491000603149576341}
   - {fileID: 1876958653344078297}
-  audioSource: {fileID: 2034022084777920919}
   onDeathSound: {fileID: 8300000, guid: 04d8170b5b4f6b74d852406018b39eb7, type: 3}
   Grounded: 1
 --- !u!114 &1005986306127688381
@@ -4785,6 +4784,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GreenVortexExplosion
       objectReference: {fileID: 0}
+    - target: {fileID: 113502, guid: 0dd4c52b0a3d02e4abff5da76fd7969e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 462110, guid: 0dd4c52b0a3d02e4abff5da76fd7969e, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.2933228
@@ -4879,6 +4882,10 @@ PrefabInstance:
     - target: {fileID: 184234, guid: 847a556973174d84bbe49226f543a92d, type: 3}
       propertyPath: m_Name
       value: FrostExplosionMega
+      objectReference: {fileID: 0}
+    - target: {fileID: 184234, guid: 847a556973174d84bbe49226f543a92d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 451962, guid: 847a556973174d84bbe49226f543a92d, type: 3}
       propertyPath: m_LocalScale.x
@@ -4982,6 +4989,10 @@ PrefabInstance:
     - target: {fileID: 150320, guid: 51e6dfc2ec9381647a7b3c25f6f6f626, type: 3}
       propertyPath: m_Name
       value: ShadowExplosionMega
+      objectReference: {fileID: 0}
+    - target: {fileID: 150320, guid: 51e6dfc2ec9381647a7b3c25f6f6f626, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 474810, guid: 51e6dfc2ec9381647a7b3c25f6f6f626, type: 3}
       propertyPath: m_LocalScale.x
@@ -5176,6 +5187,10 @@ PrefabInstance:
     - target: {fileID: 124424, guid: da75e1557d91cdd4baf654b25d102076, type: 3}
       propertyPath: m_Name
       value: GhostExplosion
+      objectReference: {fileID: 0}
+    - target: {fileID: 124424, guid: da75e1557d91cdd4baf654b25d102076, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 477898, guid: da75e1557d91cdd4baf654b25d102076, type: 3}
       propertyPath: m_LocalScale.x

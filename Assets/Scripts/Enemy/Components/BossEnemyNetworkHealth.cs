@@ -7,7 +7,6 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth
 {
     public string BossName;
     [SerializeField] List<ParticleSystem> onDeathParticles;
-    [SerializeField] AudioSource audioSource;
     [SerializeField] AudioClip onDeathSound;
     public override void HandleDeath(ulong networkObjectId)
     {
@@ -40,6 +39,11 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth
 
 
     public override void OnHitEffects(float prev, float current)
+    {
+        // Do nothing
+    }
+
+    public override void OnHitAnimation(float prev, float current)
     {
         // Do nothing
     }

@@ -36,7 +36,7 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
     [SerializeField] Collider headCollider;
     [SerializeField] string enemyName;
     [SerializeField] Image healthbarFill;
-    AudioSource audioSource;
+    protected AudioSource audioSource;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -55,9 +55,6 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         IsDead = false;
         collider.enabled = true;
         headCollider.enabled = true;
-        kinematics.Agent.isStopped = false;
-        kinematics.Agent.canMove = true;
-        kinematics.CanMove = true;
         enemy.isAttacking = false;
         CurrentHealth.OnValueChanged += OnHitAnimation;
         CurrentHealth.OnValueChanged += OnHitEffects;

@@ -30,6 +30,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] Image bossHealthbar;
     [SerializeField] TMP_Text bossName;
     [SerializeField] GameObject bossHealthbarContainer;
+    GameObject currentBoss;
+    EnemyNetworkHealth currentBossHealth;
 
 
     private void Awake()
@@ -94,31 +96,74 @@ public class GameManager : NetworkBehaviour
     {
         if (enemy.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
         {
-            bossName.gameObject.SetActive(true);
-            bossHealthbarContainer.SetActive(true);
-            bossName.text = bossHealth.BossName;
-            bossHealthbar.fillAmount = 1f;
-            Debug.Log("Boss spawned... Setting up health bar");
-            bossHealth.CurrentHealth.OnValueChanged += UpdateBossHealthBar;
-            Debug.Log("Healthbar setup complete");
+            StartCoroutine(NotifyClientsAfterSpawn(bossHealth));
         }
     }
+
+    private IEnumerator NotifyClientsAfterSpawn(BossEnemyNetworkHealth bossHealth)
+    {
+        // Wait for synchronization
+        yield return new WaitForSeconds(0.1f);
+
+        EnableBossUIClientRpc(bossHealth.NetworkObjectId);
+    }
+
+
+    [ClientRpc]
+    void EnableBossUIClientRpc(ulong bossNetworkObjectId)
+    {
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(bossNetworkObjectId))
+        {
+            Debug.LogError($"Boss object with NetworkObjectId {bossNetworkObjectId} not found on client.");
+            return;
+        }
+
+        var bossObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[bossNetworkObjectId];
+
+        if (bossObject != null && bossObject.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
+        {
+            bossName.text = bossHealth.BossName;
+            bossName.gameObject.SetActive(true);
+            bossHealthbarContainer.SetActive(true);
+            bossHealthbar.fillAmount = 1f;
+
+            // Subscribe to health updates
+            bossHealth.CurrentHealth.OnValueChanged += UpdateBossHealthBar;
+        }
+        else
+        {
+            Debug.LogError("Failed to find BossEnemyNetworkHealth on the boss object.");
+        }
+    }
+
 
     public void OnBossDespawned(Enemy enemy)
     {
         if (enemy.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
         {
+            DisableBossUIClientRpc(bossHealth.NetworkObjectId);
+        }
+    }
+
+    [ClientRpc]
+    void DisableBossUIClientRpc(ulong bossNetworkObjectId)
+    {
+
+        var bossObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[bossNetworkObjectId];
+
+        if (bossObject != null && bossObject.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
+        {
             bossName.gameObject.SetActive(false);
             bossHealthbarContainer.SetActive(false);
             bossHealth.CurrentHealth.OnValueChanged -= UpdateBossHealthBar;
         }
+
     }
 
-    public void UpdateBossHealthBar(float currentHealth, float maxHealth)
+    public void UpdateBossHealthBar(float prev, float current)
     {
-        Debug.Log("Updating boss health bar with " + currentHealth + " / " + maxHealth);
-        bossHealthbar.DOFillAmount(currentHealth / maxHealth, 0.5f);
-        Debug.Log("Health bar updated");
+        bossHealthbar.DOFillAmount(current / currentBossHealth.MaxHealth, 0.5f);
     }
 
     public override void OnNetworkDespawn()
@@ -430,6 +475,12 @@ public class GameManager : NetworkBehaviour
             var playerUIManager = client.PlayerObject.GetComponent<PlayerUIManager>();
             playerUIManager.DisableGameOverUI();
         }
+    }
+
+    public void SetCurrentBoss(GameObject boss)
+    {
+        currentBoss = boss;
+        currentBossHealth = currentBoss.GetComponent<EnemyNetworkHealth>();
     }
 
 

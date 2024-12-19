@@ -7,7 +7,6 @@ public class MeleeEnemy : Enemy
 {
     public float attackRange = 4f;
     public float attackDamage = 10f;
-    EnemyNetworkHealth health;
 
 
     public override void OnNetworkSpawn()
@@ -17,11 +16,10 @@ public class MeleeEnemy : Enemy
 
         if (IsServer)
         {
-            health = GetComponent<EnemyNetworkHealth>();
-            health.MaxHealth += GameManager.Instance.GameLevel.Value * maxHealthScalingFactor;
-            health.CurrentHealth.Value = health.MaxHealth;
+            enemyHealth.MaxHealth += GameManager.Instance.GameLevel.Value * maxHealthScalingFactor;
+            enemyHealth.CurrentHealth.Value = enemyHealth.MaxHealth;
             attackDamage += GameManager.Instance.GameLevel.Value * attackDamageScalingFactor;
-            health.ExperienceDrop += GameManager.Instance.GameLevel.Value * experienceDropScalingFactor;
+            enemyHealth.ExperienceDrop += GameManager.Instance.GameLevel.Value * experienceDropScalingFactor;
             enemyMovement.MoveSpeed += Random.Range(GameManager.Instance.GameLevel.Value * 0.1f, GameManager.Instance.GameLevel.Value * 0.2f);
             enemyMovement.MoveSpeed = Mathf.Clamp(enemyMovement.MoveSpeed, 0f, moveSpeedCap);
         }
@@ -56,6 +54,7 @@ public class MeleeEnemy : Enemy
     {
         animator.applyRootMotion = false;
     }
+
 
 
     public void DealDamage()

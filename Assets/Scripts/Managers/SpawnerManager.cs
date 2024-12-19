@@ -52,8 +52,8 @@ public class SpawnerManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.L))
             {
                 // Spawn a BossMelee
-                GameObject BossDragon = ObjectPooler.Instance.Spawn("BossDragon", Vector3.zero, Quaternion.identity);
-                if (BossDragon.TryGetComponent(out NetworkObject networkObject))
+                GameObject BossMelee = ObjectPooler.Instance.Spawn("BossMelee", Vector3.zero, Quaternion.identity);
+                if (BossMelee.TryGetComponent(out NetworkObject networkObject))
                 {
                     networkObject.Spawn();
                 }
@@ -137,11 +137,11 @@ public class SpawnerManager : NetworkBehaviour
         {
             if (GameManager.Instance.GameLevel.Value == 10)
             {
-                SpawnBoss("BossMelee", 15000);
+                SpawnBoss("BossMelee", 30000);
             }
             else if (GameManager.Instance.GameLevel.Value == 20)
             {
-                SpawnBoss("BossDragon", 45000);
+                SpawnBoss("BossDragon", 60000);
             }
         }
     }
@@ -149,8 +149,9 @@ public class SpawnerManager : NetworkBehaviour
     void SpawnBoss(string bossName, float bossHealth)
     {
         GameObject Boss = ObjectPooler.Instance.Spawn(bossName, spawnPositions[Random.Range(0, spawnPositions.Count)].position, Quaternion.identity);
-        if (Boss.TryGetComponent(out BossEnemyNetworkHealth enemyHealth))
+        if (Boss.TryGetComponent(out EnemyNetworkHealth enemyHealth))
         {
+            GameManager.Instance.SetCurrentBoss(Boss);
             enemyHealth.MaxHealth = bossHealth * GameManager.Instance.AlivePlayers.Count;
             enemyHealth.CurrentHealth.Value = enemyHealth.MaxHealth;
         }

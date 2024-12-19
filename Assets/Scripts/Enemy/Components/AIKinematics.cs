@@ -32,6 +32,9 @@ public class AIKinematics : NetworkBehaviour
         lookAnimator = GetComponent<FLookAnimator>();
         Agent = GetComponent<AIPath>();
         enemy = GetComponent<Enemy>();
+        Agent.isStopped = false;
+        Agent.canMove = true;
+        CanMove = true;
         InvokeRepeating("AttackIfStuck", 0f, 3f);
         InvokeRepeating("TeleportIfStuck", 0f, 3f);
 
