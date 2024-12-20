@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
 using System;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
 
 public enum GameState
 {
@@ -34,9 +35,14 @@ public class GameManager : NetworkBehaviour
     EnemyNetworkHealth currentBossHealth;
 
 
-    private void Awake()
+    void Awake()
     {
         Singleton();
+    }
+
+    void Start()
+    {
+        DebuffFactory.Initialize();
     }
 
     public override void OnNetworkSpawn()
@@ -77,8 +83,6 @@ public class GameManager : NetworkBehaviour
         }
 
     }
-
-
 
     private void AssignPlayerName(GameObject playerObject, ulong clientId)
     {

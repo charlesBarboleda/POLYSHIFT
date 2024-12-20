@@ -42,7 +42,7 @@ public class Projectile : MonoBehaviour
         // Check if the projectile is close to its target position
         if (Vector3.Distance(transform.position, TargetPosition) <= DespawnDistance)
         {
-            Despawn();
+            DespawnRpc();
         }
     }
 
@@ -57,17 +57,15 @@ public class Projectile : MonoBehaviour
         }
 
         // Despawn the projectile after hitting any object
-        Despawn();
+        DespawnRpc();
     }
-
-    private void Despawn()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void DespawnRpc()
     {
         GameObject onHitEffect = ObjectPooler.Instance.Spawn(ProjectileHitEffectName, transform.position, Quaternion.identity);
         onHitEffect.transform.rotation = Quaternion.Euler(-90, 0, 90);
-        onHitEffect.GetComponent<NetworkObject>().Spawn();
 
         Debug.Log($"Despawning projectile at {transform.position}");
-        gameObject.GetComponent<NetworkObject>().Despawn(false);
         ObjectPooler.Instance.Despawn(ProjectileEffectName, gameObject);
     }
 }

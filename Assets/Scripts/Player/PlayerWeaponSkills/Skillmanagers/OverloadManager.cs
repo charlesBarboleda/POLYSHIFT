@@ -65,8 +65,8 @@ public class OverloadManager : NetworkBehaviour, ISkillManager
         // Apply the overload stat changes
         float oldFireRate = playerWeapon.ShootRate;
         float oldReloadRate = playerWeapon.ReloadTime;
-        playerWeapon.DecreaseFireRateByServerRpc(0.80f);
-        playerWeapon.DecreaseReloadTimeByServerRpc(0.80f);
+        playerWeapon.DecreaseFireRateBy(0.80f);
+        playerWeapon.DecreaseReloadTimeBy(0.80f);
 
         yield return new WaitForSeconds(Duration);
 

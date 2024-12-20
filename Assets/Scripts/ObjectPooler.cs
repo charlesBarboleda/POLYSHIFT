@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 [System.Serializable]
@@ -99,17 +100,41 @@ public class ObjectPooler : MonoBehaviour
         if (!poolDictionary.ContainsKey(itemName))
         {
             Debug.LogWarning($"Pool with item name {itemName} doesn't exist.");
-            Destroy(obj);  // Fallback to destroy if no pool exists for this item
+            Destroy(obj); // Fallback to destroy if no pool exists for this item
             return;
         }
+
+        // Ensure the object isn't already inactive
+        if (!obj.activeSelf)
+        {
+            Debug.LogWarning($"Object {obj.name} is already inactive. Skipping despawn.");
+            return;
+        }
+
         ResetObject(obj);
+
+        // Forcefully deactivate
         obj.SetActive(false);
+        Debug.Log($"Object {obj.name} deactivated and returned to pool on client {NetworkManager.Singleton.LocalClientId}.");
+
         poolDictionary[itemName].Enqueue(obj);
     }
+
+
+
 
     void ResetObject(GameObject obj)
     {
         obj.transform.position = Vector3.zero;
         obj.transform.rotation = Quaternion.identity;
+
+        // Stop and clear particle systems
+        var particleSystem = obj.GetComponent<ParticleSystem>();
+        if (particleSystem != null)
+        {
+            particleSystem.Stop();
+            particleSystem.Clear();
+        }
     }
+
 }

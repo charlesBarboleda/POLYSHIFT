@@ -180,8 +180,8 @@ public class PlayerWeapon : NetworkBehaviour
         if (dualStance != null)
         {
             Damage += 7.5f;
-            DecreaseReloadTimeByServerRpc(0.05f);
-            DecreaseFireRateByServerRpc(0.05f);
+            DecreaseReloadTimeBy(0.05f);
+            DecreaseFireRateBy(0.05f);
         }
         else
         {
@@ -196,7 +196,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (bombardierSentry != null)
         {
             Damage += 10f;
-            DecreaseFireRateByServerRpc(0.05f);
+            DecreaseFireRateBy(0.05f);
         }
         else
         {
@@ -211,7 +211,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (mimicSentry != null)
         {
             Damage += 5f;
-            DecreaseFireRateByServerRpc(0.05f);
+            DecreaseFireRateBy(0.05f);
         }
         else
         {
@@ -247,7 +247,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (extendedCapacity != null)
         {
             maxAmmoCount.Value += 3;
-            DecreaseFireRateByServerRpc(0.05f);
+            DecreaseFireRateBy(0.05f);
         }
         else
         {
@@ -278,8 +278,8 @@ public class PlayerWeapon : NetworkBehaviour
         {
             var script = GetComponent<OverloadManager>();
             script.Duration += 1f;
-            DecreaseReloadTimeByServerRpc(0.05f);
-            DecreaseFireRateByServerRpc(0.05f);
+            DecreaseReloadTimeBy(0.05f);
+            DecreaseFireRateBy(0.05f);
         }
         else
         {
@@ -294,8 +294,8 @@ public class PlayerWeapon : NetworkBehaviour
         if (weaponMastery != null)
         {
             Damage += 7.5f;
-            DecreaseReloadTimeByServerRpc(0.1f);
-            DecreaseFireRateByServerRpc(0.1f);
+            DecreaseReloadTimeBy(0.1f);
+            DecreaseFireRateBy(0.1f);
         }
         else
         {
@@ -303,14 +303,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void DecreaseFireRateByServerRpc(float multiplier)
-    {
-        DecreaseFireRateByClientRpc(multiplier);
-    }
-
-    [ClientRpc]
-    public void DecreaseFireRateByClientRpc(float multiplier)
+    public void DecreaseFireRateBy(float multiplier)
     {
         if (multiplier <= 0 || multiplier >= 1)
         {
@@ -328,14 +321,7 @@ public class PlayerWeapon : NetworkBehaviour
         Debug.Log($"Fire rate decreased by {multiplier * 100}% to {ShootRate} seconds per shot.");
     }
 
-    [ServerRpc]
-    public void DecreaseReloadTimeByServerRpc(float multiplier)
-    {
-        DecreaseReloadTimeByClientRpc(multiplier);
-    }
-
-    [ClientRpc]
-    public void DecreaseReloadTimeByClientRpc(float multiplier)
+    public void DecreaseReloadTimeBy(float multiplier)
     {
         if (multiplier <= 0 || multiplier >= 1)
         {
@@ -352,6 +338,7 @@ public class PlayerWeapon : NetworkBehaviour
 
         Debug.Log($"Reload time decreased by {multiplier * 100}% to {ReloadTime} seconds.");
     }
+
 
 
 
@@ -391,23 +378,16 @@ public class PlayerWeapon : NetworkBehaviour
 
 
 
-    [ServerRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     public void FireSingleShotServerRpc(Vector3 startPoint, Vector3 hitPoint)
-    {
-        Vector3 direction = (hitPoint - startPoint).normalized;
-        SpawnBulletVisualClientRpc(startPoint, hitPoint, direction);
-    }
-
-    [ClientRpc]
-    void SpawnBulletVisualClientRpc(Vector3 startPoint, Vector3 hitPoint, Vector3 direction)
     {
         SpawnBullet(startPoint, hitPoint, 500f);
         SpawnImpact(hitPoint);
     }
-    [ClientRpc]
-    void SpawnMuzzleFlashClientRpc()
-    {
 
+    [Rpc(SendTo.ClientsAndHost)]
+    public void SpawnMuzzleFlashServerRpc()
+    {
         // Spawn the muzzle flash prefab
         GameObject muzzleFlash = ObjectPooler.Instance.Spawn("LaserMuzzleFlash", bulletSpawnPoint.position, Quaternion.identity);
 
@@ -416,16 +396,6 @@ public class PlayerWeapon : NetworkBehaviour
         muzzleFlash.transform.position = bulletSpawnPoint.position;
         muzzleFlash.transform.rotation = Quaternion.LookRotation(bulletSpawnPoint.forward);
 
-        // Spawn the muzzle flash as a networked object
-        muzzleFlash.GetComponent<NetworkObject>().Spawn();
-    }
-
-
-
-    [ServerRpc]
-    public void SpawnMuzzleFlashServerRpc()
-    {
-        SpawnMuzzleFlashClientRpc();
     }
 
     void SpawnBullet(Vector3 startPoint, Vector3 hitPoint, float speed)
@@ -454,7 +424,6 @@ public class PlayerWeapon : NetworkBehaviour
         if (impact != null)
         {
             impact.transform.position = position;
-            impact.GetComponent<NetworkObject>().Spawn();
         }
     }
 
@@ -473,16 +442,14 @@ public class PlayerWeapon : NetworkBehaviour
     }
 
 
-    [ServerRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     public void KineticBurstVisualEffectServerRpc()
     {
         GameObject lightningNova = ObjectPooler.Instance.Spawn("LightningNova", bulletSpawnPoint.position, Quaternion.identity);
         lightningNova.transform.localRotation = Quaternion.Euler(-90, 0, 90);
-        lightningNova.GetComponent<NetworkObject>().Spawn();
 
         GameObject lightningSphereBlast = ObjectPooler.Instance.Spawn("LightningSphereBlast", bulletSpawnPoint.position, Quaternion.identity);
         lightningSphereBlast.transform.localRotation = Quaternion.Euler(-90, 0, 90);
-        lightningSphereBlast.GetComponent<NetworkObject>().Spawn();
     }
 
     IEnumerator Reload()

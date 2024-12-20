@@ -35,6 +35,7 @@ public class PlayerStateController : NetworkBehaviour
     [SerializeField] GameObject mainMenuButton;
     [SerializeField] GameObject waitingForHostText;
     [SerializeField] GameObject titleText;
+    [SerializeField] GameObject dashUI;
 
 
     public override void OnNetworkSpawn()
@@ -50,6 +51,7 @@ public class PlayerStateController : NetworkBehaviour
         }
         if (!IsOwner)
         {
+            dashUI.SetActive(false);
             firstPersonCanvas.SetActive(false);
             hotbarUI.SetActive(false);
             ammoCountUI.SetActive(false);
@@ -100,6 +102,18 @@ public class PlayerStateController : NetworkBehaviour
             firstPersonCanvas.SetActive(false);
         });
 
+        hotbarUI.GetComponent<CanvasGroup>()?.DOFade(0, 0.5f).OnComplete(() =>
+        {
+            hotbarUI.SetActive(false);
+        });
+
+        dashUI.GetComponent<CanvasGroup>()?.DOFade(0, 0.5f).OnComplete(() =>
+        {
+            dashUI.SetActive(false);
+        });
+
+        infoCanvas.SetActive(false);
+
         bodyMesh.SetActive(false);
         bodyRoot.SetActive(false);
 
@@ -119,6 +133,7 @@ public class PlayerStateController : NetworkBehaviour
         firstPersonCanvas.SetActive(true);
         hotbarUI.SetActive(true);
         ammoCountUI.SetActive(true);
+        dashUI.SetActive(true);
 
         rb.isKinematic = false;
         animator.enabled = true;

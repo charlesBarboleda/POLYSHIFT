@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 {
@@ -25,6 +27,9 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     [SerializeField] Image healthbarFill;
     [SerializeField] GameObject hotbarUI;
     [SerializeField] GameObject infoCanvas;
+    [SerializeField] Image screenEffectOverlay;
+    [SerializeField] Volume localVolume;
+    Vignette vignette;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -36,7 +41,16 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
             currentHealth.Value = maxHealth.Value;
             healthRegenRate.Value = 1f;
         }
-
+        if (IsOwner)
+        {
+            localVolume.profile.TryGet(out vignette);
+        }
+        if (!IsOwner)
+        {
+            // localVolume.gameObject.SetActive(false);
+            hotbarUI.SetActive(false);
+        }
+        currentHealth.OnValueChanged += TakeDamageScreenOverlay;
         currentHealth.OnValueChanged += OnHealthChangedClientRpc;
         maxHealth.OnValueChanged += OnHealthChangedClientRpc;
 
@@ -54,6 +68,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     {
         base.OnNetworkDespawn();
 
+        currentHealth.OnValueChanged -= TakeDamageScreenOverlay;
         currentHealth.OnValueChanged -= OnHealthChangedClientRpc;
         maxHealth.OnValueChanged -= OnHealthChangedClientRpc;
 
@@ -78,6 +93,65 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         }
 
 
+    }
+
+    void TakeDamageScreenOverlay(float prev, float current)
+    {
+        if (current > prev)
+            return;
+        if (localVolume == null)
+        {
+            Debug.Log("Local Volume is null");
+            return;
+        }
+        if (vignette == null)
+        {
+            Debug.Log("Vignette is null");
+            return;
+        }
+
+
+
+        // Set the intensity of the vignette effect based on the current health
+        vignette.color.value = Color.red;
+        float tweenValue;
+        if (currentHealth.Value / maxHealth.Value <= 0.7f)
+        {
+            // If the player is below 30% health, increase the intensity of the vignette effect
+            tweenValue = 0.35f;
+        }
+        else if (currentHealth.Value / maxHealth.Value <= 0.5f)
+        {
+            // If the player is below 50% health, increase the intensity of the vignette effect
+            tweenValue = 0.40f;
+        }
+        else if (currentHealth.Value / maxHealth.Value <= 0.3f)
+        {
+            // If the player is below 30% health, increase the intensity of the vignette effect
+            tweenValue = 0.45f;
+        }
+        else
+        {
+            // Otherwise, set the intensity to 0.3f
+            tweenValue = 0.3f;
+        }
+        // Use Dotween to increase the intensity of the vignette effect
+        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, tweenValue, 0.25f).OnComplete(() =>
+        {
+            // Reset the intensity back to 0.3f
+            DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0.3f, 0.25f).OnComplete(() =>
+            {
+                // Reset the color back to black
+                DOTween.To(() => vignette.color.value, x => vignette.color.value = x, Color.black, 0.25f);
+            });
+
+        });
+
+        screenEffectOverlay.color = Color.red;
+        screenEffectOverlay.DOFade(0.05f, 0.25f).OnComplete(() =>
+        {
+            screenEffectOverlay.DOFade(0, 0.25f);
+        });
     }
 
 

@@ -4,7 +4,7 @@ using DG.Tweening;
 using System.Collections;
 using UnityEngine.Rendering.Universal;
 
-public class DevilManager : NetworkBehaviour
+public class DevilManager : MonoBehaviour
 {
     public float damage;
     Transform player;
@@ -15,31 +15,31 @@ public class DevilManager : NetworkBehaviour
     [SerializeField] AudioClip devilRoar;
     [SerializeField] AudioClip explosionSound;
 
-    public override void OnNetworkSpawn()
+    void Start()
     {
-        base.OnNetworkSpawn();
+
         TryGetComponent(out audioSource);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void PlayDevilRoarServerRpc()
     {
         audioSource.PlayOneShot(devilRoar);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void PlayExplosionSoundServerRpc()
     {
         audioSource.PlayOneShot(explosionSound);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void DealAreaDamageServerRpc(float radius)
     {
         PlayerSkills.DealDamageInCircle(transform.position, radius, damage, 5f);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void OnDevilSlam1ServerRpc()
     {
         // Server handles spawning of the pillars and ground crack
@@ -55,17 +55,16 @@ public class DevilManager : NetworkBehaviour
         {
             Vector3 spawnPosition = player.position + new Vector3(Mathf.Cos(i * Mathf.PI / 2) * 5, 0, Mathf.Sin(i * Mathf.PI / 2) * 5);
             GameObject devilPillar = ObjectPooler.Instance.Spawn("DevilPillarBlast", spawnPosition, Quaternion.identity);
-            devilPillar.GetComponent<NetworkObject>().Spawn(); // Ensure pillar is networked and visible to all clients
         }
 
         // Spawn ground crack on the server
         GameObject groundCrack = ObjectPooler.Instance.Spawn("GroundCrackDecal", player.position + Vector3.left, Quaternion.Euler(90, 0, 0));
-        groundCrack.GetComponent<NetworkObject>().Spawn();
         groundCrack.GetComponent<DecalProjector>().size = new Vector3(25, 25, 25);
 
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
+
     public void OnDevilSlam2ServerRpc()
     {
         SpawnDevilSlam2Effects();
@@ -77,11 +76,10 @@ public class DevilManager : NetworkBehaviour
         {
             Vector3 spawnPosition = player.position + new Vector3(Mathf.Cos(i * Mathf.PI / 4) * 15, 0, Mathf.Sin(i * Mathf.PI / 4) * 15);
             GameObject devilPillar = ObjectPooler.Instance.Spawn("DevilPillarBlast", spawnPosition, Quaternion.identity);
-            devilPillar.GetComponent<NetworkObject>().Spawn();
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void OnDevilSlam3ServerRpc()
     {
         SpawnDevilSlam3Effects();
@@ -93,11 +91,11 @@ public class DevilManager : NetworkBehaviour
         {
             Vector3 spawnPosition = player.position + new Vector3(Mathf.Cos(i * Mathf.PI / 6) * 30, 0, Mathf.Sin(i * Mathf.PI / 6) * 30);
             GameObject devilPillar = ObjectPooler.Instance.Spawn("DevilPillarBlast", spawnPosition, Quaternion.identity);
-            devilPillar.GetComponent<NetworkObject>().Spawn();
         }
     }
 
-    public void DespawnDevil()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void DespawnDevilRpc()
     {
         StartCoroutine(MoveDevilDown());
     }
@@ -107,7 +105,6 @@ public class DevilManager : NetworkBehaviour
         transform.DOMoveY(-20, 1f);
         yield return new WaitForSeconds(1f);
         ObjectPooler.Instance.Despawn("Devil", gameObject);
-        GetComponent<NetworkObject>().Despawn(false);
     }
 
     public void SetPlayer(Transform player, float damage)

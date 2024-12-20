@@ -135,14 +135,13 @@ public abstract class Enemy : NetworkBehaviour
         canAttack = true;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void OnRaycastHitServerRpc(Vector3 hitPoint, Vector3 hitNormal)
     {
-        SpawnBloodSplatterClientRpc(hitPoint, hitNormal);
+        SpawnBloodSplatter(hitPoint, hitNormal);
     }
 
-    [ClientRpc]
-    private void SpawnBloodSplatterClientRpc(Vector3 hitPoint, Vector3 hitNormal)
+    private void SpawnBloodSplatter(Vector3 hitPoint, Vector3 hitNormal)
     {
         StartCoroutine(SpawnBloodSplatterCoroutine(hitPoint, hitNormal));
     }

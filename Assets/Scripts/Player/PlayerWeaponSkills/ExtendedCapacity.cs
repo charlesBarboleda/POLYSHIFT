@@ -14,6 +14,6 @@ public class ExtendedCapacity : PassiveSkill
         var weapon = user.GetComponent<PlayerWeapon>();
         weapon.maxAmmoCount.Value += 10;
         weapon.Damage += 10f;
-        weapon.DecreaseFireRateByServerRpc(0.2f);
+        weapon.DecreaseFireRateBy(0.2f);
     }
 }

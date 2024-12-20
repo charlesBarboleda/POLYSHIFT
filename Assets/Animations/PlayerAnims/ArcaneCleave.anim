@@ -89563,7 +89563,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.3166666
+  - time: 2.35
     functionName: EnableMovementAndRotation
     data: 
     objectReferenceParameter: {fileID: 0}

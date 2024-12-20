@@ -4,6 +4,9 @@ using Unity.Netcode;
 using NUnit.Framework;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using System.Collections;
 public class PlayerNetworkMovement : NetworkBehaviour
 {
     [Header("Player Inputs")]
@@ -28,6 +31,11 @@ public class PlayerNetworkMovement : NetworkBehaviour
     private Animator animator;
     private PlayerStateController state;
     [SerializeField] Image dashCooldownFill;
+    [SerializeField] Volume localVolume;
+    [SerializeField] GameObject dashEffectPrefab;
+    Vignette vignette;
+
+
 
 
     private const float movementThreshold = 0.1f;
@@ -37,6 +45,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
         animator = GetComponentInChildren<Animator>();
         if (!IsOwner) return;
 
+
+        localVolume.profile.TryGet(out vignette);
         canDash = true;
         isDashing = false;
         canMove = true;
@@ -80,13 +90,27 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         if (state.playerState.Value == PlayerState.Alive && canMove)
         {
-            if (dashAction.triggered && canDash) StartDash(); // Trigger dash
+            if (dashAction.triggered && canDash) StartCoroutine(StartDash()); // Trigger dash
             else HandleMovementAndAnimations(inputDirection);
         }
     }
 
-    void StartDash()
+    [Rpc(SendTo.ClientsAndHost)]
+    void DashEffectRpc()
     {
+        Debug.Log("Spawning Dash Effect for " + OwnerClientId);
+        var dashEffect = ObjectPooler.Instance.Spawn("DashEffect", transform.position, Quaternion.identity);
+        // var dashEffect = Instantiate(dashEffectPrefab, transform.position, Quaternion.identity);
+        Debug.Log($"Dash Effect Is Active: {dashEffect.activeInHierarchy} & {dashEffect.activeSelf}");
+    }
+
+
+
+    IEnumerator StartDash()
+    {
+        DashScreenEffects();
+        DashEffectRpc();
+
         isDashing = true;
         dashTimeRemaining = DashDuration;
         canDash = false;
@@ -96,10 +120,30 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         MoveSpeed += DashSpeed;
 
+        yield return new WaitForSeconds(DashDuration / 2);
+
+        DashEffectRpc();
+
+    }
+
+    void DashScreenEffects()
+    {
+        if (vignette != null)
+        {
+            vignette.color.value = Color.cyan;
+            DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0.5f, DashDuration).OnComplete(() =>
+            {
+                DOTween.To(() => vignette.color.value, x => vignette.color.value = x, Color.black, 0.25f);
+                DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0.3f, 0.1f);
+
+
+            });
+        }
     }
 
     private void EndDash()
     {
+        DashEffectRpc();
         isDashing = false;
         MoveSpeed -= DashSpeed;
     }

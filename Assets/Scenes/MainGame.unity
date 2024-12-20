@@ -155,55 +155,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400008, guid: c7235ac1b5d8d874bb533f31f4e90879, type: 3}
   m_PrefabInstance: {fileID: 434093142}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &184337185
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 184337187}
-  - component: {fileID: 184337186}
-  m_Layer: 0
-  m_Name: PostProcessingVolume
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &184337186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 184337185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: ab09877e2e707104187f6f83e2f62510, type: 2}
---- !u!4 &184337187
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 184337185}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &202744886 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400008, guid: c7235ac1b5d8d874bb533f31f4e90879, type: 3}
@@ -2605,6 +2556,10 @@ MonoBehaviour:
   - itemName: DragonFlameBreath
     prefab: {fileID: 100006, guid: 5d6e9124605bcc547828e0c06484fb9b, type: 3}
     initialSize: 5
+    autoExpand: 1
+  - itemName: DashEffect
+    prefab: {fileID: 2965222256817593503, guid: a164e676dbbd6e54587237e619372c98, type: 3}
+    initialSize: 30
     autoExpand: 1
 --- !u!4 &1511268788 stripped
 Transform:
@@ -15245,6 +15200,10 @@ PrefabInstance:
       propertyPath: 'm_Cameras.Array.data[0]'
       value: 
       objectReference: {fileID: 1516486628}
+    - target: {fileID: 8033168816502229478, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
+      propertyPath: m_VolumeLayerMask.m_Bits
+      value: 16384
+      objectReference: {fileID: 0}
     - target: {fileID: 8476354557183418304, guid: ab4ffb6bae3327e4595c266ef1ace802, type: 3}
       propertyPath: m_Name
       value: MainCamera
@@ -15338,7 +15297,6 @@ SceneRoots:
   - {fileID: 1944676943}
   - {fileID: 148385879}
   - {fileID: 1242546392838534365}
-  - {fileID: 184337187}
   - {fileID: 500790137}
   - {fileID: 267061551}
   - {fileID: 675583618}

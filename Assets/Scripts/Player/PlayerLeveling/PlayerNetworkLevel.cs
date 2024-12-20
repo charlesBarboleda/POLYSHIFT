@@ -81,7 +81,7 @@ public class PlayerNetworkLevel : NetworkBehaviour
         playerNetworkHealth.currentHealth.Value = playerNetworkHealth.maxHealth.Value;
         playerNetworkMovement.MoveSpeed += 0.05f;
         playerWeapon.Damage += 1.5f;
-        playerWeapon.DecreaseFireRateByServerRpc(0.02f);
+        playerWeapon.DecreaseFireRateBy(0.02f);
 
         foreach (ISkillManager skill in meleeSkillsManager)
         {

@@ -1,37 +1,35 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class AutoReturnToPool : NetworkBehaviour
+public class AutoReturnToPool : MonoBehaviour
 {
-    public float timeToReturn = 1f;
+    public float timeToReturn = 1f; // Time before the object is returned to the pool
     public string tagName;
-    public bool isNetworkedObject = false;
-    public override void OnNetworkSpawn()
+
+    void OnEnable()
     {
-
-        if (!IsServer) return;
-        Invoke("ReturnToPool", timeToReturn);
-
-
+        Invoke(nameof(ReturnToPool), timeToReturn);
     }
 
     void ReturnToPool()
     {
-        if (isNetworkedObject)
+        var networkObject = GetComponent<NetworkObject>();
+        if (networkObject != null)
         {
-            NetworkObject networkObject = GetComponent<NetworkObject>();
-            if (networkObject != null && networkObject.IsSpawned)
-            {
-                networkObject.Despawn(false);
-                ObjectPooler.Instance.Despawn(tagName, gameObject);
-
-            }
+            Debug.Log(gameObject.name + " is despawning");
+            networkObject.Despawn(false);
         }
         else
         {
-            ObjectPooler.Instance.Despawn(tagName, gameObject);
+            DespawnRpc();
         }
+    }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    void DespawnRpc()
+    {
+        ObjectPooler.Instance.Despawn(tagName, gameObject);
     }
 
 }
