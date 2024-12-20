@@ -8569,7 +8569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2175129618
+  GlobalObjectIdHash: 2792908417
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -8976,6 +8976,7 @@ MonoBehaviour:
   arcaneDevilSlamShoutSound: {fileID: 8300000, guid: 2a47385abaa7f4040b5713f6932f9706, type: 3}
   reloadSound: {fileID: 8300000, guid: c314498c201acf9418880756187aaacb, type: 3}
   arcaneCleaveSound: {fileID: 8300000, guid: a161527766be241efad062d931d302c5, type: 3}
+  dashSound: {fileID: 8300000, guid: dccce87c335ef8d47b226b7c2f543aa4, type: 3}
   onPlayerHitSounds:
   - {fileID: 8300000, guid: 794be7c4bd9e64c9bbb9776937807a9e, type: 3}
   - {fileID: 8300000, guid: aa48101fd9bd24b82af88afb182a9bf5, type: 3}

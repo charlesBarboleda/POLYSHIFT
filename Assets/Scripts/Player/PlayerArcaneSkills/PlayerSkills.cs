@@ -39,7 +39,6 @@ public class PlayerSkills : NetworkBehaviour
         if (!IsLocalPlayer)
         {
             skillTreeManager.gameObject.SetActive(false);
-            return;
         }
         base.OnNetworkSpawn();
         animator = GetComponent<Animator>();
@@ -76,11 +75,6 @@ public class PlayerSkills : NetworkBehaviour
                     if (hotbarSkills[i] != null) // Ensure slot is not empty
                     {
                         attackIndex = i;
-                        Debug.Log($"Attack index changed to {attackIndex}.");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"Hotbar slot {i} is empty. Cannot change attack index.");
                     }
                     break;
                 }

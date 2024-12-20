@@ -126,7 +126,7 @@ namespace DestroyIt
             GetComponent<ConstantForce>().relativeForce = new Vector3(0, 0, speed);
 
             // create the smoke trail
-            smokeTrailObj = DestroyItObjectPool.Instance.Spawn(smokeTrailPrefab.gameObject, new Vector3(0, 0, smokeTrailDistance * -1), Quaternion.identity, transform);
+            smokeTrailObj = DestroyItObjectPool.Instance.Spawn(smokeTrailPrefab.gameObject, new Vector3(0, 0, smokeTrailDistance * -1), Quaternion.identity);
         }
 
         private void EngineShutDown()

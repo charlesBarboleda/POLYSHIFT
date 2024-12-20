@@ -16,6 +16,7 @@ public class PlayerAudioManager : NetworkBehaviour
     [SerializeField] AudioClip arcaneDevilSlamShoutSound;
     [SerializeField] AudioClip reloadSound;
     [SerializeField] AudioClip arcaneCleaveSound;
+    [SerializeField] AudioClip dashSound;
     [SerializeField] List<AudioClip> onPlayerHitSounds;
 
     public override void OnNetworkSpawn()
@@ -24,26 +25,25 @@ public class PlayerAudioManager : NetworkBehaviour
         generalAudioSource = GetComponent<AudioSource>();
     }
 
+    public void PlayDashSound()
+    {
+        PlayDashSoundRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void PlayDashSoundRpc()
+    {
+        generalAudioSource.volume = 0.05f;
+        generalAudioSource.PlayOneShot(dashSound);
+    }
+
     public void PlayReloadSound()
     {
-        if (IsServer)
-        {
-            PlayReloadSoundClientRpc();
-        }
-        else
-        {
-            PlayReloadSoundServerRpc();
-        }
+        PlayReloadSoundRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayReloadSoundServerRpc()
-    {
-        PlayReloadSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayReloadSoundClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayReloadSoundRpc()
     {
         weaponAudioSource.volume = 0.1f;
         weaponAudioSource.PlayOneShot(reloadSound);
@@ -51,24 +51,11 @@ public class PlayerAudioManager : NetworkBehaviour
 
     public void PlayLevelUpSound()
     {
-        if (IsServer)
-        {
-            PlayLevelUpSoundClientRpc();
-        }
-        else
-        {
-            PlayLevelUpSoundServerRpc();
-        }
+        PlayLevelUpSoundRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayLevelUpSoundServerRpc()
-    {
-        PlayLevelUpSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayLevelUpSoundClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayLevelUpSoundRpc()
     {
         generalAudioSource.PlayOneShot(levelUpSound);
         generalAudioSource.DOFade(0, 5f).OnComplete(() =>
@@ -80,24 +67,11 @@ public class PlayerAudioManager : NetworkBehaviour
 
     public void PlayFootstepSound()
     {
-        if (IsServer)
-        {
-            PlayFootstepSoundClientRpc();
-        }
-        else
-        {
-            PlayFootstepSoundServerRpc();
-        }
+        PlayFootstepSoundRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayFootstepSoundServerRpc()
-    {
-        PlayFootstepSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayFootstepSoundClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayFootstepSoundRpc()
     {
         footstepAudioSource.pitch = Random.Range(0.9f, 1.1f);
         footstepAudioSource.volume = 0.01f;
@@ -113,24 +87,11 @@ public class PlayerAudioManager : NetworkBehaviour
 
     public void PlayShootSound()
     {
-        if (IsServer)
-        {
-            PlayShootSoundClientRpc();
-        }
-        else
-        {
-            PlayShootSoundServerRpc();
-        }
+        PlayShootSoundRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayShootSoundServerRpc()
-    {
-        PlayShootSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayShootSoundClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayShootSoundRpc()
     {
         weaponAudioSource.pitch = Random.Range(0.7f, 1.3f);
         weaponAudioSource.volume = 0.1f;
@@ -139,24 +100,11 @@ public class PlayerAudioManager : NetworkBehaviour
 
     public void PlayMeleeSlash1Sound()
     {
-        if (IsServer)
-        {
-            PlayMeleeSlash1SoundClientRpc();
-        }
-        else
-        {
-            PlayMeleeSlash1SoundServerRpc();
-        }
+        PlayMeleeSlash1SoundRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayMeleeSlash1SoundServerRpc()
-    {
-        PlayMeleeSlash1SoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayMeleeSlash1SoundClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayMeleeSlash1SoundRpc()
     {
         generalAudioSource.volume = 0.1f;
         generalAudioSource.PlayOneShot(meleeSlash1Sound);
@@ -164,78 +112,37 @@ public class PlayerAudioManager : NetworkBehaviour
 
     public void PlayArcaneDevilSlamShoutSound()
     {
-        if (IsServer)
-        {
-            PlayArcaneDevilSlamShoutSoundClientRpc();
-        }
-        else
-        {
-            PlayArcaneDevilSlamShoutSoundServerRpc();
-        }
+        PlayArcaneDevilSlamShoutSoundRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayArcaneDevilSlamShoutSoundServerRpc()
-    {
-        PlayArcaneDevilSlamShoutSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayArcaneDevilSlamShoutSoundClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayArcaneDevilSlamShoutSoundRpc()
     {
         generalAudioSource.volume = 0.05f;
         generalAudioSource.PlayOneShot(arcaneDevilSlamShoutSound);
     }
 
-    [ClientRpc]
-    private void PlayArcaneCleaveSoundClientRpc()
+    public void PlayArcaneCleaveSound()
+    {
+        PlayArcaneCleaveSoundRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayArcaneCleaveSoundRpc()
     {
         generalAudioSource.volume = 0.05f;
         generalAudioSource.PlayOneShot(arcaneCleaveSound);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayArcaneCleaveSoundServerRpc()
+    public void PlayOnPlayerHitSound()
     {
-        PlayArcaneCleaveSoundClientRpc();
+        PlayOnPlayerHitSoundRpc();
     }
 
-    public void PlayArcaneCleaveSound()
-    {
-        if (IsServer)
-        {
-            PlayArcaneCleaveSoundClientRpc();
-        }
-        else
-        {
-            PlayArcaneCleaveSoundServerRpc();
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayOnPlayerHitSoundServerRpc()
-    {
-        PlayOnPlayerHitSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayOnPlayerHitSoundClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayOnPlayerHitSoundRpc()
     {
         generalAudioSource.volume = 0.05f;
         generalAudioSource.PlayOneShot(onPlayerHitSounds[Random.Range(0, onPlayerHitSounds.Count)]);
     }
-
-    public void PlayOnPlayerHitSound()
-    {
-        if (IsServer)
-        {
-            PlayOnPlayerHitSoundServerRpc();
-        }
-        else
-        {
-            PlayOnPlayerHitSoundClientRpc();
-        }
-    }
-
-
 }

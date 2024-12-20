@@ -24,7 +24,7 @@ namespace DestroyIt
 				return;
 			}
 
-			_objectPool.Spawn(prefab, transform.localPosition, transform.localRotation, transform.parent);
+			_objectPool.Spawn(prefab, transform.localPosition, transform.localRotation);
 			gameObject.SetActive(false);
 		}
 	}

@@ -39,62 +39,40 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
     // This method is called when the player wants to use the ability
     public void ActivateRelentlessOnslaught()
     {
-        if (IsOwner)
-        {
-            OnRelentlessOnslaughtServerRpc();
-        }
+        OnRelentlessOnslaught();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void OnRelentlessOnslaughtServerRpc(ServerRpcParams rpcParams = default)
+    private void OnRelentlessOnslaught()
     {
         // Get the player who triggered this action based on the sender's ClientId
-        var clientId = rpcParams.Receive.SenderClientId;
+
 
         // Apply buffs only to the triggering player
-        ApplyBuffsClientRpc(clientId);
+        ApplyBuffs();
 
+        SpawnAuraEffectsRpc();
+        SpawnArcaneAuraRpc();
+        // Notify clients to start the despawn timer
+        StartAuraDespawnRpc(Duration);
+
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnArcaneAuraRpc()
+    {
+        // Ensure only one instance is spawned
         if (arcaneAuraInstance == null)
         {
             arcaneAuraInstance = ObjectPooler.Instance.Spawn("ArcaneAura", transform.position, Quaternion.Euler(-90, 0, 90));
             arcaneAuraInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            arcaneAuraInstance.GetComponent<NetworkObject>().Spawn();
             arcaneAuraInstance.transform.SetParent(transform);
-
-            // Notify clients to start the despawn timer
-            StartAuraDespawnClientRpc(Duration);
-
-            SpawnAuraEffects();
         }
     }
 
-    [ClientRpc]
-    private void ApplyBuffsClientRpc(ulong targetClientId)
-    {
-        // Only apply the buffs if this client is the target client
-        if (NetworkManager.Singleton.LocalClientId == targetClientId)
-        {
-            PlayerSkills.IncreaseMeleeDamageBy(6f, Duration);
-            PlayerSkills.IncreaseAttackSpeedBy(6f, Duration);
-            PlayerSkills.ReduceCooldownsBy(0.25f, Duration);
-        }
-    }
-
-    [ClientRpc]
-    private void StartAuraDespawnClientRpc(float duration)
+    [Rpc(SendTo.ClientsAndHost)]
+    void StartAuraDespawnRpc(float duration)
     {
         StartCoroutine(DisableAuraAfterDuration(duration));
-    }
-
-    private void SpawnAuraEffects()
-    {
-        GameObject enchant = ObjectPooler.Instance.Spawn("ArcaneEnchant", transform.position, Quaternion.Euler(-90, 0, 90));
-        GameObject muzzle = ObjectPooler.Instance.Spawn("ArcaneMuzzle", transform.position, Quaternion.Euler(-90, 0, 90));
-        GameObject cast = ObjectPooler.Instance.Spawn("ArcaneCast", transform.position, Quaternion.Euler(-90, 0, 90));
-
-        enchant.GetComponent<NetworkObject>().Spawn();
-        muzzle.GetComponent<NetworkObject>().Spawn();
-        cast.GetComponent<NetworkObject>().Spawn();
     }
 
     private IEnumerator DisableAuraAfterDuration(float duration)
@@ -103,11 +81,31 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
 
         if (arcaneAuraInstance != null)
         {
-            arcaneAuraInstance.GetComponent<NetworkObject>().Despawn(false);
             ObjectPooler.Instance.Despawn("ArcaneAura", arcaneAuraInstance);
-            arcaneAuraInstance = null;
+            arcaneAuraInstance = null; // Ensure the reference is cleared
         }
     }
+
+    void ApplyBuffs()
+    {
+
+        PlayerSkills.IncreaseMeleeDamageBy(3f, Duration);
+        PlayerSkills.IncreaseAttackSpeedBy(3f, Duration);
+        PlayerSkills.ReduceCooldownsBy(0.25f, Duration);
+
+    }
+
+
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnAuraEffectsRpc()
+    {
+        GameObject enchant = ObjectPooler.Instance.Spawn("ArcaneEnchant", transform.position, Quaternion.Euler(-90, 0, 90));
+        GameObject muzzle = ObjectPooler.Instance.Spawn("ArcaneMuzzle", transform.position, Quaternion.Euler(-90, 0, 90));
+        GameObject cast = ObjectPooler.Instance.Spawn("ArcaneCast", transform.position, Quaternion.Euler(-90, 0, 90));
+
+    }
+
 
     void SetAttackSpeedMultiplier(float newAttackSpeedMultiplier)
     {

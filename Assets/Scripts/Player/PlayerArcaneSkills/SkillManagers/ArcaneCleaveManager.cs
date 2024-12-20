@@ -29,8 +29,8 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
         AttackRange = 3f;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void OnArcaneCleaveSpawnServerRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void OnArcaneCleaveSpawnRpc()
     {
         for (int i = 0; i <= 12; i++)
         {
@@ -55,7 +55,6 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
             }
 
             cleave.transform.Rotate(0, i * 30, 0);
-            cleave.GetComponent<NetworkObject>().Spawn(); // Ensure cleave is only spawned on the server
         }
     }
     public void DealExpandingDamage()

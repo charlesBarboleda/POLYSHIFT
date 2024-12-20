@@ -5,16 +5,19 @@ using System.Collections;
 
 public class ExplodingGolem : Golem
 {
+    GameObject explosionEffect1;
+    GameObject explosionEffect2;
+    GameObject lifehit;
+    GameObject bloodSplatter;
 
     [SerializeField] GameObject healthBar;
     protected override void BuffEffect(float buffRadius)
     {
-        GameObject explosionEffect1 = ObjectPooler.Instance.Spawn("LifeSphereBlast", transform.position, Quaternion.identity);
-        GameObject explosionEffect2 = ObjectPooler.Instance.Spawn("LifeExplosionMega", transform.position, Quaternion.identity);
-        explosionEffect1.transform.rotation = Quaternion.Euler(-90, 0, 90);
-        explosionEffect2.transform.rotation = Quaternion.Euler(-90, 0, 90);
-        explosionEffect1.GetComponent<NetworkObject>().Spawn();
-        explosionEffect2.GetComponent<NetworkObject>().Spawn();
+        SpawnExplosionEffectRpc();
+        if (explosionEffect1 != null)
+            explosionEffect1.transform.rotation = Quaternion.Euler(-90, 0, 90);
+        if (explosionEffect2 != null)
+            explosionEffect2.transform.rotation = Quaternion.Euler(-90, 0, 90);
 
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, buffRadius);
 
@@ -23,15 +26,27 @@ public class ExplodingGolem : Golem
             if (hitCollider.CompareTag("Enemy") || hitCollider.CompareTag("Destroyables"))
             {
                 hitCollider.GetComponent<IDamageable>().RequestTakeDamageServerRpc(MaxHealth.Value / 2, Owner.GetComponent<NetworkObject>().NetworkObjectId);
-                if (IsServer)
-                {
-                    GameObject lifehit = ObjectPooler.Instance.Spawn("LifeSlashHit", hitCollider.transform.position + transform.up * 2f, Quaternion.identity);
-                    lifehit.GetComponent<NetworkObject>().Spawn();
-                    GameObject bloodSplatter = ObjectPooler.Instance.Spawn($"BloodSplatter{Random.Range(1, 6)}", hitCollider.transform.position + transform.up * 2f, Quaternion.identity);
-                    bloodSplatter.GetComponent<NetworkObject>().Spawn();
-                }
+
+                SpawnPostHitEffectsRpc();
+                lifehit.transform.position = hitCollider.transform.position + transform.up * 2f;
+                bloodSplatter.transform.position = hitCollider.transform.position + transform.up * 2f;
+
             }
         }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnExplosionEffectRpc()
+    {
+        explosionEffect1 = ObjectPooler.Instance.Spawn("LifeSphereBlast", transform.position, Quaternion.identity);
+        explosionEffect2 = ObjectPooler.Instance.Spawn("LifeExplosionMega", transform.position, Quaternion.identity);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnPostHitEffectsRpc()
+    {
+        lifehit = ObjectPooler.Instance.Spawn("LifeSlashHit", Vector3.zero, Quaternion.identity);
+        bloodSplatter = ObjectPooler.Instance.Spawn($"BloodSplatter{Random.Range(1, 6)}", Vector3.zero, Quaternion.identity);
     }
 
     public void DealDamageInConeExplodingGolem()

@@ -32,54 +32,51 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
     // Called when the player wants to activate the Arcane Barrier ability
     public void ActivateArcaneBarrier()
     {
-        if (IsOwner)
-        {
-            ArcaneBarrierSpawnServerRpc();
-        }
+
+        ArcaneBarrierSpawn();
+
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void ArcaneBarrierSpawnServerRpc(ServerRpcParams rpcParams = default)
+    private void ArcaneBarrierSpawn()
     {
-        // Apply the buff only to the activating client
-        ApplyBuffToClientRpc(rpcParams.Receive.SenderClientId, DamageReduction, Duration);
-
         // Spawn the barrier effects on the server, which all clients will see
         if (arcaneBarrierInstance == null)
         {
-            arcaneBarrierInstance = ObjectPooler.Instance.Spawn("ArcaneDome", transform.position, transform.rotation);
-            arcaneBarrierInstance.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-            arcaneBarrierInstance.transform.localScale = new Vector3(AttackRange / 2, AttackRange / 2, AttackRange / 2);
-            arcaneBarrierInstance.GetComponent<NetworkObject>().Spawn();
-            arcaneBarrierInstance.transform.SetParent(transform);
+            ApplyBuff(DamageReduction, Duration);
 
-            SpawnBarrierEffects();
+            SpawnBarrierRpc();
+            SpawnBarrierEffectsRpc();
 
             // Schedule barrier destruction on all clients
-            StartBarrierDespawnClientRpc(Duration);
+            StartBarrierDespawnRpc(Duration);
         }
     }
 
-    [ClientRpc]
-    private void ApplyBuffToClientRpc(ulong targetClientId, float damageReduction, float duration)
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnBarrierRpc()
     {
-        if (NetworkManager.Singleton.LocalClientId == targetClientId)
-        {
-            playerNetworkHealth.ReduceDamageTakenBy(damageReduction, duration);
-        }
+        arcaneBarrierInstance = ObjectPooler.Instance.Spawn("ArcaneDome", transform.position, transform.rotation);
+        arcaneBarrierInstance.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+        arcaneBarrierInstance.transform.localScale = new Vector3(AttackRange / 2, AttackRange / 2, AttackRange / 2);
+        arcaneBarrierInstance.transform.SetParent(transform);
     }
 
 
-    private void SpawnBarrierEffects()
+    private void ApplyBuff(float damageReduction, float duration)
+    {
+        playerNetworkHealth.ReduceDamageTakenBy(damageReduction, duration);
+
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnBarrierEffectsRpc()
     {
         GameObject arcaneEnchant = ObjectPooler.Instance.Spawn("ArcaneEnchant", transform.position, Quaternion.Euler(-90, 0, 90));
         GameObject arcaneMuzzle = ObjectPooler.Instance.Spawn("ArcaneMuzzle", transform.position, Quaternion.Euler(-90, 0, 90));
 
-        arcaneEnchant.GetComponent<NetworkObject>().Spawn();
-        arcaneMuzzle.GetComponent<NetworkObject>().Spawn();
     }
-    [ClientRpc]
-    private void StartBarrierDespawnClientRpc(float duration)
+    [Rpc(SendTo.ClientsAndHost)]
+    private void StartBarrierDespawnRpc(float duration)
     {
         StartCoroutine(DestroyArcaneBarrierAfterDuration(duration));
     }
@@ -90,7 +87,6 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
 
         if (arcaneBarrierInstance != null)
         {
-            arcaneBarrierInstance.GetComponent<NetworkObject>().Despawn(false);
             ObjectPooler.Instance.Despawn("ArcaneDome", arcaneBarrierInstance);
             arcaneBarrierInstance = null;
         }

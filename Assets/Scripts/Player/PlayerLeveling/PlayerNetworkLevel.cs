@@ -106,7 +106,6 @@ public class PlayerNetworkLevel : NetworkBehaviour
         for (int i = 1; i <= 4; i++)
         {
             GameObject anim = ObjectPooler.Instance.Spawn($"LevelUpAnim{i}", transform.position, Quaternion.Euler(-90, 0, 0));
-            anim.GetComponent<NetworkObject>().Spawn();
             anim.transform.SetParent(transform);
         }
 

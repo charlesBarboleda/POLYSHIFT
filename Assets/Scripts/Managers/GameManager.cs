@@ -70,17 +70,22 @@ public class GameManager : NetworkBehaviour
                 }
             }
 
+
             GameLevel.Value = 0;
-            SetCurrentGameState(GameState.OutLevel);
             EventManager.Instance.OnEnemySpawned.AddListener(OnBossSpawned);
             EventManager.Instance.OnEnemyDespawned.AddListener(OnBossDespawned);
             EventManager.Instance.OnPlayerDeath.AddListener(HandleGameOver);
-
-
-
-            EnableCountdownTextClientRpc();
-            EnableGameLevelTextClientRpc();
+            StartCoroutine(DelayedGameStart());
         }
+
+    }
+
+    IEnumerator DelayedGameStart()
+    {
+        yield return new WaitForSeconds(10f);
+        SetCurrentGameState(GameState.OutLevel);
+        EnableCountdownTextRpc();
+        EnableGameLevelTextRpc();
 
     }
 
@@ -104,17 +109,17 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private IEnumerator NotifyClientsAfterSpawn(BossEnemyNetworkHealth bossHealth)
+    IEnumerator NotifyClientsAfterSpawn(BossEnemyNetworkHealth bossHealth)
     {
         // Wait for synchronization
         yield return new WaitForSeconds(0.1f);
 
-        EnableBossUIClientRpc(bossHealth.NetworkObjectId);
+        EnableBossUIRpc(bossHealth.NetworkObjectId);
     }
 
 
-    [ClientRpc]
-    void EnableBossUIClientRpc(ulong bossNetworkObjectId)
+    [Rpc(SendTo.ClientsAndHost)]
+    void EnableBossUIRpc(ulong bossNetworkObjectId)
     {
 
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(bossNetworkObjectId))
@@ -190,12 +195,12 @@ public class GameManager : NetworkBehaviour
         {
             case GameState.InLevel:
                 // Set game-related in-level logic here
-                DisableCountdownTextClientRpc();
+                DisableCountdownTextRpc();
                 SpawnerManager.Instance.SpawnEnemies();
                 break;
             case GameState.OutLevel:
                 // Set game-related out-level logic here
-                EnableCountdownTextClientRpc();
+                EnableCountdownTextRpc();
                 Countdown();
                 break;
             case GameState.GameOver:
@@ -288,7 +293,7 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Host: Notifying clients and shutting down server...");
 
         // Notify clients to return to lobby
-        NotifyClientsToDisconnectClientRpc();
+        NotifyClientsToDisconnectRpc();
 
         // Shutdown server
         if (NetworkManager.Singleton != null)
@@ -340,8 +345,8 @@ public class GameManager : NetworkBehaviour
 
 
 
-    [ClientRpc]
-    private void NotifyClientsToDisconnectClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void NotifyClientsToDisconnectRpc()
     {
         Debug.Log("Client: Received disconnect notification from host...");
         StartCoroutine(ClientMainMenuTransition());
@@ -431,7 +436,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void TriggerGameOverClientRpc()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
@@ -441,8 +446,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    void EnableCountdownTextClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    void EnableCountdownTextRpc()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -451,8 +456,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    void DisableCountdownTextClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    void DisableCountdownTextRpc()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -461,8 +466,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    void EnableGameLevelTextClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    void EnableGameLevelTextRpc()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -471,7 +476,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     void DisableGameOverUIClientRpc()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)

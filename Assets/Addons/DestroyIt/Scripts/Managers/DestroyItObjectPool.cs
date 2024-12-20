@@ -78,14 +78,14 @@ namespace DestroyIt
 
 
 
-        public GameObject Spawn(GameObject originalPrefab, Vector3 position, Quaternion rotation, Transform parent = null, int autoPoolID = 0)
+        public GameObject Spawn(GameObject originalPrefab, Vector3 position, Quaternion rotation, int autoPoolID = 0)
         {
             if (autoPooledObjects != null && autoPoolID != 0 && autoPooledObjects.ContainsKey(autoPoolID))
             {
                 GameObject pooledObj = autoPooledObjects[autoPoolID];
                 if (pooledObj != null && !pooledObj.activeInHierarchy)
                 {
-                    SetObjectTransform(pooledObj, position, rotation, parent);
+                    SetObjectTransform(pooledObj, position, rotation);
                     pooledObj.SetActive(true);
                     return pooledObj;
                 }
@@ -107,7 +107,7 @@ namespace DestroyIt
                         {
                             GameObject pooledObj = Pool[i][j];
                             Pool[i][j] = null;
-                            SetObjectTransform(pooledObj, position, rotation, parent);
+                            SetObjectTransform(pooledObj, position, rotation);
                             pooledObj.SetActive(true);
                             return pooledObj;
                         }
@@ -116,14 +116,14 @@ namespace DestroyIt
 
                 if (Pool == null || !prefabsToPool[i].OnlyPooled)
                 {
-                    GameObject pooledObj = InstantiateObject(prefabsToPool[i].Prefab, position, rotation, parent);
+                    GameObject pooledObj = InstantiateObject(prefabsToPool[i].Prefab, position, rotation);
                     pooledObj.name = prefabsToPool[i].Prefab.name;
                     pooledObj.AddTag(Tag.Pooled);
                     return pooledObj;
                 }
             }
 
-            return InstantiateObject(originalPrefab, position, rotation, parent);
+            return InstantiateObject(originalPrefab, position, rotation);
         }
 
 
@@ -137,7 +137,6 @@ namespace DestroyIt
             }
 
             // Handle network objects
-            obj.transform.SetParent(container.transform, true);
 
             var networkObj = obj.GetComponent<NetworkObject>();
             if (networkObj != null && networkObj.IsSpawned)
@@ -182,7 +181,7 @@ namespace DestroyIt
 
 
 
-        private static GameObject InstantiateObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
+        private static GameObject InstantiateObject(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             GameObject obj = Instantiate(prefab, position, rotation);
 
@@ -192,24 +191,16 @@ namespace DestroyIt
                 networkObj.Spawn();
             }
 
-            SetObjectTransform(obj, position, rotation, parent);
+            SetObjectTransform(obj, position, rotation);
             return obj;
         }
 
 
-        private static void SetObjectTransform(GameObject obj, Vector3 position, Quaternion rotation, Transform parent)
+        private static void SetObjectTransform(GameObject obj, Vector3 position, Quaternion rotation)
         {
-            if (parent != null && parent.gameObject.activeInHierarchy)
-            {
-                obj.transform.SetParent(parent, true); // Set parent and retain world position
-                obj.transform.localPosition = position; // Adjust local position relative to parent
-            }
-            else
-            {
-                obj.transform.SetParent(null); // Detach from any parent
-                obj.transform.position = position; // Set world position
-            }
 
+            obj.transform.SetParent(null); // Detach from any parent
+            obj.transform.position = position; // Set world position
             obj.transform.rotation = rotation; // Set rotation
         }
 

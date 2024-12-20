@@ -34,30 +34,33 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
 
     public void ActivateArcaneBladeVortex()
     {
-        if (IsOwner)
-        {
-            ArcaneBladeVortexServerRpc();
-        }
+
+        ArcaneBladeVortex();
+
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void ArcaneBladeVortexServerRpc()
+    private void ArcaneBladeVortex()
     {
         if (BladeVortex == null)
         {
-            BladeVortex = ObjectPooler.Instance.Spawn("ArcaneBladeVortex", transform.position + transform.up, transform.rotation);
-            BladeVortex.GetComponent<BladeVortexCollisionHandler>().SetStats(Damage, Mathf.Max(0.35f - (AttackSpeedMultiplier.Value / 60), 0.05f));
-            SpawnCastingEffects();
-            BladeVortex.transform.localScale = new Vector3(AttackRange / 5, AttackRange / 5, AttackRange / 5);
-            BladeVortex.GetComponent<NetworkObject>().Spawn();
-            BladeVortex.transform.SetParent(transform);
-            StartBladeVortexDespawnClientRpc(Duration);
+            SpawnBladeVortexRpc();
+            StartBladeVortexDespawnRpc(Duration);
+            SpawnCastingEffectsRpc();
         }
 
     }
 
-    [ClientRpc]
-    private void StartBladeVortexDespawnClientRpc(float duration)
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnBladeVortexRpc()
+    {
+        BladeVortex = ObjectPooler.Instance.Spawn("ArcaneBladeVortex", transform.position + transform.up, transform.rotation);
+        BladeVortex.GetComponent<BladeVortexCollisionHandler>().SetStats(Damage, Mathf.Max(0.35f - (AttackSpeedMultiplier.Value / 60), 0.05f), NetworkObjectId);
+        BladeVortex.transform.localScale = new Vector3(AttackRange / 5, AttackRange / 5, AttackRange / 5);
+        BladeVortex.transform.SetParent(transform);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void StartBladeVortexDespawnRpc(float duration)
     {
         StartCoroutine(DestroyArcaneBladeVortexAfterDuration(Duration));
     }
@@ -67,14 +70,14 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
         yield return new WaitForSeconds(duration);
         if (BladeVortex != null)
         {
-            BladeVortex.GetComponent<NetworkObject>().Despawn(false);
             ObjectPooler.Instance.Despawn("ArcaneBladeVortex", BladeVortex);
             BladeVortex = null;
         }
 
     }
 
-    void SpawnCastingEffects()
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnCastingEffectsRpc()
     {
         GameObject muzzle = ObjectPooler.Instance.Spawn("ArcaneMuzzle", transform.position, transform.rotation);
         GameObject cast = ObjectPooler.Instance.Spawn("ArcaneCast", transform.position, transform.rotation);
@@ -82,10 +85,6 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
         muzzle.transform.localRotation = Quaternion.Euler(-90, 0, 90);
         cast.transform.localRotation = Quaternion.Euler(-90, 0, 90);
         enchant.transform.localRotation = Quaternion.Euler(-90, 0, 90);
-
-        muzzle.GetComponent<NetworkObject>().Spawn();
-        cast.GetComponent<NetworkObject>().Spawn();
-        enchant.GetComponent<NetworkObject>().Spawn();
     }
 
 

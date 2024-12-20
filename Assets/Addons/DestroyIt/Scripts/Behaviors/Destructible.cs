@@ -477,8 +477,8 @@ namespace DestroyIt
             effect.GameObject = DestroyItObjectPool.Instance.Spawn(
                 effect.Prefab,
                 Vector3.zero, // Spawn at origin for now
-                Quaternion.identity, // Default rotation
-                transform); // Parent it to the object
+                Quaternion.identity // Default rotation
+            ); // Parent it to the object
 
             if (effect.GameObject != null)
             {

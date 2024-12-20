@@ -107099,13 +107099,6 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.2
-    functionName: TurnWeaponMagentaServerRpc
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
   - time: 0.45
     functionName: OnSingleCrescentSlashSpawnServerRpc
     data: 
@@ -107150,13 +107143,6 @@ AnimationClip:
     messageOptions: 0
   - time: 1.3333334
     functionName: DealBigConeDamage
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 1.8833333
-    functionName: TurnWeaponWhiteServerRpc
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

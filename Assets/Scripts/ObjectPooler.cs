@@ -107,7 +107,6 @@ public class ObjectPooler : MonoBehaviour
         // Ensure the object isn't already inactive
         if (!obj.activeSelf)
         {
-            Debug.LogWarning($"Object {obj.name} is already inactive. Skipping despawn.");
             return;
         }
 
@@ -127,6 +126,7 @@ public class ObjectPooler : MonoBehaviour
     {
         obj.transform.position = Vector3.zero;
         obj.transform.rotation = Quaternion.identity;
+        obj.transform.SetParent(null);
 
         // Stop and clear particle systems
         var particleSystem = obj.GetComponent<ParticleSystem>();

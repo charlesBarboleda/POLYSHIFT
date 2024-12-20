@@ -29,6 +29,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     public VariableWithEvent<bool> IsIsometric = new VariableWithEvent<bool>(false);
     public bool canMove = true;
     private Animator animator;
+    private PlayerAudioManager audioManager;
     private PlayerStateController state;
     [SerializeField] Image dashCooldownFill;
     [SerializeField] Volume localVolume;
@@ -43,6 +44,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         animator = GetComponentInChildren<Animator>();
+        audioManager = GetComponent<PlayerAudioManager>();
         if (!IsOwner) return;
 
 
@@ -108,6 +110,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     IEnumerator StartDash()
     {
+        audioManager.PlayDashSound();
         DashScreenEffects();
         DashEffectRpc();
 
