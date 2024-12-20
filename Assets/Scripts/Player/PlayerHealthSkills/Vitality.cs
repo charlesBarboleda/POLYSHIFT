@@ -11,6 +11,6 @@ public class Vitality : PassiveSkill
             return;
         }
         Debug.Log("Applying Vitality skill effect.");
-        user.GetComponent<PlayerNetworkHealth>().PermanentHealthIncreaseByServerRpc(100f);
+        user.GetComponent<PlayerNetworkHealth>().PermanentHealthIncreaseByRpc(200f);
     }
 }

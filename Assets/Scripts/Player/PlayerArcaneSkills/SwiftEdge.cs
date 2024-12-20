@@ -12,6 +12,6 @@ public class SwiftEdge : PassiveSkill
         }
         Debug.Log("Applying SwiftEdge skill effect.");
         user.GetComponent<PlayerNetworkMovement>().MoveSpeed += 1.5f;
-        user.GetComponent<PlayerSkills>().PermanentAttackSpeedIncreaseByServerRpc(2f);
+        user.GetComponent<PlayerSkills>().PermanentAttackSpeedIncreaseBy(2f);
     }
 }

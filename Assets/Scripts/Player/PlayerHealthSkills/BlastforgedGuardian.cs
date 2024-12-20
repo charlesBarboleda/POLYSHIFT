@@ -12,6 +12,6 @@ public class BlastforgedGuardian : PassiveSkill
         }
         Debug.Log("Applying BlastforgedGuardian skill effect.");
         user.GetComponent<PlayerSkills>().SummonGolemServerRpc("BlastforgedGolem", 100, 50, 8, 8, 2, 0f, 5f);
-        user.GetComponent<PlayerNetworkHealth>().PermanentDamageReductionIncreaseByServerRpc(0.1f);
+        user.GetComponent<PlayerNetworkHealth>().PermanentDamageReductionIncreaseBy(0.1f);
     }
 }

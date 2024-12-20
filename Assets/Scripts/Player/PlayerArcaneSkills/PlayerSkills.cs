@@ -150,7 +150,7 @@ public class PlayerSkills : NetworkBehaviour
                     // If this is a new enemy within range, increase health regen
                     if (!enemiesInRange.Contains(enemy))
                     {
-                        playerHealth.PermanentHealthRegenIncreaseByServerRpc(2f);
+                        playerHealth.PermanentHealthRegenIncreaseBy(2f);
                     }
                 }
             }
@@ -161,7 +161,7 @@ public class PlayerSkills : NetworkBehaviour
         {
             if (!currentEnemiesInRange.Contains(enemy))
             {
-                playerHealth.PermanentHealthRegenIncreaseByServerRpc(-2f);
+                playerHealth.PermanentHealthRegenIncreaseBy(-2f);
             }
         }
 
@@ -218,7 +218,7 @@ public class PlayerSkills : NetworkBehaviour
         var damageable = collider.GetComponent<IDamageable>();
         if (damageable != null)
         {
-            SpawnSlashImpactClientRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
+            SpawnSlashImpactRpc("MeleeSlash1Hit", collider.transform.position, Quaternion.identity);
             PopUpNumberManager.Instance.SpawnMeleeDamageNumber(collider.transform.position, damage);
             damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
         }
@@ -355,8 +355,8 @@ public class PlayerSkills : NetworkBehaviour
 
 
 
-    [ClientRpc]
-    private void SpawnSlashImpactClientRpc(string impactName, Vector3 position, Quaternion rotation)
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnSlashImpactRpc(string impactName, Vector3 position, Quaternion rotation)
     {
         if (ObjectPooler.Instance == null)
         {
@@ -403,7 +403,7 @@ public class PlayerSkills : NetworkBehaviour
         var vitality = unlockedSkills.Find(skill => skill is Vitality) as Vitality;
         if (vitality != null)
         {
-            PermanentHealthIncreaseByServerRpc(100f);
+            PermanentHealthIncreaseBy(100f);
         }
         else
         {
@@ -464,7 +464,7 @@ public class PlayerSkills : NetworkBehaviour
         var regenerativeAura = unlockedSkills.Find(skill => skill is RegenerativeAura) as RegenerativeAura;
         if (regenerativeAura != null)
         {
-            playerHealth.PermanentHealthRegenIncreaseByServerRpc(5f);
+            playerHealth.PermanentHealthRegenIncreaseBy(10f);
         }
         else
         {
@@ -477,7 +477,7 @@ public class PlayerSkills : NetworkBehaviour
         var ironResolve = unlockedSkills.Find(skill => skill is IronResolve) as IronResolve;
         if (ironResolve != null)
         {
-            playerHealth.IncreaseIronResolveDamageReductionServerRpc(0.15f);
+            playerHealth.IncreaseIronResolveDamageReduction(0.15f);
         }
         else
         {
@@ -512,7 +512,7 @@ public class PlayerSkills : NetworkBehaviour
             LifeSurgeManager script = GetComponent<LifeSurgeManager>();
             script.IncreaseHealRadius(4f);
             script.IncreaseHealStrength(0.1f);
-            playerHealth.PermanentHealthIncreaseByServerRpc(20f);
+            playerHealth.PermanentHealthIncreaseByRpc(20f);
 
             foreach (Skill skill in unlockedSkills)
             {
@@ -687,10 +687,10 @@ public class PlayerSkills : NetworkBehaviour
     }
     public void PermanentTravelNodeStatIncrease()
     {
-        PermanentMeleeDamageIncreaseByServerRpc(7.5f);
+        PermanentMeleeDamageIncreaseBy(7.5f);
         playerWeapon.Damage += 2.5f;
-        PermanentAttackSpeedIncreaseByServerRpc(0.03f);
-        PermanentHealthIncreaseByServerRpc(2.5f);
+        PermanentAttackSpeedIncreaseBy(0.03f);
+        PermanentHealthIncreaseBy(2.5f);
         playerMovement.MoveSpeed += 0.1f;
     }
 
@@ -711,28 +711,15 @@ public class PlayerSkills : NetworkBehaviour
     }
 
 
-    [ServerRpc]
-    public void PermanentHealthIncreaseByServerRpc(float healthIncrease)
+    public void PermanentHealthIncreaseBy(float healthIncrease)
     {
-        PermanentHealthIncreaseByClientRpc(healthIncrease);
-    }
-
-    [ClientRpc]
-    void PermanentHealthIncreaseByClientRpc(float healthIncrease)
-    {
-        playerHealth.PermanentHealthIncreaseByServerRpc(healthIncrease);
-
+        playerHealth.PermanentHealthIncreaseByRpc(healthIncrease);
     }
 
 
-    [ServerRpc]
-    public void PermanentMeleeRangeIncreaseByServerRpc(float rangeIncrease)
-    {
-        PermanentMeleeRangeIncreaseByClientRpc(rangeIncrease);
-    }
 
-    [ClientRpc]
-    void PermanentMeleeRangeIncreaseByClientRpc(float rangeIncrease)
+
+    public void PermanentMeleeRangeIncreaseBy(float rangeIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -740,14 +727,9 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    public void PermanentAttackSpeedIncreaseByServerRpc(float attackSpeedIncrease)
-    {
-        PermanentAttackSpeedIncreaseByClientRpc(attackSpeedIncrease);
-    }
 
-    [ClientRpc]
-    void PermanentAttackSpeedIncreaseByClientRpc(float attackSpeedIncrease)
+
+    public void PermanentAttackSpeedIncreaseBy(float attackSpeedIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -763,15 +745,7 @@ public class PlayerSkills : NetworkBehaviour
     }
 
 
-
-    [ServerRpc]
-    public void PermanentMeleeDamageIncreaseByServerRpc(float damageIncrease)
-    {
-        PermanentMeleeDamageIncreaseByClientRpc(damageIncrease);
-    }
-
-    [ClientRpc]
-    public void PermanentMeleeDamageIncreaseByClientRpc(float damageIncrease)
+    public void PermanentMeleeDamageIncreaseBy(float damageIncrease)
     {
         foreach (var skillManager in skillManagers)
         {
@@ -779,14 +753,8 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    public void IncreaseMeleeDamageByServerRpc(float multiplier, float duration)
-    {
-        IncreaseMeleeDamageByClientRpc(multiplier, duration);
-    }
 
-    [ClientRpc]
-    public void IncreaseMeleeDamageByClientRpc(float multiplier, float duration)
+    public void IncreaseMeleeDamageBy(float multiplier, float duration)
     {
         StartCoroutine(IncreaseMeleeDamageCoroutine(multiplier, duration));
     }
@@ -804,17 +772,13 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    public void IncreaseAttackSpeedByServerRpc(float multiplier, float duration)
-    {
-        IncreaseAttackSpeedByClientRpc(multiplier, duration);
-    }
 
-    [ClientRpc]
-    public void IncreaseAttackSpeedByClientRpc(float multiplier, float duration)
+    public void IncreaseAttackSpeedBy(float multiplier, float duration)
     {
         StartCoroutine(IncreaseAttackSpeedCoroutine(multiplier, duration));
     }
+
+
     IEnumerator IncreaseAttackSpeedCoroutine(float multiplier, float duration)
     {
         foreach (var skillManager in skillManagers)
@@ -828,17 +792,12 @@ public class PlayerSkills : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    public void ReduceCooldownsByServerRpc(float multiplier, float duration)
-    {
-        ReduceCooldownsByClientRpc(multiplier, duration);
-    }
 
-    [ClientRpc]
-    public void ReduceCooldownsByClientRpc(float multiplier, float duration)
+    public void ReduceCooldownsBy(float multiplier, float duration)
     {
         StartCoroutine(ReduceCooldownCoroutine(multiplier, duration));
     }
+
     IEnumerator ReduceCooldownCoroutine(float multiplier, float duration)
     {
         foreach (var attack in hotbarSkills)

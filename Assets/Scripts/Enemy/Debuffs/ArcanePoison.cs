@@ -11,6 +11,7 @@ public class ArcanePoison : Debuff
     [SerializeField] ArcanePoison arcanePoison;
     EnemyNetworkHealth enemyHealth;
     GameObject DebuffEffect;
+    GameObject ExplosionEffect;
 
 
     public override void Initialize(GameObject target)
@@ -33,7 +34,7 @@ public class ArcanePoison : Debuff
             ApplyEffect(target);
             tickTimer = tickRate;  // Reset the tick timer
         }
-        if (enemyHealth.CurrentHealth.Value <= 0)
+        if (enemyHealth.CurrentHealth.Value <= 0 && !enemyHealth.IsDead)
         {
             Implode(target);
             RemoveEffect(target);
@@ -42,14 +43,26 @@ public class ArcanePoison : Debuff
 
     IEnumerator DebuffEffectCoroutine(GameObject target)
     {
-
-        DebuffEffect = ObjectPooler.Instance.Spawn("ArcaneDOT", target.transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
+        SpawnArcaneDOTRpc();
+        DebuffEffect.transform.position = target.transform.position + new Vector3(0, 0.5f, 0);
         DebuffEffect.transform.localRotation = Quaternion.Euler(-90, 0, 90);
-        DebuffEffect.GetComponent<NetworkObject>().Spawn();
         DebuffEffect.transform.SetParent(target.transform);
         yield return new WaitForSeconds(duration);
-        DebuffEffect.GetComponent<NetworkObject>().Despawn(false);
+        DespawnArcaneDOTRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnArcaneDOTRpc()
+    {
+        DebuffEffect = ObjectPooler.Instance.Spawn("ArcaneDOT", Vector3.zero, Quaternion.identity);
+
+
+    }
+    [Rpc(SendTo.ClientsAndHost)]
+    void DespawnArcaneDOTRpc()
+    {
         ObjectPooler.Instance.Despawn("ArcaneDOT", DebuffEffect);
+
     }
 
 
@@ -57,9 +70,9 @@ public class ArcanePoison : Debuff
 
     void Implode(GameObject target)
     {
-        GameObject explosionEffect = ObjectPooler.Instance.Spawn("ArcaneExplosion", target.transform.position, Quaternion.identity);
-        explosionEffect.GetComponent<NetworkObject>().Spawn();
-
+        Debug.Log("Imploding");
+        SpawnExplosionEffectRpc();
+        ExplosionEffect.transform.position = target.transform.position;
         RaycastHit[] hitObjects = Physics.SphereCastAll(target.transform.position, 10, Vector3.up, 0);
         foreach (RaycastHit hitObject in hitObjects)
         {
@@ -75,6 +88,13 @@ public class ArcanePoison : Debuff
         }
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnExplosionEffectRpc()
+    {
+        ExplosionEffect = ObjectPooler.Instance.Spawn("ArcaneExplosion", Vector3.zero, Quaternion.identity);
+
+    }
+
     public override void ApplyEffect(GameObject target)
     {
         target.GetComponent<IDamageable>().RequestTakeDamageServerRpc(damagePerTick, 0);
@@ -82,9 +102,10 @@ public class ArcanePoison : Debuff
 
     public override void RemoveEffect(GameObject target)
     {
+        Debug.Log("Removing debuff");
         target.GetComponent<DebuffManager>().RemoveDebuff(this);
-        DebuffEffect.GetComponent<NetworkObject>().Despawn(false);
         ObjectPooler.Instance.Despawn("ArcaneDOT", DebuffEffect);
+        Debug.Log("Debuff removed and effect despawned");
 
     }
 

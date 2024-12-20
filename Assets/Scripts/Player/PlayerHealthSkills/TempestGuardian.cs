@@ -12,7 +12,7 @@ public class TempestGuardian : PassiveSkill
             Debug.LogError("PlayerNetworkHealth not found in TempestGuardian.");
             return;
         }
-        playerHealth.PermanentDamageReductionIncreaseByServerRpc(0.1f);
+        playerHealth.PermanentDamageReductionIncreaseBy(0.1f);
         playerMovement.MoveSpeedIncreaseBy(1f);
         user.GetComponent<PlayerSkills>().SummonGolemServerRpc("TempestGolem", 250, 50, 3, 10, 1, 0f, 30f);
     }

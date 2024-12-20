@@ -33,21 +33,13 @@ public class SingleCrescentSlashManager : NetworkBehaviour, ISkillManager
     }
 
 
-    [ServerRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     public void OnSingleCrescentSlashSpawnServerRpc()
     {
-        OnSingleCrescentSlashSpawnClientRpc();
-    }
-    [ClientRpc]
-    void OnSingleCrescentSlashSpawnClientRpc()
-    {
-
         GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + (transform.forward * 2f) + transform.up, transform.rotation * Quaternion.Euler(0, 0, Random.Range(-20, 20)));
         slash.transform.localScale = new Vector3(AttackRange / 5, AttackRange / 5, AttackRange / 5);
 
     }
-
-
 
 
     public void DealConeDamage()

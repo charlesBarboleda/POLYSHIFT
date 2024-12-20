@@ -9,10 +9,11 @@ public class AutoReturnToPool : MonoBehaviour
 
     void OnEnable()
     {
-        Invoke(nameof(ReturnToPool), timeToReturn);
+        Invoke(nameof(ReturnToPoolRpc), timeToReturn);
     }
 
-    void ReturnToPool()
+    [Rpc(SendTo.Server)]
+    void ReturnToPoolRpc()
     {
         var networkObject = GetComponent<NetworkObject>();
         if (networkObject != null)

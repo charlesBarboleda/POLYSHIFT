@@ -359,7 +359,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     void ApplyDebuffsOnHitServerRpc(ulong networkObjectID)
     {
         if (weaponDebuffs.Count > 0)

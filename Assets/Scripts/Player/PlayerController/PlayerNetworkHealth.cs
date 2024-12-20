@@ -167,34 +167,34 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     }
 
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void HealServerRpc(float amount)
     {
         PopUpNumberManager.Instance.SpawnHealNumber(transform.position + transform.up * 2, amount);
         currentHealth.Value += amount;
     }
 
-    [ServerRpc]
-    public void PermanentHealthIncreaseByServerRpc(float healthIncrease)
+    [Rpc(SendTo.Server)]
+    public void PermanentHealthIncreaseByRpc(float healthIncrease)
     {
         maxHealth.Value += healthIncrease;
         currentHealth.Value += healthIncrease;
     }
 
-    [ServerRpc]
-    public void PermanentHealthRegenIncreaseByServerRpc(float regenIncrease)
+
+    public void PermanentHealthRegenIncreaseBy(float regenIncrease)
     {
         healthRegenRate.Value += regenIncrease;
     }
 
-    [ServerRpc]
-    public void MultiplyHealthRegenByServerRpc(float multiplier)
+
+    public void MultiplyHealthRegenBy(float multiplier)
     {
         healthRegenRate.Value *= multiplier;
     }
 
-    [ServerRpc]
-    public void DivideHealthRegenRateByServerRpc(float divisor)
+
+    public void DivideHealthRegenRateBy(float divisor)
     {
         healthRegenRate.Value /= divisor;
     }
@@ -204,14 +204,14 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         ironResolve = true;
     }
 
-    [ServerRpc]
-    public void IncreaseIronResolveDamageReductionServerRpc(float amount)
+
+    public void IncreaseIronResolveDamageReduction(float amount)
     {
         ironResolveDamageReduction += amount;
     }
 
-    [ServerRpc]
-    public void PermanentDamageReductionIncreaseByServerRpc(float damageReductionIncrease)
+
+    public void PermanentDamageReductionIncreaseBy(float damageReductionIncrease)
     {
         if (damageReductionIncrease > 0)
         {
@@ -234,8 +234,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
         currentHealth.Value += regenAmount * Time.deltaTime;
     }
 
-    [ServerRpc]
-    public void ReduceDamageTakenByServerRpc(float damageReduction, float duration)
+    public void ReduceDamageTakenBy(float damageReduction, float duration)
     {
         StartCoroutine(ReduceDamageTakenCoroutine(damageReduction, duration));
     }
@@ -320,7 +319,7 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
     }
 
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     void DeathEffectClientRpc()
     {
         hotbarUI.SetActive(false);
@@ -340,11 +339,20 @@ public class PlayerNetworkHealth : NetworkBehaviour, IDamageable
 
     }
 
+
     public void Respawn()
     {
-        currentHealth.Value = maxHealth.Value;
-        gameObject.SetActive(true);
+
+        IsDead = false;
+        playerStateController.SetPlayerStateServerRpc(PlayerState.Alive);
+        playerNetworkMovement.canMove = true;
+        playerNetworkRotation.canRotate = true;
+        hotbarUI.SetActive(true);
+        infoCanvas.SetActive(true);
+
     }
+
+
 
 
 }

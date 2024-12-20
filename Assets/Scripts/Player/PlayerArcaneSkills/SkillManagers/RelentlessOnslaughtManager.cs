@@ -74,9 +74,9 @@ public class RelentlessOnslaughtManager : NetworkBehaviour, ISkillManager
         // Only apply the buffs if this client is the target client
         if (NetworkManager.Singleton.LocalClientId == targetClientId)
         {
-            PlayerSkills.IncreaseMeleeDamageByServerRpc(6f, Duration);
-            PlayerSkills.IncreaseAttackSpeedByServerRpc(6f, Duration);
-            PlayerSkills.ReduceCooldownsByServerRpc(0.25f, Duration);
+            PlayerSkills.IncreaseMeleeDamageBy(6f, Duration);
+            PlayerSkills.IncreaseAttackSpeedBy(6f, Duration);
+            PlayerSkills.ReduceCooldownsBy(0.25f, Duration);
         }
     }
 

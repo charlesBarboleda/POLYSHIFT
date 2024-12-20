@@ -65,7 +65,7 @@ public class ArcaneBarrierManager : NetworkBehaviour, ISkillManager
     {
         if (NetworkManager.Singleton.LocalClientId == targetClientId)
         {
-            playerNetworkHealth.ReduceDamageTakenByServerRpc(damageReduction, duration);
+            playerNetworkHealth.ReduceDamageTakenBy(damageReduction, duration);
         }
     }
 

@@ -31,19 +31,14 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, ISkillManager
     {
         AttackRange = 4f;
         coneAngle = 90f;
-        KnockbackForce = 5f;
-        Damage = 30f;
+        KnockbackForce = 3f;
+        Damage = 50f;
         stepDistance = 1f;
     }
 
 
-    [ServerRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     public void OnDoubleCrescentSlashSpawnServerRpc()
-    {
-        OnDoubleCrescentSlashSpawnClientRpc();
-    }
-    [ClientRpc]
-    void OnDoubleCrescentSlashSpawnClientRpc()
     {
         GameObject slash = ObjectPooler.Instance.Spawn("MeleeSlash1", transform.position + (transform.forward * 3f) + transform.up, transform.rotation * Quaternion.Euler(0, 0, Random.Range(-20, 20)));
         slash.transform.localScale = new Vector3(AttackRange / 2, AttackRange / 2, AttackRange / 2);

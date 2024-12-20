@@ -222,16 +222,16 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
 
                 if (playerHasDamageReductionAndRegenBuff)
                 {
-                    playerNetworkHealth.DivideHealthRegenRateByServerRpc(3f); // Normalize health regen
-                    playerNetworkHealth.PermanentDamageReductionIncreaseByServerRpc(-0.9f); // Remove damage reduction
+                    playerNetworkHealth.DivideHealthRegenRateBy(3f); // Normalize health regen
+                    playerNetworkHealth.PermanentDamageReductionIncreaseBy(-0.9f); // Remove damage reduction
                     playerHasDamageReductionAndRegenBuff = false;
                 }
             }
             else if (!playerIsAboveHalfHealth && !playerHasDamageReductionAndRegenBuff)
             {
                 // Apply damage reduction and increased regen to player
-                playerNetworkHealth.PermanentDamageReductionIncreaseByServerRpc(0.9f);
-                playerNetworkHealth.MultiplyHealthRegenByServerRpc(3f);
+                playerNetworkHealth.PermanentDamageReductionIncreaseBy(0.9f);
+                playerNetworkHealth.MultiplyHealthRegenBy(3f);
                 playerHasDamageReductionAndRegenBuff = true;
 
                 if (playerHasDamageAndSpeedBuff)
@@ -270,8 +270,8 @@ public class BondOfTheColossusManager : NetworkBehaviour, ISkillManager
         }
         if (playerHasDamageReductionAndRegenBuff)
         {
-            playerNetworkHealth.PermanentDamageReductionIncreaseByServerRpc(-0.5f);
-            playerNetworkHealth.DivideHealthRegenRateByServerRpc(3f);
+            playerNetworkHealth.PermanentDamageReductionIncreaseBy(-0.5f);
+            playerNetworkHealth.DivideHealthRegenRateBy(3f);
         }
     }
 
