@@ -14,6 +14,9 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     public float MaxHealth;
     public NetworkVariable<float> Health = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     bool hasFlameEffectSpawned = false;
+    AudioSource audioSource;
+    [SerializeField] AudioClip onHitSound;
+    [SerializeField] AudioClip onDestroySound;
 
 
     public override void OnNetworkSpawn()
@@ -22,6 +25,8 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
             Health.Value = MaxHealth; // Initialize health on the server.
 
         hasFlameEffectSpawned = false;
+        audioSource = GetComponent<AudioSource>();
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -39,6 +44,7 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         float newValue = Health.Value - damage;
         Health.Value = newValue; // Synchronize health with the network.
 
+        PlayOnHitSoundRpc();
         // If health is less than or equal to 50% of the max health, spawn a flame effect.
         if (Health.Value <= MaxHealth * 0.5f)
         {
@@ -46,9 +52,22 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         }
         if (Health.Value <= 0)
         {
+            PlayOnDestroySoundRpc();
             Health.SetDirty(true); // Mark the health as dirty to ensure sync.
             HandleDeath(instigator);
         }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void PlayOnHitSoundRpc()
+    {
+        audioSource.PlayOneShot(onHitSound);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void PlayOnDestroySoundRpc()
+    {
+        audioSource.PlayOneShot(onDestroySound);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
