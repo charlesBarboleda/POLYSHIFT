@@ -68,6 +68,8 @@ public class GameManager : NetworkBehaviour
 
 
             GameLevel.Value = 0;
+
+
             EventManager.Instance.OnEnemySpawned.AddListener(OnBossSpawned);
             EventManager.Instance.OnEnemyDespawned.AddListener(OnBossDespawned);
             EventManager.Instance.OnPlayerDeath.AddListener(HandleGameOver);

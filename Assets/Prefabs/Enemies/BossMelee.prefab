@@ -1558,7 +1558,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   agent: {fileID: 0}
   debuffs: []
-  attackCooldown: 2
+  attackCooldown: 3
   moveSpeedCap: 6
   maxHealthScalingFactor: 8
   attackDamageScalingFactor: 2
@@ -1570,7 +1570,7 @@ MonoBehaviour:
   movementSounds:
   - {fileID: 8300000, guid: 6effba958180059499cccfff28310cd3, type: 3}
   attackRange: 6
-  attackDamage: 350
+  attackDamage: 500
   leftHandWeapon: {fileID: 3120744325875232586}
   rightHandWeapon: {fileID: 659531986081324613}
   AttacksFirstPhase:

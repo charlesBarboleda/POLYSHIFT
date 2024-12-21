@@ -149,6 +149,7 @@ public class SpawnerManager : NetworkBehaviour
     void SpawnBoss(string bossName, float bossHealth)
     {
         GameObject Boss = ObjectPooler.Instance.Spawn(bossName, spawnPositions[Random.Range(0, spawnPositions.Count)].position, Quaternion.identity);
+        GameManager.Instance.SpawnedEnemies.Add(Boss.GetComponent<Enemy>());
         if (Boss.TryGetComponent(out EnemyNetworkHealth enemyHealth))
         {
             GameManager.Instance.SetCurrentBoss(Boss);

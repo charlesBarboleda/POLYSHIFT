@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.124206215, y: -0.39235738, z: 0.053545706, w: 0.90981394}
   m_LocalPosition: {x: 910.506, y: 44.843, z: 788.932}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.8838, y: 1.8838, z: 1.8838}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 400002}
@@ -5391,7 +5391,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.33
+      value: 1.15
       mode: 0
       spread: 0
       speed:
@@ -5620,7 +5620,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 30
+        scalar: 45
         minScalar: 30
         maxCurve:
           serializedVersion: 2

@@ -1041,8 +1041,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4c137aee8b1536948b3232409a4a1bc6, type: 3}
   meleeAttackRange: 7
   rangedAttackRange: 20
-  rangedAttackDamage: 50
-  meleeAttackDamage: 500
+  rangedAttackDamage: 100
+  meleeAttackDamage: 1000
   mouth: {fileID: 137948}
   fireBreathParticles: {fileID: 8730181180941377346}
 --- !u!136 &5411948245027177522

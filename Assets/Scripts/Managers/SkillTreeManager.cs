@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,16 +29,22 @@ public class SkillTreeManager : NetworkBehaviour
     [SerializeField] GameObject hotbarUI;
     [SerializeField] GameObject ammoCountUI;
     [SerializeField] PlayerNetworkMovement playerMovement;
+    [SerializeField] AudioClip onSkillUnlockSound;
+    public AudioClip onSkillHover;
+    public AudioClip onSkillClick;
+
     List<GameObject> nodeLines = new List<GameObject>();
     PlayerSkills playerSkills;
+    AudioSource audioSource;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         confirmationBox.SetActive(false);
         noButton.onClick.AddListener(() => confirmationBox.SetActive(false));
         if (GameManager.Instance != null)
         {
-            skillPoints = 100;
+            skillPoints = 1;
         }
         else
         {
@@ -45,6 +53,8 @@ public class SkillTreeManager : NetworkBehaviour
         InitializeSkillNodeMap();
 
     }
+
+
 
     void UnlockSkill(Skill skill)
     {
@@ -67,6 +77,7 @@ public class SkillTreeManager : NetworkBehaviour
         }
 
         skillPoints--;
+        audioSource.PlayOneShot(onSkillUnlockSound);
         playerSkills.UnlockSkill(skill);
         confirmationBox.SetActive(false);
 
@@ -82,6 +93,7 @@ public class SkillTreeManager : NetworkBehaviour
                 ultimateSkill.interactable = false;
                 ultimateSkill.GetComponentInParent<Image>().gameObject.SetActive(false);
             }
+            StartCoroutine(PlayUltimateUnlockSound());
 
         }
         // Find the RectTransform of the unlocked node
@@ -108,6 +120,26 @@ public class SkillTreeManager : NetworkBehaviour
             Debug.LogError("No UI node found for this skill.");
         }
     }
+
+    public void OnSkillClick()
+    {
+        audioSource.PlayOneShot(onSkillClick);
+    }
+
+    public void OnSkillHover()
+    {
+        audioSource.PlayOneShot(onSkillHover);
+    }
+
+
+    IEnumerator PlayUltimateUnlockSound()
+    {
+        audioSource.pitch = 0.1f;
+        audioSource.PlayOneShot(onSkillUnlockSound);
+        yield return new WaitForSeconds(1.1f);
+        audioSource.pitch = 1f;
+    }
+
 
     RectTransform FindClosestUnlockedNode(RectTransform targetNode)
     {
@@ -256,7 +288,7 @@ public class SkillTreeManager : NetworkBehaviour
             if (distance <= unlockRadius)
             {
                 node.gameObject.SetActive(true);
-                node.GetComponent<CanvasGroup>().DOFade(1, 1f);
+                node.GetComponent<CanvasGroup>().DOFade(1, 3f);
                 node.GetComponentInChildren<Button>().interactable = true;
                 node.GetComponent<Image>().color = new Color(1, 1, 1, 1);
                 node.GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
