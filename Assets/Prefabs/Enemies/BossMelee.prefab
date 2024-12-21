@@ -1558,7 +1558,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   agent: {fileID: 0}
   debuffs: []
-  attackCooldown: 3
+  attackCooldown: 5
   moveSpeedCap: 6
   maxHealthScalingFactor: 8
   attackDamageScalingFactor: 2
@@ -1566,9 +1566,16 @@ MonoBehaviour:
   canAttack: 0
   isAttacking: 0
   attackSounds:
-  - {fileID: 8300000, guid: 73a443d06cdcc6442922ebd3688f99b7, type: 3}
+  - {fileID: 8300000, guid: c29c23e84dd1dac4d997e40e510510ee, type: 3}
+  - {fileID: 8300000, guid: eff14947b968b814792f26264e0b664a, type: 3}
+  - {fileID: 8300000, guid: 7514a553939faad40b5cd080255c4040, type: 3}
+  - {fileID: 8300000, guid: ac181f1b59f61cc4c80267ecf7fa4e13, type: 3}
   movementSounds:
-  - {fileID: 8300000, guid: 6effba958180059499cccfff28310cd3, type: 3}
+  - {fileID: 8300000, guid: cb014c3319d83a24e916842118f0d660, type: 3}
+  - {fileID: 8300000, guid: a72264da729a2e34c8007e2ed1f3e33f, type: 3}
+  - {fileID: 8300000, guid: e620fdd5654be494486e4f47dfb42fd5, type: 3}
+  - {fileID: 8300000, guid: b14f5c7f0894124479b7f2698f0e9c67, type: 3}
+  - {fileID: 8300000, guid: 9506144d8edeee04197c19a0d3553173, type: 3}
   attackRange: 6
   attackDamage: 500
   leftHandWeapon: {fileID: 3120744325875232586}

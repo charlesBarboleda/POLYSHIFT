@@ -138,10 +138,12 @@ public class SpawnerManager : NetworkBehaviour
             if (GameManager.Instance.GameLevel.Value == 10)
             {
                 SpawnBoss("BossMelee", 30000);
+                GameManager.Instance.PlayMeleeBossMusic();
             }
             else if (GameManager.Instance.GameLevel.Value == 20)
             {
                 SpawnBoss("BossDragon", 60000);
+                GameManager.Instance.PlayDragonBossMusic();
             }
         }
     }

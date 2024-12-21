@@ -32,12 +32,18 @@ public class GameManager : NetworkBehaviour
     [SerializeField] TMP_Text bossName;
     [SerializeField] GameObject bossHealthbarContainer;
     GameObject currentBoss;
+    AudioSource audioSource;
+    [SerializeField] AudioClip[] inLevelMusic;
+    [SerializeField] AudioClip[] outLevelMusic;
+    [SerializeField] AudioClip meleeBossMusic;
+    [SerializeField] AudioClip dragonBossMusic;
     EnemyNetworkHealth currentBossHealth;
 
 
     void Awake()
     {
         Singleton();
+        audioSource = GetComponent<AudioSource>();
     }
 
 
@@ -213,11 +219,13 @@ public class GameManager : NetworkBehaviour
         {
             case GameState.InLevel:
                 // Set game-related in-level logic here
+                PlayInLevelMusic();
                 DisableCountdownTextRpc();
                 SpawnerManager.Instance.SpawnEnemies();
                 break;
             case GameState.OutLevel:
                 // Set game-related out-level logic here
+                PlayOutLevelMusic();
                 EnableCountdownTextRpc();
                 Countdown();
                 break;
@@ -233,6 +241,54 @@ public class GameManager : NetworkBehaviour
         {
             SetCurrentGameState(GameState.OutLevel);
         }
+    }
+
+    public void PlayDragonBossMusic()
+    {
+        audioSource.DOFade(0, 2.5f).OnComplete(() =>
+        {
+            audioSource.loop = true;
+            audioSource.clip = dragonBossMusic;
+            audioSource.Play();
+            audioSource.DOFade(0.1f, 2.5f);
+        });
+    }
+
+    public void PlayMeleeBossMusic()
+    {
+        audioSource.DOFade(0, 2.5f).OnComplete(() =>
+        {
+            audioSource.loop = true;
+            audioSource.clip = meleeBossMusic;
+            audioSource.Play();
+            audioSource.DOFade(0.1f, 2.5f);
+        });
+
+
+
+    }
+    void PlayInLevelMusic()
+    {
+        audioSource.DOFade(0, 2.5f).OnComplete(() =>
+        {
+            audioSource.loop = true;
+            audioSource.clip = inLevelMusic[UnityEngine.Random.Range(0, inLevelMusic.Length)];
+            audioSource.Play();
+            audioSource.DOFade(0.1f, 2.5f);
+        });
+
+    }
+
+    void PlayOutLevelMusic()
+    {
+        audioSource.DOFade(0, 2.5f).OnComplete(() =>
+        {
+            audioSource.loop = true;
+            audioSource.clip = outLevelMusic[UnityEngine.Random.Range(0, outLevelMusic.Length)];
+            audioSource.Play();
+            audioSource.DOFade(0.1f, 2.5f);
+        });
+
     }
 
     private void Singleton()

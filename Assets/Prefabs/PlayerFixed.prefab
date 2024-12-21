@@ -8569,7 +8569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2175129618
+  GlobalObjectIdHash: 2792908417
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -8975,8 +8975,8 @@ MonoBehaviour:
   meleeSlash1Sound: {fileID: 8300000, guid: 60887ffe25f99e04097887e2ca6f15af, type: 3}
   arcaneDevilSlamShoutSound: {fileID: 8300000, guid: 2a47385abaa7f4040b5713f6932f9706, type: 3}
   reloadSound: {fileID: 8300000, guid: c314498c201acf9418880756187aaacb, type: 3}
-  arcaneCleaveSound: {fileID: 8300000, guid: a161527766be241efad062d931d302c5, type: 3}
-  dashSound: {fileID: 8300000, guid: 123fc2db6b1dbaa45ae923452c8da6d5, type: 3}
+  arcaneCleaveSound: {fileID: 8300000, guid: d825d8701960042628a66be764ea5597, type: 3}
+  dashSound: {fileID: 8300000, guid: 55aafe27cef9fa64395c5adf142f4ff8, type: 3}
   onPlayerHitSounds:
   - {fileID: 8300000, guid: 794be7c4bd9e64c9bbb9776937807a9e, type: 3}
   - {fileID: 8300000, guid: aa48101fd9bd24b82af88afb182a9bf5, type: 3}
@@ -10038,7 +10038,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8751144334462095347, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 2175129618
+      value: 3436990585
       objectReference: {fileID: 0}
     - target: {fileID: -2567561430690933967, guid: 4486cb3ed389fab4b9b73826effd7055, type: 3}
       propertyPath: GlobalObjectIdHash

@@ -15,8 +15,8 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     public NetworkVariable<float> Health = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     bool hasFlameEffectSpawned = false;
     AudioSource audioSource;
-    [SerializeField] AudioClip onHitSound;
-    [SerializeField] AudioClip onDestroySound;
+    [SerializeField] AudioClip[] onHitSound;
+    [SerializeField] AudioClip[] onDestroySound;
 
 
     public override void OnNetworkSpawn()
@@ -61,13 +61,13 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     [Rpc(SendTo.ClientsAndHost)]
     void PlayOnHitSoundRpc()
     {
-        audioSource.PlayOneShot(onHitSound);
+        audioSource.PlayOneShot(onHitSound[Random.Range(0, onHitSound.Length)]);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     void PlayOnDestroySoundRpc()
     {
-        audioSource.PlayOneShot(onDestroySound);
+        AudioSource.PlayClipAtPoint(onDestroySound[Random.Range(0, onDestroySound.Length)], transform.position);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
