@@ -9,6 +9,7 @@ public class SummonStarbreakerManager : NetworkBehaviour, ISkillManager
     public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>(1f);
     public float AttackRange { get; set; } = 15f;
     public Animator animator { get; set; }
+    GameObject starbreaker;
 
     public override void OnNetworkSpawn()
     {
@@ -31,31 +32,34 @@ public class SummonStarbreakerManager : NetworkBehaviour, ISkillManager
             animator.SetFloat("AttackSpeedMultiplier", newValue);
         }
     }
-    [ServerRpc]
-    public void SummonPortalServerRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void SummonPortalRpc()
     {
         GameObject starbreakerPortal = ObjectPooler.Instance.Spawn("StarbreakerPortal", transform.position, Quaternion.identity);
-        starbreakerPortal.GetComponent<NetworkObject>().Spawn();
     }
 
-    [ServerRpc]
-    void SummonStarbreakerServerRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    void SummonStarbreakerRpc()
     {
         GameObject auraCastWater = ObjectPooler.Instance.Spawn("AuraCastWater", transform.position, Quaternion.identity);
-        auraCastWater.GetComponent<NetworkObject>().Spawn();
 
         StartCoroutine(SummonStarbreakerCoroutine());
     }
 
     IEnumerator SummonStarbreakerCoroutine()
     {
-        GameObject starbreaker = ObjectPooler.Instance.Spawn("Starbreaker", transform.position + transform.up * 5f, Quaternion.identity);
-        starbreaker.GetComponent<Starbreaker>().SetOwners(gameObject);
-        starbreaker.GetComponent<NetworkObject>().Spawn();
+        if (starbreaker == null)
+        {
+            starbreaker = ObjectPooler.Instance.Spawn("Starbreaker", transform.position + transform.up * 5f, Quaternion.identity);
+            starbreaker.GetComponent<Starbreaker>().SetOwners(gameObject);
+        }
 
         yield return new WaitForSeconds(60f);
 
+        if (starbreaker != null)
+        {
+            ObjectPooler.Instance.Despawn("Starbreaker", starbreaker);
+        }
         GameObject starbreakerExplosion = ObjectPooler.Instance.Spawn("StarbreakerExplosion", starbreaker.transform.position, Quaternion.identity); ObjectPooler.Instance.Despawn("Starbreaker", starbreaker);
-        starbreaker.GetComponent<NetworkObject>().Despawn(false);
     }
 }

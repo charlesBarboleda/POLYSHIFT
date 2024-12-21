@@ -24,6 +24,8 @@ public abstract class Turret : NetworkBehaviour, IDamageable
     [SerializeField] Transform turretMuzzlePosition;
     [SerializeField] Transform turretMuzzlePosition2;
     [SerializeField] Image healthbarFill;
+    [SerializeField] GameObject muzzleFlash;
+    [SerializeField] GameObject muzzleFlash2;
 
     float fireCooldownTimer = 0f; // Timer to control firing rate
 
@@ -61,7 +63,7 @@ public abstract class Turret : NetworkBehaviour, IDamageable
             {
                 FireAtEnemy(targetEnemy);
                 audioSource.PlayOneShot(turretFireSound);
-                MuzzleFlashServerRpc();
+                MuzzleFlashRpc();
                 fireCooldownTimer = AttackSpeed; // Reset cooldown
             }
         }
@@ -96,24 +98,21 @@ public abstract class Turret : NetworkBehaviour, IDamageable
             // Deal damage
             enemy.GetComponent<IDamageable>()?.RequestTakeDamageServerRpc(Damage, Owner.GetComponent<NetworkObject>().NetworkObjectId);
             enemy.GetComponent<Enemy>().OnRaycastHitServerRpc(enemy.transform.position, enemy.transform.forward);
-            // Optionally, add effects or spawn projectiles
-            Debug.Log($"Firing at enemy {enemy.name}");
         }
     }
 
-    [ServerRpc]
-    void MuzzleFlashServerRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    void MuzzleFlashRpc()
     {
-        GameObject muzzleFlash = ObjectPooler.Instance.Spawn(MuzzleFlashTag, turretMuzzlePosition.position, turretMuzzlePosition.rotation);
-        Debug.Log("Muzzle Flash location: " + muzzleFlash.transform.position);
+        muzzleFlash.SetActive(true);
+        muzzleFlash2.SetActive(true);
 
-        muzzleFlash.GetComponent<NetworkObject>().Spawn();
+        muzzleFlash.transform.position = turretMuzzlePosition.position;
+        muzzleFlash2.transform.position = turretMuzzlePosition2.position;
 
-        Debug.Log("Muzzle Flash position: " + muzzleFlash.transform.position);
+        muzzleFlash.transform.rotation = turretMuzzlePosition.rotation;
+        muzzleFlash2.transform.rotation = turretMuzzlePosition2.rotation;
 
-
-        GameObject muzzleFlash2 = ObjectPooler.Instance.Spawn(MuzzleFlashTag, turretMuzzlePosition2.position, turretMuzzlePosition2.rotation);
-        muzzleFlash2.GetComponent<NetworkObject>().Spawn();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -153,15 +152,20 @@ public abstract class Turret : NetworkBehaviour, IDamageable
     {
         if (IsServer)
         {
-            GameObject turretExplosion = ObjectPooler.Instance.Spawn("TurretExplosion", transform.position, Quaternion.identity);
+            SpawnTurretExplosionRpc();
             audioSource.PlayOneShot(turretExplosionSound);
-            turretExplosion.GetComponent<NetworkObject>().Spawn();
             GameManager.Instance.SpawnedAllies.Remove(gameObject);
             ObjectPooler.Instance.Despawn(ObjectPoolTag, gameObject);
             NetworkObject.Despawn(false);
         }
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnTurretExplosionRpc()
+    {
+        GameObject turretExplosion = ObjectPooler.Instance.Spawn("TurretExplosion", transform.position, Quaternion.identity);
+
+    }
     public void OnHealthChanged(float previousValue, float newValue)
     {
         if (healthbarFill != null)

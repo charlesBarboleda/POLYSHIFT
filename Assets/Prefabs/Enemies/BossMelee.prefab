@@ -1570,7 +1570,7 @@ MonoBehaviour:
   movementSounds:
   - {fileID: 8300000, guid: 6effba958180059499cccfff28310cd3, type: 3}
   attackRange: 6
-  attackDamage: 250
+  attackDamage: 350
   leftHandWeapon: {fileID: 3120744325875232586}
   rightHandWeapon: {fileID: 659531986081324613}
   AttacksFirstPhase:

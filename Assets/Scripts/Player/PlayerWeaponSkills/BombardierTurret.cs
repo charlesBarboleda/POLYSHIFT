@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BombardierTurret : Turret
 {
+    GameObject explosion;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -26,10 +27,20 @@ public class BombardierTurret : Turret
                     hitCollider.gameObject.GetComponent<Enemy>()?.OnRaycastHitServerRpc(hitCollider.gameObject.transform.position, hitCollider.gameObject.transform.forward);
                 }
             }
-            GameObject explosion = ObjectPooler.Instance.Spawn("BombardierExplosion", enemy.transform.position, Quaternion.identity);
+            SpawnExplosionRpc();
+            explosion.transform.position = enemy.transform.position;
             explosion.transform.localRotation = enemy.transform.rotation;
-            explosion.GetComponent<NetworkObject>().Spawn();
+
         }
+
+
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void SpawnExplosionRpc()
+    {
+
+        explosion = ObjectPooler.Instance.Spawn("BombardierExplosion", Vector3.zero, Quaternion.identity);
     }
 
 

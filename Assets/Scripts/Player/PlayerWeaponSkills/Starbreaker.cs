@@ -20,9 +20,8 @@ public class Starbreaker : NetworkBehaviour
     Enemy targetEnemy;
     float fireCooldownTimer = 0f; // Timer to control firing rate
 
-    public override void OnNetworkSpawn()
+    void OnEnable()
     {
-        base.OnNetworkSpawn();
         lookAnimator = GetComponent<FLookAnimator>();
         audioSource = GetComponent<AudioSource>();
         AttackSpeed = 5f;
@@ -55,7 +54,7 @@ public class Starbreaker : NetworkBehaviour
         }
 
         // Ship hovers over the player at all times
-        transform.position = Owner.transform.position + new Vector3(0, 12, 0);
+        transform.position = Owner.transform.position + new Vector3(0, 10, 0);
 
     }
 
@@ -118,9 +117,12 @@ public class Starbreaker : NetworkBehaviour
         return closestEnemy;
     }
 
-    public override void OnNetworkDespawn()
+    void OnDisable()
     {
-        GameManager.Instance.SpawnedAllies.Remove(doppelbomberTurret1.gameObject);
-        GameManager.Instance.SpawnedAllies.Remove(doppelbomberTurret2.gameObject);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SpawnedAllies.Remove(doppelbomberTurret1.gameObject);
+            GameManager.Instance.SpawnedAllies.Remove(doppelbomberTurret2.gameObject);
+        }
     }
 }

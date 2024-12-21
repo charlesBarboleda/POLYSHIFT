@@ -40,10 +40,6 @@ public class GameManager : NetworkBehaviour
         Singleton();
     }
 
-    void Start()
-    {
-        DebuffFactory.Initialize();
-    }
 
     public override void OnNetworkSpawn()
     {
@@ -151,12 +147,12 @@ public class GameManager : NetworkBehaviour
     {
         if (enemy.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
         {
-            DisableBossUIClientRpc(bossHealth.NetworkObjectId);
+            DisableBossUIRpc(bossHealth.NetworkObjectId);
         }
     }
 
-    [ClientRpc]
-    void DisableBossUIClientRpc(ulong bossNetworkObjectId)
+    [Rpc(SendTo.ClientsAndHost)]
+    void DisableBossUIRpc(ulong bossNetworkObjectId)
     {
 
         var bossObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[bossNetworkObjectId];
@@ -172,7 +168,27 @@ public class GameManager : NetworkBehaviour
 
     public void UpdateBossHealthBar(float prev, float current)
     {
-        bossHealthbar.DOFillAmount(current / currentBossHealth.MaxHealth, 0.5f);
+        Debug.Log("Updating boss health bar");
+        if (currentBossHealth == null)
+        {
+            Debug.LogError("Current boss health is null");
+            return;
+        }
+        if (bossHealthbar == null)
+        {
+            Debug.LogError("Boss health bar is null");
+            return;
+        }
+        try
+        {
+            bossHealthbar.DOFillAmount(current / currentBossHealth.MaxHealth, 0.5f);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("DOFillAmount failed: " + ex.Message);
+        }
+
+        Debug.Log("Updated Boss health: " + current / currentBossHealth.MaxHealth);
     }
 
     public override void OnNetworkDespawn()

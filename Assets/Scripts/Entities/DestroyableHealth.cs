@@ -13,25 +13,13 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     public float MaxHealth;
     public NetworkVariable<float> Health = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    private Destructible destructible;
 
-    void Awake()
-    {
-        destructible = GetComponent<Destructible>();
-    }
 
     public override void OnNetworkSpawn()
     {
         if (IsServer)
             Health.Value = MaxHealth; // Initialize health on the server.
 
-        destructible?.SyncHealth(Health.Value); // Sync Destructible health.
-
-        // Register OnValueChanged to update Destructible component.
-        Health.OnValueChanged += (prev, current) =>
-        {
-            destructible?.SyncHealth(current);
-        };
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -48,7 +36,6 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         // Reduce health value on the server.
         float newValue = Health.Value - damage;
         Health.Value = newValue; // Synchronize health with the network.
-        destructible?.SyncHealth(newValue); // Sync health with the destructible system.
 
         if (Health.Value <= 0)
         {
@@ -67,47 +54,38 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
     {
         if (!IsServer) return;
 
-
-        // Ensure the object is marked as destroyed in the Destructible system.
-        destructible?.Destroy();
         // Spawn the destruction effect based on the size
         switch (destroyableSize)
         {
             case DestroyableSize.Small:
-                SpawnEffect("SmallDebrisDestruction");
+                SpawnEffectRpc("DefaultSmallPartice", "DefaultSmallPartice");
                 break;
             case DestroyableSize.Medium:
-                SpawnEffect("MidDebrisDestruction");
+                SpawnEffectRpc("DefaultSmallPartice", "DefaultLargePartice");
                 break;
             case DestroyableSize.Large:
-                SpawnEffect("LargeDebrisDestruction");
+                SpawnEffectRpc("DefaultLargePartice", "DefaultLargePartice");
                 break;
         }
 
+        // Notify clients to despawn the object and handle the server-side despawn.
+        NotifyClientsToDespawn();
 
         UpdateGraphs(); // Update pathfinding graphs.
 
 
-        // Notify clients to despawn the object and handle the server-side despawn.
-        NotifyClientsToDespawn();
     }
 
     private void NotifyClientsToDespawn()
     {
         // Notify clients to despawn the object.
-        NotifyDespawnClientRpc();
+        DestroyObjectLocallyRpc();
 
-        // Delay the server-side despawn to ensure synchronization.
-        StartCoroutine(DelayedDespawn());
     }
 
-    [ClientRpc]
-    private void NotifyDespawnClientRpc()
-    {
-        DestroyObjectLocally();
-    }
 
-    private void DestroyObjectLocally()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void DestroyObjectLocallyRpc()
     {
 
         // Destroy all child objects
@@ -120,22 +98,13 @@ public class DestroyableHealth : NetworkBehaviour, IDamageable
         Destroy(gameObject);
     }
 
-    private IEnumerator DelayedDespawn()
-    {
-        yield return null; // Wait a frame for sync.
-        var networkObject = GetComponent<NetworkObject>();
-        if (networkObject != null && networkObject.IsSpawned)
-        {
-            networkObject.Despawn(false);
-        }
-    }
 
-
-    private void SpawnEffect(string effectName)
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnEffectRpc(string effectName, string effectName2)
     {
         // Spawn the destruction effect using the object pooler.
         GameObject effect = ObjectPooler.Instance.Spawn(effectName, transform.position, Quaternion.identity);
-        effect.GetComponent<NetworkObject>().Spawn();
+        GameObject effect2 = ObjectPooler.Instance.Spawn(effectName2, transform.position, Quaternion.identity);
     }
 
     private void UpdateGraphs()

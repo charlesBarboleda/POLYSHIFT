@@ -95,10 +95,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 793428440052695341}
-  - component: {fileID: -7988418324216931374}
   - component: {fileID: 5650315402533916188}
   - component: {fileID: 6417827879594997880}
-  - component: {fileID: 2023876981043141183}
   m_Layer: 0
   m_Name: Car_03
   m_TagString: Untagged
@@ -126,31 +124,6 @@ Transform:
   - {fileID: 691829617144244697}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-7988418324216931374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3156564577573658876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2239650023
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &5650315402533916188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +139,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   destroyableSize: 0
   MaxHealth: 0
+  Health:
+    m_InternalValue: 0
 --- !u!64 &6417827879594997880
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -188,92 +163,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 7c20a57f31b1cff409903abeac91a8eb, type: 3}
---- !u!114 &2023876981043141183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3156564577573658876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1bbb502083c41048a8fedc6a9693be7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _totalHitPoints: 50
-  _currentHitPoints: 50
-  damageLevels:
-  - maxHitPoints: 50
-    minHitPoints: 40.1
-    healthPercent: 100
-    hasError: 0
-    visibleDamageLevel: 0
-  - maxHitPoints: 40
-    minHitPoints: 30.099998
-    healthPercent: 80
-    hasError: 0
-    visibleDamageLevel: 2
-  - maxHitPoints: 30
-    minHitPoints: 20.1
-    healthPercent: 60
-    hasError: 0
-    visibleDamageLevel: 4
-  - maxHitPoints: 20
-    minHitPoints: 10.099999
-    healthPercent: 40
-    hasError: 0
-    visibleDamageLevel: 6
-  - maxHitPoints: 10
-    minHitPoints: 0
-    healthPercent: 20
-    hasError: 0
-    visibleDamageLevel: 8
-  destroyedPrefab: {fileID: 0}
-  destroyedPrefabParent: {fileID: 0}
-  fallbackParticle: {fileID: 19800004, guid: 6b46cad447c64dd48b8b715df6e3d2ad, type: 3}
-  fallbackParticleMatOption: 0
-  damageEffects:
-  - TriggeredAt: 2
-    Offset: {x: 0, y: 0, z: 0}
-    Rotation: {x: -90, y: 0, z: 90}
-    Scale: {x: 1, y: 1, z: 1}
-    Prefab: {fileID: 8764043878647920493, guid: c4ed38c72957f2241ad144a1614956d9, type: 3}
-    GameObject: {fileID: 0}
-    HasStarted: 0
-    HasTagDependency: 0
-    TagDependency: 0
-    UnparentOnDestroy: 1
-    StopEmittingOnDestroy: 0
-  velocityReduction: 0.5
-  limitDamage: 0
-  minDamage: 10
-  maxDamage: 100
-  minDamageTime: 0
-  ignoreCollisionsUnder: 2
-  unparentOnDestroy: []
-  disableKinematicOnUparentedChildren: 1
-  replaceMaterials: []
-  replaceParticleMats: []
-  canBeDestroyed: 1
-  canBeRepaired: 1
-  debrisToReParentByName: []
-  debrisToReParentIsKinematic: 0
-  childrenToReParentByName: []
-  isDebrisChipAway: 0
-  chipAwayDebrisMass: 1
-  chipAwayDebrisDrag: 0
-  chipAwayDebrisAngularDrag: 0.05
-  autoPoolDestroyedPrefab: 1
-  useFallbackParticle: 1
-  centerPointOverride: {x: 0, y: 0, z: 0}
-  fallbackParticleScale: {x: 1, y: 1, z: 1}
-  fallbackParticleParent: {fileID: 0}
-  sinkWhenDestroyed: 0
-  shouldDeactivate: 0
-  isTerrainTree: 0
-  destroyedSound: {fileID: 8300000, guid: c66d702bc67ddac46924da950fd42e7b, type: 3}
-  damagedSound: {fileID: 8300000, guid: 28e1804bc1f647c4ab343996d76bc249, type: 3}
-  repairedSound: {fileID: 8300000, guid: 5f80a14e64b6d0f4a97d04301e6fcb79, type: 3}
 --- !u!1 &4054070193864305188
 GameObject:
   m_ObjectHideFlags: 0

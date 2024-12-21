@@ -66,6 +66,12 @@ public class MimicSentryManager : NetworkBehaviour, ISkillManager
         Rigidbody rb = sentryOrb.GetComponent<Rigidbody>();
         rb.AddForce((transform.forward + transform.up) * 10f, ForceMode.Impulse);
 
+        SentryOrbSpawnsTurretRpc(turretTag);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void SentryOrbSpawnsTurretRpc(string turretTag)
+    {
         StartCoroutine(SentryOrbSpawnsTurret(turretTag));
     }
 
@@ -76,8 +82,6 @@ public class MimicSentryManager : NetworkBehaviour, ISkillManager
 
         GameObject spawnEffect = ObjectPooler.Instance.Spawn("FrostSphereBlast", sentryOrb.transform.position, Quaternion.identity);
         spawnEffect.transform.localRotation = Quaternion.Euler(-90, 0, 90);
-        spawnEffect.GetComponent<NetworkObject>().Spawn();
-
         GameObject mimicTurret = ObjectPooler.Instance.Spawn(turretTag, sentryOrb.transform.position, Quaternion.identity);
 
         var mimicScript = mimicTurret.GetComponent<Turret>();
