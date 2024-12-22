@@ -49,6 +49,7 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+
         if (IsServer)
         {
             foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
@@ -523,12 +524,22 @@ public class GameManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     void EnableCountdownTextRpc()
     {
+        Debug.Log("EnableCountdownTextRpc called");
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             var playerUIManager = client.PlayerObject.GetComponent<PlayerUIManager>();
-            playerUIManager.EnableCountdownText();
+            if (playerUIManager != null)
+            {
+                Debug.Log($"Enabling countdown text for client {client.ClientId}");
+                playerUIManager.EnableCountdownText();
+            }
+            else
+            {
+                Debug.LogError($"PlayerUIManager not found for client {client.ClientId}");
+            }
         }
     }
+
 
     [Rpc(SendTo.ClientsAndHost)]
     void DisableCountdownTextRpc()

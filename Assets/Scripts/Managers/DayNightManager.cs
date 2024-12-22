@@ -54,6 +54,7 @@ public class DayNightManager : NetworkBehaviour
 
     private void StartLightTransition(float fromIntensity, float toIntensity, float duration)
     {
+        if (_sun == null) return;
         DOTween.To(() => _sunIntensity.Value, x => _sunIntensity.Value = x, toIntensity, duration)
             .OnUpdate(() =>
             {
@@ -63,6 +64,7 @@ public class DayNightManager : NetworkBehaviour
 
     private void ChangeFogDensity(float targetDensity, float duration)
     {
+        if (_fogDensity == null) return;
         DOTween.To(() => _fogDensity.Value, x => _fogDensity.Value = x, targetDensity, duration)
             .OnUpdate(() =>
             {

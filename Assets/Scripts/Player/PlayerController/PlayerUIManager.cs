@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Unity.Netcode;
+using TMPro;
 
 public class PlayerUIManager : NetworkBehaviour
 {
@@ -16,6 +17,7 @@ public class PlayerUIManager : NetworkBehaviour
     [SerializeField] GameObject titleText;
     PlayerNetworkMovement playerNetworkMovement;
     PlayerWeapon playerWeapon;
+    TMP_Text countdownTextText;
 
 
     public override void OnNetworkSpawn()
@@ -24,6 +26,16 @@ public class PlayerUIManager : NetworkBehaviour
         playerWeapon = GetComponent<PlayerWeapon>();
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerNetworkMovement.IsIsometric.OnValueChanged += OnIsometricChanged;
+
+
+        countdownTextText = countdownText.GetComponent<TextMeshProUGUI>();
+
+    }
+
+    void Update()
+    {
+        if (countdownText.activeSelf && GameManager.Instance != null)
+            UpdateCountdownText();
     }
 
 
@@ -67,6 +79,14 @@ public class PlayerUIManager : NetworkBehaviour
         countdownText.SetActive(true);
         countdownText.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
     }
+
+    void UpdateCountdownText()
+    {
+
+        countdownTextText.text = Mathf.Round(GameManager.Instance.GameCountdown.Value).ToString();
+    }
+
+
 
     public void DisableCountdownText()
     {

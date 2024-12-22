@@ -52,11 +52,11 @@ public class SpawnerManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.L))
             {
                 // Spawn a BossMelee
-                GameObject BossMelee = ObjectPooler.Instance.Spawn("BossMelee", Vector3.zero, Quaternion.identity);
-                if (BossMelee.TryGetComponent(out NetworkObject networkObject))
-                {
-                    networkObject.Spawn();
-                }
+                // GameObject BossMelee = ObjectPooler.Instance.Spawn("BossMelee", Vector3.zero, Quaternion.identity);
+                // if (BossMelee.TryGetComponent(out NetworkObject networkObject))
+                // {
+                //     networkObject.Spawn();
+                // }
 
             }
             if (GameManager.Instance.SpawnedEnemies.Count < MaxEnemies && EnemiesToSpawn > 0)

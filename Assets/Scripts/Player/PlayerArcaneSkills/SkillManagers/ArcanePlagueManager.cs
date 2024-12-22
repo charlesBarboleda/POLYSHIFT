@@ -11,12 +11,12 @@ public class ArcanePlagueManager : NetworkBehaviour, ISkillManager
 
     public override void OnNetworkSpawn()
     {
-        Damage = 5f;
+        Damage = 20f;
     }
 
     public void ResetSkill()
     {
-        Damage = 5f;
+        Damage = 20f;
     }
 
 }

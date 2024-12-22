@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Brutality
   m_EditorClassIdentifier: 
   skillName: Brutality
-  skillDescription: Increase Melee Damage by 20
+  skillDescription: Increase Melee Damage by 200
   skillIcon: {fileID: 21300000, guid: 295970e37d342f944ae1261011e56797, type: 3}

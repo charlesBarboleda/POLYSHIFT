@@ -11,6 +11,6 @@ public class MeleeDamage : PassiveSkill
             return;
         }
         Debug.Log("Applying MeleeDamage skill effect.");
-        user.GetComponent<PlayerSkills>().PermanentMeleeDamageIncreaseBy(20f);
+        user.GetComponent<PlayerSkills>().PermanentMeleeDamageIncreaseBy(50f);
     }
 }

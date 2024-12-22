@@ -16,9 +16,10 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth
         {
             GameManager.Instance.GiveAllPlayersLevelClientRpc(4);
             GameManager.Instance.GiveAllPlayersSkillPointsClientRpc(4);
+            if (GameManager.Instance.SpawnedEnemies.Contains(enemy))
+                GameManager.Instance.SpawnedEnemies.Remove(enemy);
             StartCoroutine(SpawnDeathEffects());
-            audioSource.volume = 0.75f;
-            audioSource.PlayOneShot(onDeathSound);
+            AudioSource.PlayClipAtPoint(onDeathSound, transform.position);
         }
     }
 

@@ -560,11 +560,11 @@ public class PlayerSkills : NetworkBehaviour
             {
                 if (debuff is ArcanePoison)
                 {
-                    debuff.duration += 0.5f;
+                    debuff.duration += 1f;
                     break;
                 }
             }
-            playerWeapon.Damage += 2f;
+            playerWeapon.Damage += 10f;
         }
         else
         {
@@ -581,14 +581,14 @@ public class PlayerSkills : NetworkBehaviour
         if (ArcaneCleave != null)
         {
             ArcaneCleaveManager script = GetComponent<ArcaneCleaveManager>();
-            script.Damage += 30f;
+            script.Damage += 100f;
             script.AttackRange += 0.5f;
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is ArcaneCleave arcaneCleave)
                 {
-                    arcaneCleave.Cooldown -= 0.5f;
+                    arcaneCleave.Cooldown -= 1f;
                     break; // Exit loop once ArcaneCleave is found
                 }
             }
@@ -637,14 +637,14 @@ public class PlayerSkills : NetworkBehaviour
         if (doubleCrescentSlashSkill != null)
         {
             DoubleCrescentSlashManager script = GetComponent<DoubleCrescentSlashManager>();
-            script.Damage += 20f;
+            script.Damage += 50f;
             script.AttackRange += 0.5f;
 
             foreach (Skill skill in unlockedSkills)
             {
                 if (skill is DoubleCrescentSlash doubleCrescentSlash)
                 {
-                    doubleCrescentSlash.Cooldown -= 0.5f;  // Safely accessing Cooldown
+                    doubleCrescentSlash.Cooldown -= 0.75f;  // Safely accessing Cooldown
                     break;
                 }
             }
@@ -681,10 +681,10 @@ public class PlayerSkills : NetworkBehaviour
     }
     public void PermanentTravelNodeStatIncrease()
     {
-        PermanentMeleeDamageIncreaseBy(7.5f);
-        playerWeapon.Damage += 2.5f;
+        PermanentMeleeDamageIncreaseBy(20f);
+        playerWeapon.Damage += 5f;
         PermanentAttackSpeedIncreaseBy(0.03f);
-        PermanentHealthIncreaseBy(2.5f);
+        PermanentHealthIncreaseBy(10f);
         playerMovement.MoveSpeed += 0.1f;
     }
 

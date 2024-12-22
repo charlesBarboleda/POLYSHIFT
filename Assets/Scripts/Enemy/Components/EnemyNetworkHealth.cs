@@ -201,7 +201,8 @@ public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
         PopUpNumberManager.Instance.SpawnXPNumber(transform.position + transform.up * height, ExperienceDrop);
         if (healthbarFill != null)
             healthbarFill.transform.parent.gameObject.SetActive(false);
-        GameManager.Instance.SpawnedEnemies.Remove(enemy);
+        if (GameManager.Instance.SpawnedEnemies.Contains(enemy))
+            GameManager.Instance.SpawnedEnemies.Remove(enemy);
         EventManager.Instance.EnemyDespawnedEvent(enemy);
         yield return new WaitForSeconds(3f);
         if (healthbarFill != null)

@@ -32,7 +32,7 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, ISkillManager
         AttackRange = 4f;
         coneAngle = 90f;
         KnockbackForce = 3f;
-        Damage = 50f;
+        Damage = 75f;
         stepDistance = 1f;
     }
 
