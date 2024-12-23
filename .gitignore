@@ -299,3 +299,14 @@ PCBetaBuild/PolyShift_Data/sharedassets1.resource
 PCBetaBuild/PolyShift_Data/StreamingAssets/UnityServicesProjectConfiguration.json
 PCBetaBuild/UnityCrashHandler64.exe
 PCBetaBuild/UnityPlayer.dll
+PCBetaBuild/D3D12/D3D12Core.dll
+PCBetaBuild/MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll
+PCBetaBuild/MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll
+PCBetaBuild/MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser
+PCBetaBuild/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx
+PCBetaBuild/MonoBleedingEdge/etc/mono/2.0/machine.config
+PCBetaBuild/MonoBleedingEdge/etc/mono/2.0/settings.map
+PCBetaBuild/MonoBleedingEdge/etc/mono/2.0/web.config
+PCBetaBuild/MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser
+PCBetaBuild/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx
+PCBetaBuild/MonoBleedingEdge/etc/mono/4.0/machine.config
