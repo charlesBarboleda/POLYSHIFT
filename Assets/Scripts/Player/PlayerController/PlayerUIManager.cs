@@ -15,10 +15,15 @@ public class PlayerUIManager : NetworkBehaviour
     [SerializeField] GameObject waitingForHostText;
     [SerializeField] GameObject youAreDeadText;
     [SerializeField] GameObject titleText;
-    PlayerNetworkMovement playerNetworkMovement;
-    PlayerWeapon playerWeapon;
-    TMP_Text countdownTextText;
+    [SerializeField] GameObject settingsMenu;
+    [SerializeField] GameObject pauseMenu;
 
+    private PlayerNetworkMovement playerNetworkMovement;
+    private PlayerWeapon playerWeapon;
+    private TMP_Text countdownTextText;
+    private GameManager gameManager;
+
+    private bool isPaused = false;
 
     public override void OnNetworkSpawn()
     {
@@ -26,18 +31,100 @@ public class PlayerUIManager : NetworkBehaviour
         playerWeapon = GetComponent<PlayerWeapon>();
         playerNetworkMovement = GetComponent<PlayerNetworkMovement>();
         playerNetworkMovement.IsIsometric.OnValueChanged += OnIsometricChanged;
-
-
         countdownTextText = countdownText.GetComponent<TextMeshProUGUI>();
 
+        if (GameManager.Instance != null)
+            gameManager = GameManager.Instance;
     }
 
     void Update()
     {
-        if (countdownText.activeSelf && GameManager.Instance != null)
+        if (countdownText.activeSelf && gameManager != null)
             UpdateCountdownText();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (settingsMenu.activeSelf)
+            {
+                CloseSettings();
+            }
+            else
+            {
+                TogglePauseMenu();
+            }
+        }
+
+        if (isPaused)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
     }
 
+    public void TogglePauseMenu()
+    {
+        if (IsHost)
+        {
+            if (!pauseMenu.activeSelf && Time.timeScale == 1)
+            {
+                // Pause the game and show the menu
+                gameManager.PauseUnpauseGame(forcePause: true);
+                pauseMenu.SetActive(true);
+                isPaused = true;
+            }
+            else if (pauseMenu.activeSelf && Time.timeScale == 0)
+            {
+                // Unpause the game and hide the menu
+                gameManager.PauseUnpauseGame(forceUnpause: true);
+                pauseMenu.SetActive(false);
+                isPaused = false;
+            }
+        }
+        else
+        {
+            // For clients, just toggle the pause menu visibility
+            pauseMenu.SetActive(!pauseMenu.activeSelf);
+        }
+
+        // Ensure settings menu is closed
+        if (!pauseMenu.activeSelf)
+        {
+            settingsMenu.SetActive(false);
+        }
+    }
+
+    public void PlayButton()
+    {
+        if (IsHost)
+        {
+            gameManager.PauseUnpauseGame();
+        }
+
+        pauseMenu.SetActive(false);
+        isPaused = false;
+    }
+
+    public void SettingsBackButton()
+    {
+        settingsMenu.SetActive(false);
+        pauseMenu.SetActive(true);
+    }
+
+    public void SettingsButton()
+    {
+        pauseMenu.SetActive(false);
+        settingsMenu.SetActive(true);
+    }
+
+    public void CloseSettings()
+    {
+        settingsMenu.SetActive(false);
+
+        if (IsHost)
+        {
+            gameManager.PauseUnpauseGame();
+        }
+    }
 
     void OnIsometricChanged(bool current)
     {
@@ -82,11 +169,8 @@ public class PlayerUIManager : NetworkBehaviour
 
     void UpdateCountdownText()
     {
-
-        countdownTextText.text = Mathf.Round(GameManager.Instance.GameCountdown.Value).ToString();
+        countdownTextText.text = Mathf.Round(gameManager.GameCountdown.Value).ToString();
     }
-
-
 
     public void DisableCountdownText()
     {

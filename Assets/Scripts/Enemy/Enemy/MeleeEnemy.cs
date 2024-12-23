@@ -44,16 +44,6 @@ public class MeleeEnemy : Enemy
         }
     }
 
-    public void ApplyRootMotion()
-    {
-        animator.applyRootMotion = true;
-
-    }
-
-    public void DisableRootMotion()
-    {
-        animator.applyRootMotion = false;
-    }
 
 
 

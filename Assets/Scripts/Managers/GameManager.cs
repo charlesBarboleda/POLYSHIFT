@@ -123,6 +123,8 @@ public class GameManager : NetworkBehaviour
     }
 
 
+
+
     [Rpc(SendTo.ClientsAndHost)]
     void EnableBossUIRpc(ulong bossNetworkObjectId)
     {
@@ -251,7 +253,7 @@ public class GameManager : NetworkBehaviour
             audioSource.loop = true;
             audioSource.clip = dragonBossMusic;
             audioSource.Play();
-            audioSource.DOFade(0.1f, 2.5f);
+            audioSource.DOFade(0.05f, 2.5f);
         });
     }
 
@@ -262,7 +264,7 @@ public class GameManager : NetworkBehaviour
             audioSource.loop = true;
             audioSource.clip = meleeBossMusic;
             audioSource.Play();
-            audioSource.DOFade(0.1f, 2.5f);
+            audioSource.DOFade(0.05f, 2.5f);
         });
 
 
@@ -275,7 +277,7 @@ public class GameManager : NetworkBehaviour
             audioSource.loop = true;
             audioSource.clip = inLevelMusic[UnityEngine.Random.Range(0, inLevelMusic.Length)];
             audioSource.Play();
-            audioSource.DOFade(0.1f, 2.5f);
+            audioSource.DOFade(0.05f, 2.5f);
         });
 
     }
@@ -287,7 +289,7 @@ public class GameManager : NetworkBehaviour
             audioSource.loop = true;
             audioSource.clip = outLevelMusic[UnityEngine.Random.Range(0, outLevelMusic.Length)];
             audioSource.Play();
-            audioSource.DOFade(0.1f, 2.5f);
+            audioSource.DOFade(0.05f, 2.5f);
         });
 
     }
@@ -389,6 +391,37 @@ public class GameManager : NetworkBehaviour
         // Load the lobby scene
         Debug.Log("Host: Loading lobby scene...");
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+    }
+    public void DisconnectClient()
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            // Host handles both their own shutdown and notifying clients
+            StartCoroutine(HostMainMenuTransition());
+        }
+        else
+        {
+            // Clients disconnect and transition locally
+            StartCoroutine(ClientMainMenuTransition());
+        }
+    }
+
+
+    public void PauseUnpauseGame(bool forcePause = false, bool forceUnpause = false)
+    {
+        if (forcePause)
+        {
+            Time.timeScale = 0;
+        }
+        else if (forceUnpause)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            // Toggle pause state
+            Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        }
     }
 
 

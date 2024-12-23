@@ -637,7 +637,7 @@ public class PlayerSkills : NetworkBehaviour
         if (doubleCrescentSlashSkill != null)
         {
             DoubleCrescentSlashManager script = GetComponent<DoubleCrescentSlashManager>();
-            script.Damage += 50f;
+            script.Damage += 75f;
             script.AttackRange += 0.5f;
 
             foreach (Skill skill in unlockedSkills)
@@ -681,10 +681,10 @@ public class PlayerSkills : NetworkBehaviour
     }
     public void PermanentTravelNodeStatIncrease()
     {
-        PermanentMeleeDamageIncreaseBy(20f);
+        PermanentMeleeDamageIncreaseBy(50f);
         playerWeapon.Damage += 5f;
         PermanentAttackSpeedIncreaseBy(0.03f);
-        PermanentHealthIncreaseBy(10f);
+        PermanentHealthIncreaseBy(25f);
         playerMovement.MoveSpeed += 0.1f;
     }
 

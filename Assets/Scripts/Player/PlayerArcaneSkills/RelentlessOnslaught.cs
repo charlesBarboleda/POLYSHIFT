@@ -6,7 +6,7 @@ public class RelentlessOnslaught : ActiveSkill
     public override void Initialize(Animator animator)
     {
         base.Initialize(animator);
-        Cooldown = 120f;
+        Cooldown = 240f;
     }
     public override void ExecuteAttack()
     {

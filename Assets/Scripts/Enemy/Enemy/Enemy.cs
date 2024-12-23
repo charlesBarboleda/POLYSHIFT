@@ -37,7 +37,7 @@ public abstract class Enemy : NetworkBehaviour
     public List<AudioClip> movementSounds = new List<AudioClip>();
 
     private float elapsedCooldown = 0f;
-    private AudioSource audioSource;
+    protected AudioSource audioSource;
     private List<string> bloodSplatterEffects = new List<string> { "BloodSplatter1", "BloodSplatter2", "BloodSplatter3", "BloodSplatter4", "BloodSplatter5" };
 
     public abstract IEnumerator Attack();

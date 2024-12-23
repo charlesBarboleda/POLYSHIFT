@@ -32,7 +32,7 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, ISkillManager
         AttackRange = 4f;
         coneAngle = 90f;
         KnockbackForce = 3f;
-        Damage = 75f;
+        Damage = 100f;
         stepDistance = 1f;
     }
 
@@ -75,14 +75,14 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, ISkillManager
     }
     public void DealSmallConeDamage()
     {
-        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange, coneAngle, Damage, KnockbackForce);
+        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange, coneAngle, Damage * 2, KnockbackForce);
 
     }
 
 
     public void DealBigConeDamage()
     {
-        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange + 3, 100f, Damage * 2, KnockbackForce + 1);
+        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange + 3, 100f, Damage * 4, KnockbackForce + 2);
 
     }
 

@@ -1451,7 +1451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2292706137
+  GlobalObjectIdHash: 1024282167
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1860,9 +1860,9 @@ MonoBehaviour:
   debuffs: []
   attackCooldown: 1
   moveSpeedCap: 7
-  maxHealthScalingFactor: 8
-  attackDamageScalingFactor: 2
-  experienceDropScalingFactor: 5
+  maxHealthScalingFactor: 35
+  attackDamageScalingFactor: 15
+  experienceDropScalingFactor: 15
   canAttack: 0
   isAttacking: 0
   attackSounds:

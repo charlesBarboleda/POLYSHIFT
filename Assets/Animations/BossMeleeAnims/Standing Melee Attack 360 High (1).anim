@@ -142851,15 +142851,22 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 1
-    functionName: DealDamageFromRightHand
+  - time: 0
+    functionName: SetGlow
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0
+    functionName: EnableWeaponTrail
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 1
-    functionName: SpawnSlashEffectRightHand
+    functionName: DealDamageFromRightHand
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -142874,6 +142881,20 @@ AnimationClip:
     messageOptions: 0
   - time: 1.1333333
     functionName: DealDamageFromRightHand
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 2.7833333
+    functionName: DisableWeaponTrail
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 2.7833333
+    functionName: ResetGlow
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

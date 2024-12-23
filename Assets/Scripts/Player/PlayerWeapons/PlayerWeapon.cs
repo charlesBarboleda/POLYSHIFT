@@ -127,12 +127,13 @@ public class PlayerWeapon : NetworkBehaviour
             {
                 if (!_isStandingStill)
                 {
-                    // Transition to standing still: apply standing-still buffs, remove movement buffs
+                    // Apply standing-still buffs, remove movement buffs
                     DualStanceApplyStandingStillBuffs();
                     DualStanceRemoveMovementBuffs();
-                    _isStandingStill = true;
+                    _isStandingStill = true; // Correctly mark the player as standing still
                     _dualStanceBuffApplied = false;
                 }
+
             }
         }
     }
@@ -143,36 +144,46 @@ public class PlayerWeapon : NetworkBehaviour
     }
     private void DualStanceApplyMovementBuffs()
     {
-        Damage *= 1.5f;
+        Damage *= 2f;
         playerNetworkMovement.MoveSpeed *= 1.5f;
         Debug.Log("Movement buffs applied.");
     }
 
     private void DualStanceRemoveMovementBuffs()
     {
-        Damage /= 1.5f;
+        Damage /= 2f;
         playerNetworkMovement.MoveSpeed /= 1.5f;
         Debug.Log("Movement buffs removed.");
     }
 
+    float originalShootRate;
+    float originalReloadTime;
+
     private void DualStanceApplyStandingStillBuffs()
     {
-        ShootRate *= 0.5f;  // 50% decreased fire rate = 0.7 multiplier
-        ReloadTime *= 0.5f; // 50% decreased reload time = 0.7 multiplier
+        originalShootRate = ShootRate;
+        originalReloadTime = ReloadTime;
+        ShootRate *= 0.5f;
+        ReloadTime *= 0.5f;
         Debug.Log("Standing-still buffs applied.");
     }
 
     private void DualStanceRemoveStandingStillBuffs()
     {
-        ShootRate /= 0.5f;  // Reset to original fire rate
-        ReloadTime /= 0.5f; // Reset to original reload time
+        ShootRate = originalShootRate;
+        ReloadTime = originalReloadTime;
         Debug.Log("Standing-still buffs removed.");
     }
 
     public void DualStance()
     {
         _dualStance = true;
+        if (_isStandingStill)
+        {
+            DualStanceApplyStandingStillBuffs();
+        }
     }
+
     public void DualStancePlus()
     {
         var dualStance = playerSkills.unlockedSkills.Find(skill => skill is DualStance) as DualStance;
@@ -180,8 +191,8 @@ public class PlayerWeapon : NetworkBehaviour
         if (dualStance != null)
         {
             Damage += 7.5f;
-            DecreaseReloadTimeBy(0.05f);
-            DecreaseFireRateBy(0.05f);
+            DecreaseReloadTimeBy(0.075f);
+            DecreaseFireRateBy(0.075f);
         }
         else
         {
@@ -262,7 +273,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (piercingBullets != null)
         {
             maxPierceTargets += 1;
-            Damage += 5f;
+            Damage += 7.5f;
         }
         else
         {

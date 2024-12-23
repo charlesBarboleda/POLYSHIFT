@@ -121,8 +121,9 @@ public class SpawnerManager : NetworkBehaviour
         EnemiesToSpawn = gameLevel * 5 * playersAlive;
         if (gameLevel % 10 == 0)
         {
-            Invoke(nameof(SpawnBossServerRpc), Random.Range(10, 60));
-
+            EnemiesToSpawn += GameManager.Instance.AlivePlayers.Count * 50;
+            Invoke(nameof(SpawnBossServerRpc), 10f);
+            Debug.Log("Spawning Boss");
         }
         Debug.Log($"Spawning {EnemiesToSpawn} enemies for {playersAlive} players at level {gameLevel}");
         SpawnRate = Mathf.Max(0.1f, 2f - gameLevel * 0.1f);
@@ -137,7 +138,9 @@ public class SpawnerManager : NetworkBehaviour
         {
             if (GameManager.Instance.GameLevel.Value == 10)
             {
+                Debug.Log("Spawning BossMelee");
                 SpawnBoss("BossMelee", 30000);
+                Debug.Log("Playing BossMelee music");
                 GameManager.Instance.PlayMeleeBossMusic();
             }
             else if (GameManager.Instance.GameLevel.Value == 20)

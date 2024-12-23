@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SingleCrescentSlashManager : NetworkBehaviour, ISkillManager
@@ -8,7 +9,6 @@ public class SingleCrescentSlashManager : NetworkBehaviour, ISkillManager
     public float KnockbackForce { get; set; } = 1f;
     public float Damage { get; set; } = 10f;
     public VariableWithEvent<float> AttackSpeedMultiplier { get; set; } = new VariableWithEvent<float>();
-
 
     public Animator animator { get; set; }
     PlayerSkills PlayerSkills;

@@ -25,7 +25,7 @@ public class ArcaneBladeVortexManager : NetworkBehaviour, ISkillManager
 
     public void ResetSkill()
     {
-        Damage = 15f;
+        Damage = 30f;
         Duration = 45f;
         KnockbackForce = 3f;
         AttackSpeedMultiplier.Value = 1f;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class ActiveSkill : Skill
 {
-    public float Cooldown = 5f;
+    public float Cooldown = 3f;
     [field: SerializeField] public bool OnCooldown { get; private set; } = false;
     public float cooldownTimer;
     protected Animator animator;
@@ -13,6 +13,7 @@ public abstract class ActiveSkill : Skill
     {
         this.animator = animator;
         cooldownTimer = Cooldown;
+        Cooldown = 3f;
     }
 
     public override void ApplySkillEffect(GameObject user)

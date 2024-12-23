@@ -13,7 +13,7 @@ public class PiercingBullets : PassiveSkill
 
         var weapon = user.GetComponent<PlayerWeapon>();
         weapon.maxPierceTargets += 3;
-        weapon.Damage += 15f;
+        weapon.Damage += 25f;
 
     }
 }
