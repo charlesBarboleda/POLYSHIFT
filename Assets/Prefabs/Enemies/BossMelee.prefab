@@ -67,7 +67,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -359.96, y: -226.23}
+  m_AnchoredPosition: {x: -359.96, y: -226.95}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3286227027699987685
@@ -1365,6 +1365,13 @@ MonoBehaviour:
     TransitionDuration: 0.25
     TriggerNameHash: -2045864598
     TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 1938914138
+    DestinationState: -1888715388
+    TransitionDuration: 0.25
+    TriggerNameHash: 71577055
+    TransitionIndex: 0
   m_Animator: {fileID: 7750159351702373873}
 --- !u!114 &5442953998938009403
 MonoBehaviour:
@@ -1644,7 +1651,7 @@ MonoBehaviour:
   MaxHealth: 20
   HealthRegenRate: 0
   IsDead: 0
-  ExperienceDrop: 9999
+  ExperienceDrop: 99999
   height: 10
   headCollider: {fileID: 1618770227984766359}
   enemyName: BossMelee
@@ -1655,6 +1662,11 @@ MonoBehaviour:
     m_InternalValue: 100
   StaggerCurrentHealth:
     m_InternalValue: 10
+  IsStaggered:
+    m_InternalValue: 0
+  CanBeStaggered:
+    m_InternalValue: 1
+  yPosOffset: -1.5
   staggeredText: {fileID: 1650458780350582512}
   onDeathParticles:
   - {fileID: 4855033257600370053}

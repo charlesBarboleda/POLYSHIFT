@@ -44,7 +44,7 @@ public class SkillTreeManager : NetworkBehaviour
         noButton.onClick.AddListener(() => confirmationBox.SetActive(false));
         if (GameManager.Instance != null)
         {
-            skillPoints = 100;
+            skillPoints = 1;
         }
         else
         {

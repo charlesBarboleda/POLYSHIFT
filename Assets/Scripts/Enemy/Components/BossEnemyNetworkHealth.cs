@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
+using DG.Tweening;
 
 public class BossEnemyNetworkHealth : EnemyNetworkHealth, IStaggerable
 {
@@ -11,9 +12,10 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth, IStaggerable
     public float StaggerMaxHealth;
     public NetworkVariable<float> netStaggerMaxHealth = new();
     public NetworkVariable<float> StaggerCurrentHealth = new();
-    NetworkVariable<bool> IsStaggered = new(false);
-    NetworkVariable<bool> CanBeStaggered = new(true);
+    public NetworkVariable<bool> IsStaggered = new(false);
+    public NetworkVariable<bool> CanBeStaggered = new(true);
     float staggerCooldown = 180f;
+    [SerializeField] float yPosOffset = -1.5f;
 
     [SerializeField] GameObject staggeredText;
     [SerializeField] List<ParticleSystem> onDeathParticles;
@@ -40,8 +42,7 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth, IStaggerable
         {
 
             staggerCooldown = 180f;
-            GameManager.Instance.GiveAllPlayersLevelClientRpc(4);
-            GameManager.Instance.GiveAllPlayersSkillPointsClientRpc(4);
+            GameManager.Instance.GiveAllPlayersSkillPointsClientRpc(2);
             if (GameManager.Instance.SpawnedEnemies.Contains(enemy))
                 GameManager.Instance.SpawnedEnemies.Remove(enemy);
             StartCoroutine(SpawnDeathEffects());
@@ -62,7 +63,9 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth, IStaggerable
 
         staggeredText.SetActive(true);
 
-        animator.SetBool("IsStaggered", true);
+        animator.SetTrigger("IsStaggered");
+
+        transform.DOMoveY(yPosOffset, 0.5f).SetEase(Ease.Linear);
 
         ObjectPooler.Instance.Spawn("StaggerEffect1", transform.position, Quaternion.identity);
         ObjectPooler.Instance.Spawn("StaggerEffect2", transform.position, Quaternion.identity);
@@ -76,14 +79,17 @@ public class BossEnemyNetworkHealth : EnemyNetworkHealth, IStaggerable
 
         yield return new WaitForSeconds(10f);
 
+        transform.DOMoveY(0, 0.5f).SetEase(Ease.Linear);
+
         staggeredText.SetActive(false);
 
         netStaggerMaxHealth.Value *= 2;
         StaggerCurrentHealth.Value = netStaggerMaxHealth.Value;
 
-        animator.SetBool("IsStaggered", false);
+        animator.SetTrigger("IsFinishedStagger");
 
-        yield return animator.GetCurrentAnimatorStateInfo(0).length;
+
+        yield return new WaitForSeconds(3f);
 
         enemy.isAttacking = false;
         IsStaggered.Value = false;

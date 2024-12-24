@@ -23,7 +23,7 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
 
     public void ResetSkill()
     {
-        Damage = 250f;
+        Damage = 300f;
         KnockbackForce = 10f;
         AttackSpeedMultiplier.Value = 0.5f;
         AttackRange = 3f;

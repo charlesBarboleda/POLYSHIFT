@@ -13,6 +13,6 @@ public class Brutality : PassiveSkill
         Debug.Log("Applying Brutality skill effect.");
         user.GetComponent<PlayerNetworkMovement>().MoveSpeed += 1.5f;
 
-        user.GetComponent<PlayerSkills>().PermanentMeleeDamageIncreaseBy(200f);
+        user.GetComponent<PlayerSkills>().PermanentMeleeDamageIncreaseBy(250f);
     }
 }

@@ -37,23 +37,25 @@ public class SingleShot : IWeaponBehavior
                             // Check for headshot or body shot
                             if (hit.collider.CompareTag("Head"))
                             {
-                                finalDamage = weapon.Damage * 1.75f;
+                                finalDamage = weapon.Damage * Random.Range(1.5f, 2f);
                                 PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, finalDamage);
                             }
                             else
                             {
-                                finalDamage = weapon.Damage * 0.75f;
+                                finalDamage = weapon.Damage * Random.Range(0.4f, 0.8f);
                                 PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, finalDamage);
                             }
 
-                            float finalStaggerDamage = finalDamage / 100;
+                            float finalStaggerDamage = finalDamage / 150;
 
-                            if (networkObject.GetComponent<IStaggerable>() != null)
+                            var bossHealth = networkObject.GetComponent<BossEnemyNetworkHealth>();
+                            if (networkObject.GetComponent<IStaggerable>() != null && bossHealth != null)
                             {
-                                Debug.Log("Staggering boss with damage: " + finalStaggerDamage);
-                                networkObject.GetComponent<IStaggerable>().ApplyStaggerDamageServerRpc(finalStaggerDamage);
-                                Debug.Log("Applied stagger damage to boss: " + finalStaggerDamage);
-                                PopUpNumberManager.Instance.SpawnStaggerNumber(hit.point, finalStaggerDamage);
+                                if (bossHealth.CanBeStaggered.Value)
+                                {
+                                    networkObject.GetComponent<IStaggerable>().ApplyStaggerDamageServerRpc(finalStaggerDamage);
+                                    PopUpNumberManager.Instance.SpawnStaggerNumber(hit.point, finalStaggerDamage);
+                                }
                             }
 
                             // Apply damage to the parent NetworkObject
@@ -113,20 +115,24 @@ public class SingleShot : IWeaponBehavior
                             // Check for headshot or body shot
                             if (hit.collider.CompareTag("Head"))
                             {
-                                finalDamage = weapon.Damage * 1.6f;
+                                finalDamage = weapon.Damage * Random.Range(1.5f, 2f);
                                 PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, finalDamage);
                             }
                             else
                             {
-                                finalDamage = weapon.Damage * 0.8f;
+                                finalDamage = weapon.Damage * Random.Range(0.4f, 0.8f);
                                 PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, finalDamage);
                             }
 
-                            float finalStaggerDamage = finalDamage / 100;
-                            if (networkObject.GetComponent<IStaggerable>() != null)
+                            float finalStaggerDamage = finalDamage / 150;
+                            networkObject.TryGetComponent(out BossEnemyNetworkHealth bossHealth);
+                            if (networkObject.GetComponent<IStaggerable>() != null && bossHealth != null)
                             {
-                                networkObject.GetComponent<IStaggerable>().ApplyStaggerDamageServerRpc(finalStaggerDamage);
-                                PopUpNumberManager.Instance.SpawnStaggerNumber(hit.point, finalStaggerDamage);
+                                if (bossHealth.CanBeStaggered.Value)
+                                {
+                                    networkObject.GetComponent<IStaggerable>().ApplyStaggerDamageServerRpc(finalStaggerDamage);
+                                    PopUpNumberManager.Instance.SpawnStaggerNumber(hit.point, finalStaggerDamage);
+                                }
                             }
 
                             weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId, finalDamage);

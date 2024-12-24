@@ -85,7 +85,7 @@ public class MimicSentryManager : NetworkBehaviour, ISkillManager
         GameObject mimicTurret = ObjectPooler.Instance.Spawn(turretTag, sentryOrb.transform.position, Quaternion.identity);
 
         var mimicScript = mimicTurret.GetComponent<Turret>();
-        mimicScript.MaxHealth.Value = GetComponent<PlayerNetworkLevel>().Level.Value * 100;
+        mimicScript.MaxHealth.Value = GetComponent<PlayerNetworkLevel>().Level.Value * 50;
         mimicScript.CurrentHealth.Value = mimicScript.MaxHealth.Value;
         mimicScript.SetOwner(gameObject);
         mimicTurret.GetComponent<NetworkObject>().Spawn();

@@ -218,11 +218,16 @@ public class PlayerSkills : NetworkBehaviour
         }
 
         var staggerable = collider.GetComponent<IStaggerable>();
-        if (staggerable != null)
+        collider.TryGetComponent<BossEnemyNetworkHealth>(out var bossHealth);
+        if (staggerable != null && bossHealth != null)
         {
-            float staggerDamage = damage / 25;
-            staggerable.ApplyStaggerDamageServerRpc(staggerDamage);
-            PopUpNumberManager.Instance.SpawnStaggerNumber(collider.transform.position, staggerDamage);
+            if (bossHealth.CanBeStaggered.Value)
+            {
+                float staggerDamage = damage / 25;
+                staggerable.ApplyStaggerDamageServerRpc(staggerDamage);
+
+                PopUpNumberManager.Instance.SpawnStaggerNumber(collider.transform.position, staggerDamage);
+            }
         }
 
         var rb = collider.GetComponent<Rigidbody>();

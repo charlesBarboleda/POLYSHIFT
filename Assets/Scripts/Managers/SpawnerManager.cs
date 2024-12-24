@@ -29,6 +29,7 @@ public class SpawnerManager : NetworkBehaviour
     public int MaxEnemies = 100;
     public int EnemiesToSpawn = 0;
     public bool IsSpawning = false;
+    public bool hasBossSpawned = false;
     public List<Transform> spawnPositions = new List<Transform>();
 
     private Dictionary<string, float> currentSpawnProbabilities = new Dictionary<string, float>();
@@ -78,11 +79,12 @@ public class SpawnerManager : NetworkBehaviour
 
     void BossSpawningLogic()
     {
-        if (GameManager.Instance.GameLevel.Value % 1 == 0 &&
+        if (GameManager.Instance.GameLevel.Value % 10 == 0 &&
             GameManager.Instance.CurrentBoss == null &&
             GameManager.Instance.SpawnedEnemies.Count < 10 &&
-            EnemiesToSpawn == 0)
+            EnemiesToSpawn == 0 && !hasBossSpawned)
         {
+            hasBossSpawned = true;
             SpawnBossServerRpc();
         }
     }
@@ -144,6 +146,7 @@ public class SpawnerManager : NetworkBehaviour
         int playersAlive = GameManager.Instance.AlivePlayers.Count;
         EnemiesToSpawn = gameLevel * GetEnemyMultiplier(gameLevel) * playersAlive;
 
+        hasBossSpawned = false;
 
         Debug.Log($"Spawning {EnemiesToSpawn} enemies for {playersAlive} players at level {gameLevel}");
         SpawnRate = Mathf.Max(0.1f, 2f - gameLevel * 0.1f);
@@ -156,7 +159,7 @@ public class SpawnerManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            if (GameManager.Instance.GameLevel.Value == 1)
+            if (GameManager.Instance.GameLevel.Value == 10)
             {
                 SpawnBoss("BossMelee", 60000);
                 GameManager.Instance.PlayMeleeBossMusic();
