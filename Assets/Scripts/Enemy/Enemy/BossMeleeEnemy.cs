@@ -27,7 +27,7 @@ public class BossMeleeEnemy : MeleeEnemy
     {
         base.Update();
 
-        // JumpAttackLogic();
+        JumpAttackLogic();
         TripleJumpAttackLogic();
 
     }
@@ -84,7 +84,7 @@ public class BossMeleeEnemy : MeleeEnemy
 
     void TripleJumpAttackLogic()
     {
-        if (enemyHealth.CurrentHealth.Value <= enemyHealth.MaxHealth / 1)
+        if (enemyHealth.CurrentHealth.Value <= enemyHealth.MaxHealth / 3)
         {
             if (ClosestTarget != null && !isAttacking && tripleJumpAttackCooldownElapsed <= 0)
             {
@@ -104,13 +104,13 @@ public class BossMeleeEnemy : MeleeEnemy
 
     void JumpAttackLogic()
     {
-        if (enemyHealth.CurrentHealth.Value <= enemyHealth.MaxHealth / 2f)
+        if (enemyHealth.CurrentHealth.Value <= enemyHealth.MaxHealth / 1.5f)
         {
             if (ClosestTarget != null && !isAttacking && jumpAttackCooldownElapsed <= 0)
             {
                 if (Vector3.Distance(transform.position, ClosestTarget.position) <= jumpAttackRange)
                 {
-
+                    audioSource.PlayOneShot(jumpAttackSoundEffect, 1.5f);
                     JumpAttackRpc();
                     jumpAttackCooldownElapsed = jumpAttackCooldown;
                 }
@@ -144,7 +144,7 @@ public class BossMeleeEnemy : MeleeEnemy
 
         yield return new WaitForSeconds(1f);
 
-        audioSource.PlayOneShot(jumpAttackSoundEffect);
+        audioSource.PlayOneShot(jumpAttackSoundEffect, 1.5f);
         transform.DOJump(targetPosition, 10f, 1, 2.75f).OnComplete(() =>
        {
            DealDamageJumpAttackDamage(7f);
@@ -179,7 +179,7 @@ public class BossMeleeEnemy : MeleeEnemy
         warningZone1.transform.position = targetPosition;
         warningZone1.transform.DOScale(attackRange / 1.75f, 3f);
         animator.SetTrigger("JumpAttack");
-        audioSource.PlayOneShot(jumpAttackSoundEffect);
+        audioSource.PlayOneShot(jumpAttackSoundEffect, 1.5f);
 
         transform.DOJump(targetPosition, 7.5f, 1, 3f).OnUpdate(() =>
         {
@@ -212,7 +212,7 @@ public class BossMeleeEnemy : MeleeEnemy
         animator.ResetTrigger("JumpAttack");
         animator.SetTrigger("JumpAttack");
 
-        audioSource.PlayOneShot(jumpAttackSoundEffect);
+        audioSource.PlayOneShot(jumpAttackSoundEffect, 1.5f);
 
         transform.DOJump(targetPosition, 7.5f, 1, 3f).OnUpdate(() =>
         {

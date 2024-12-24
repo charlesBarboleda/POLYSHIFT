@@ -217,6 +217,14 @@ public class PlayerSkills : NetworkBehaviour
             damageable.RequestTakeDamageServerRpc(damage, NetworkObjectId);
         }
 
+        var staggerable = collider.GetComponent<IStaggerable>();
+        if (staggerable != null)
+        {
+            float staggerDamage = damage / 25;
+            staggerable.ApplyStaggerDamageServerRpc(staggerDamage);
+            PopUpNumberManager.Instance.SpawnStaggerNumber(collider.transform.position, staggerDamage);
+        }
+
         var rb = collider.GetComponent<Rigidbody>();
         if (rb != null)
             rb.AddForce((collider.transform.position - origin).normalized * knockbackForce, ForceMode.Impulse);

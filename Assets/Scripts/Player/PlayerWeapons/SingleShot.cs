@@ -37,13 +37,23 @@ public class SingleShot : IWeaponBehavior
                             // Check for headshot or body shot
                             if (hit.collider.CompareTag("Head"))
                             {
-                                finalDamage = weapon.Damage * 1.6f;
+                                finalDamage = weapon.Damage * 1.75f;
                                 PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, finalDamage);
                             }
                             else
                             {
-                                finalDamage = weapon.Damage * 0.8f;
+                                finalDamage = weapon.Damage * 0.75f;
                                 PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, finalDamage);
+                            }
+
+                            float finalStaggerDamage = finalDamage / 100;
+
+                            if (networkObject.GetComponent<IStaggerable>() != null)
+                            {
+                                Debug.Log("Staggering boss with damage: " + finalStaggerDamage);
+                                networkObject.GetComponent<IStaggerable>().ApplyStaggerDamageServerRpc(finalStaggerDamage);
+                                Debug.Log("Applied stagger damage to boss: " + finalStaggerDamage);
+                                PopUpNumberManager.Instance.SpawnStaggerNumber(hit.point, finalStaggerDamage);
                             }
 
                             // Apply damage to the parent NetworkObject
@@ -112,6 +122,13 @@ public class SingleShot : IWeaponBehavior
                                 PopUpNumberManager.Instance.SpawnWeaponDamageNumber(hit.point, finalDamage);
                             }
 
+                            float finalStaggerDamage = finalDamage / 100;
+                            if (networkObject.GetComponent<IStaggerable>() != null)
+                            {
+                                networkObject.GetComponent<IStaggerable>().ApplyStaggerDamageServerRpc(finalStaggerDamage);
+                                PopUpNumberManager.Instance.SpawnStaggerNumber(hit.point, finalStaggerDamage);
+                            }
+
                             weapon.ApplyDamageServerRpc(networkObject.NetworkObjectId, finalDamage);
 
                             // Spawn blood splatter or other hit effects
@@ -120,6 +137,8 @@ public class SingleShot : IWeaponBehavior
                             {
                                 enemy.OnRaycastHitServerRpc(hit.point, hit.normal);
                             }
+
+
                         }
 
                         weapon.FireSingleShotServerRpc(startPoint, hit.point);

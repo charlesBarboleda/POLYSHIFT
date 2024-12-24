@@ -20,7 +20,7 @@ public class BladeVortexCollisionHandler : MonoBehaviour
             {
                 // Execute your desired function
                 other.GetComponent<IDamageable>().RequestTakeDamageServerRpc(damage, ownerNetworkObjectId);
-
+                other.GetComponent<IStaggerable>().ApplyStaggerDamageServerRpc(damage / 25);
                 // Reset the timer
                 timeSinceLastHit = 0f;
             }

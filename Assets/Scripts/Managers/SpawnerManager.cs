@@ -59,17 +59,32 @@ public class SpawnerManager : NetworkBehaviour
                 // }
 
             }
-            if (GameManager.Instance.SpawnedEnemies.Count < MaxEnemies && EnemiesToSpawn > 0)
-            {
-                if (!IsSpawning)
-                {
-                    StartCoroutine(SpawnEnemiesCoroutine());
-                }
-            }
+            EnemySpawningCheckLogic();
 
+            BossSpawningLogic();
         }
+    }
 
+    void EnemySpawningCheckLogic()
+    {
+        if (GameManager.Instance.SpawnedEnemies.Count < MaxEnemies && EnemiesToSpawn > 0)
+        {
+            if (!IsSpawning)
+            {
+                StartCoroutine(SpawnEnemiesCoroutine());
+            }
+        }
+    }
 
+    void BossSpawningLogic()
+    {
+        if (GameManager.Instance.GameLevel.Value % 1 == 0 &&
+            GameManager.Instance.CurrentBoss == null &&
+            GameManager.Instance.SpawnedEnemies.Count < 10 &&
+            EnemiesToSpawn == 0)
+        {
+            SpawnBossServerRpc();
+        }
     }
 
     public void KillAllAllies()
@@ -113,18 +128,23 @@ public class SpawnerManager : NetworkBehaviour
         SetEnemies();
         StartCoroutine(SpawnEnemiesCoroutine());
     }
+    int GetEnemyMultiplier(int level)
+    {
+        if (level < 10) return 6;
+        if (level < 20) return 7;
+        if (level < 30) return 8;
+        if (level < 40) return 9;
+        if (level < 50) return 10;
+        return 15;
+    }
 
     void SetEnemies()
     {
         int gameLevel = GameManager.Instance.GameLevel.Value;
         int playersAlive = GameManager.Instance.AlivePlayers.Count;
-        EnemiesToSpawn = gameLevel * 5 * playersAlive;
-        if (gameLevel % 10 == 0)
-        {
-            EnemiesToSpawn += GameManager.Instance.AlivePlayers.Count * 50;
-            Invoke(nameof(SpawnBossServerRpc), 10f);
-            Debug.Log("Spawning Boss");
-        }
+        EnemiesToSpawn = gameLevel * GetEnemyMultiplier(gameLevel) * playersAlive;
+
+
         Debug.Log($"Spawning {EnemiesToSpawn} enemies for {playersAlive} players at level {gameLevel}");
         SpawnRate = Mathf.Max(0.1f, 2f - gameLevel * 0.1f);
 
@@ -136,16 +156,14 @@ public class SpawnerManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            if (GameManager.Instance.GameLevel.Value == 10)
+            if (GameManager.Instance.GameLevel.Value == 1)
             {
-                Debug.Log("Spawning BossMelee");
-                SpawnBoss("BossMelee", 30000);
-                Debug.Log("Playing BossMelee music");
+                SpawnBoss("BossMelee", 60000);
                 GameManager.Instance.PlayMeleeBossMusic();
             }
             else if (GameManager.Instance.GameLevel.Value == 20)
             {
-                SpawnBoss("BossDragon", 60000);
+                SpawnBoss("BossDragon", 150000);
                 GameManager.Instance.PlayDragonBossMusic();
             }
         }
@@ -155,7 +173,7 @@ public class SpawnerManager : NetworkBehaviour
     {
         GameObject Boss = ObjectPooler.Instance.Spawn(bossName, spawnPositions[Random.Range(0, spawnPositions.Count)].position, Quaternion.identity);
         GameManager.Instance.SpawnedEnemies.Add(Boss.GetComponent<Enemy>());
-        if (Boss.TryGetComponent(out EnemyNetworkHealth enemyHealth))
+        if (Boss.TryGetComponent(out BossEnemyNetworkHealth enemyHealth))
         {
             GameManager.Instance.SetCurrentBoss(Boss);
             enemyHealth.MaxHealth = bossHealth * GameManager.Instance.AlivePlayers.Count;

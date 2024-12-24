@@ -22,7 +22,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(AIPath))]
 public class EnemyNetworkHealth : NetworkBehaviour, IDamageable
 {
-    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
+    public NetworkVariable<float> CurrentHealth = new();
     public float MaxHealth;
     public float HealthRegenRate;
     public bool IsDead;

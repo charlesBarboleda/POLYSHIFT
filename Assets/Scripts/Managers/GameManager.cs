@@ -29,15 +29,16 @@ public class GameManager : NetworkBehaviour
     public List<Transform> _spawnPoints = new List<Transform>();
     [SerializeField] GameObject playerPrefab;
     [SerializeField] Image bossHealthbar;
+    [SerializeField] Image bossStaggerbar;
     [SerializeField] TMP_Text bossName;
     [SerializeField] GameObject bossHealthbarContainer;
-    GameObject currentBoss;
+    public GameObject CurrentBoss;
     AudioSource audioSource;
     [SerializeField] AudioClip[] inLevelMusic;
     [SerializeField] AudioClip[] outLevelMusic;
     [SerializeField] AudioClip meleeBossMusic;
     [SerializeField] AudioClip dragonBossMusic;
-    EnemyNetworkHealth currentBossHealth;
+    BossEnemyNetworkHealth currentBossHealth;
 
 
     void Awake()
@@ -142,9 +143,20 @@ public class GameManager : NetworkBehaviour
             bossName.text = bossHealth.BossName;
             bossName.gameObject.SetActive(true);
             bossHealthbarContainer.SetActive(true);
+            bossStaggerbar.gameObject.SetActive(true);
             bossHealthbar.fillAmount = 1f;
+            bossStaggerbar.fillAmount = 1f;
 
             // Subscribe to health updates
+            bossHealth.StaggerCurrentHealth.OnValueChanged += UpdateBossStaggerBar;
+            Debug.Log("Subscribing to boss stagger health updates");
+            bossHealth.StaggerCurrentHealth.OnValueChanged += (prev, current) =>
+            {
+                Debug.Log($"StaggerCurrentHealth changed from {prev} to {current}");
+            };
+            bossHealth.netStaggerMaxHealth.OnValueChanged += UpdateBossStaggerBar;
+
+            Debug.Log("Subscribed to boss stagger health updates");
             bossHealth.CurrentHealth.OnValueChanged += UpdateBossHealthBar;
         }
         else
@@ -158,6 +170,8 @@ public class GameManager : NetworkBehaviour
     {
         if (enemy.TryGetComponent(out BossEnemyNetworkHealth bossHealth))
         {
+            currentBossHealth = null;
+            CurrentBoss = null;
             DisableBossUIRpc(bossHealth.NetworkObjectId);
         }
     }
@@ -172,14 +186,38 @@ public class GameManager : NetworkBehaviour
         {
             bossName.gameObject.SetActive(false);
             bossHealthbarContainer.SetActive(false);
+            bossStaggerbar.gameObject.SetActive(false);
+            bossHealth.StaggerCurrentHealth.OnValueChanged -= UpdateBossStaggerBar;
+            bossHealth.netStaggerMaxHealth.OnValueChanged -= UpdateBossStaggerBar;
             bossHealth.CurrentHealth.OnValueChanged -= UpdateBossHealthBar;
         }
 
     }
 
-    public void UpdateBossHealthBar(float prev, float current)
+    void UpdateBossStaggerBar(float prev, float current)
     {
-        Debug.Log("Updating boss health bar");
+        Debug.Log($"UpdateBossStaggerBar called: {prev} -> {current}");
+        if (bossStaggerbar == null)
+        {
+            Debug.LogError("Boss stagger bar Image is null!");
+            return;
+        }
+
+        if (currentBossHealth == null)
+        {
+            Debug.LogError("Current boss health is null!");
+            return;
+        }
+
+        float fillAmount = current / currentBossHealth.netStaggerMaxHealth.Value;
+        Debug.Log($"Setting boss stagger bar fill amount to {fillAmount}");
+
+        bossStaggerbar.DOFillAmount(fillAmount, 0.5f);
+    }
+
+
+    void UpdateBossHealthBar(float prev, float current)
+    {
         if (currentBossHealth == null)
         {
             Debug.LogError("Current boss health is null");
@@ -198,8 +236,6 @@ public class GameManager : NetworkBehaviour
         {
             Debug.LogError("DOFillAmount failed: " + ex.Message);
         }
-
-        Debug.Log("Updated Boss health: " + current / currentBossHealth.MaxHealth);
     }
 
     public override void OnNetworkDespawn()
@@ -606,8 +642,8 @@ public class GameManager : NetworkBehaviour
 
     public void SetCurrentBoss(GameObject boss)
     {
-        currentBoss = boss;
-        currentBossHealth = currentBoss.GetComponent<EnemyNetworkHealth>();
+        CurrentBoss = boss;
+        currentBossHealth = CurrentBoss.GetComponent<BossEnemyNetworkHealth>();
     }
 
 

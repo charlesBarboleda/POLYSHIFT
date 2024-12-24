@@ -9,6 +9,7 @@ public class PopUpNumberManager : MonoBehaviour
     [SerializeField] DamageNumber WeaponDamageNumberPrefab;
     [SerializeField] DamageNumber MeleeDamageNumberPrefab;
     [SerializeField] DamageNumber HealNumberPrefab;
+    [SerializeField] DamageNumber StaggerNumberPrefab;
 
     private void Awake()
     {
@@ -20,6 +21,12 @@ public class PopUpNumberManager : MonoBehaviour
         {
             Destroy(this);
         }
+    }
+
+    public void SpawnStaggerNumber(Vector3 position, float amount)
+    {
+        DamageNumber number = StaggerNumberPrefab.Spawn(position, amount);
+        number.SetScale(1.5f);
     }
 
     public void SpawnXPNumber(Vector3 position, float amount)

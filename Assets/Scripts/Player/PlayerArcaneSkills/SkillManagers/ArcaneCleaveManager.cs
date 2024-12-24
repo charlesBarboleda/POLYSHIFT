@@ -23,7 +23,7 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
 
     public void ResetSkill()
     {
-        Damage = 200f;
+        Damage = 250f;
         KnockbackForce = 10f;
         AttackSpeedMultiplier.Value = 0.5f;
         AttackRange = 3f;
@@ -59,7 +59,7 @@ public class ArcaneCleaveManager : NetworkBehaviour, ISkillManager
     }
     public void DealExpandingDamage()
     {
-        PlayerSkills.DealDamageInExpandingCircle(transform.position, 0, AttackRange * 4, Damage, KnockbackForce, 0.1f * AttackRange, 0.05f, 1);
+        PlayerSkills.DealDamageInExpandingCircle(transform.position, 0, AttackRange * 4, Damage * 1.5f, KnockbackForce, 0.1f * AttackRange, 0.05f, 1);
     }
 
     void SetAttackSpeedMultiplier(float AttackSpeedMultiplier)

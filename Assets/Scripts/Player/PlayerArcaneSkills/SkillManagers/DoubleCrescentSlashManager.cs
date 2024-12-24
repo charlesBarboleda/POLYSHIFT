@@ -75,14 +75,14 @@ public class DoubleCrescentSlashManager : NetworkBehaviour, ISkillManager
     }
     public void DealSmallConeDamage()
     {
-        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange, coneAngle, Damage * 2, KnockbackForce);
+        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange, coneAngle, Damage * 3, KnockbackForce);
 
     }
 
 
     public void DealBigConeDamage()
     {
-        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange + 3, 100f, Damage * 4, KnockbackForce + 2);
+        PlayerSkills.DealDamageInCone(PlayerSkills.transform.position, AttackRange + 3, 100f, Damage * 2f, KnockbackForce + 2);
 
     }
 
