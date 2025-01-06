@@ -14,11 +14,7 @@ public class PlayerSkills : NetworkBehaviour
     [SerializeField] HotbarUIManager hotbarUIManager;
     [SerializeField] SkillTreeManager skillTreeManager;
     [SerializeField] Skill SingleCrescentSlashInstance;
-    [SerializeField] GameObject firstPersonCanvas;
-    [SerializeField] GameObject hotbarUI;
-    [SerializeField] GameObject ammoCountUI;
     ISkillManager[] skillManagers;
-    ActiveSkill currentAttack;
     bool canAttack = true;
     bool bloodBond = false;
     float bloodBondRange = 10f;
@@ -47,7 +43,7 @@ public class PlayerSkills : NetworkBehaviour
         playerMovement = GetComponent<PlayerNetworkMovement>();
         playerRotation = GetComponent<PlayerNetworkRotation>();
         golemManager = GetComponent<GolemManager>();
-        skillManagers = GetComponents<ISkillManager>();
+        skillManagers = GetComponentsInChildren<ISkillManager>();
         Debug.Log($"SkillManagers count: {skillManagers.Length}");
         skillTreeManager.SetPlayerSkills(this);
         UnlockSkill(SingleCrescentSlashInstance);

@@ -1286,7 +1286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1429764885
+  GlobalObjectIdHash: 692281701
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1916,7 +1916,7 @@ MonoBehaviour:
   AttacksThirdPhase: []
   slashEffect: {fileID: 1494864676076110615}
   jumpAttackCooldown: 10
-  jumpAttackDamage: 500
+  jumpAttackDamage: 1000
   jumpAttackRange: 15
   tripleJumpAttackCooldown: 10
   onLandSoundEffect: {fileID: 8300000, guid: c2926f1054c59ab4a95a6b2997703608, type: 3}

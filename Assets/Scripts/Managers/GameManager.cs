@@ -196,7 +196,6 @@ public class GameManager : NetworkBehaviour
 
     void UpdateBossStaggerBar(float prev, float current)
     {
-        Debug.Log($"UpdateBossStaggerBar called: {prev} -> {current}");
         if (bossStaggerbar == null)
         {
             Debug.LogError("Boss stagger bar Image is null!");
@@ -210,8 +209,6 @@ public class GameManager : NetworkBehaviour
         }
 
         float fillAmount = current / currentBossHealth.netStaggerMaxHealth.Value;
-        Debug.Log($"Setting boss stagger bar fill amount to {fillAmount}");
-
         bossStaggerbar.DOFillAmount(fillAmount, 0.5f);
     }
 

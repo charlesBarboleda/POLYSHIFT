@@ -30,7 +30,7 @@ public abstract class ActiveSkill : Skill
 
 
 
-    public void StartCooldown()
+    protected void StartCooldown()
     {
         OnCooldown = true;
         cooldownTimer = 0;

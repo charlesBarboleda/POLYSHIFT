@@ -133,11 +133,11 @@ public class SpawnerManager : NetworkBehaviour
     int GetEnemyMultiplier(int level)
     {
         if (level < 10) return 6;
-        if (level < 20) return 7;
-        if (level < 30) return 8;
-        if (level < 40) return 9;
-        if (level < 50) return 10;
-        return 15;
+        if (level < 20) return 8;
+        if (level < 30) return 10;
+        if (level < 40) return 12;
+        if (level < 50) return 14;
+        return 16;
     }
 
     void SetEnemies()

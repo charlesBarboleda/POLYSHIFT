@@ -270,6 +270,9 @@ public class BossMeleeEnemy : MeleeEnemy
         ObjectPooler.Instance.Spawn("DefaultLargeParticle", transform.position, Quaternion.identity);
         ObjectPooler.Instance.Spawn("DefaultSmallParticle", transform.position, Quaternion.identity);
 
+        var groundSlam = ObjectPooler.Instance.Spawn("GroundSlamEffect", transform.position, Quaternion.identity);
+        groundSlam.transform.localRotation = Quaternion.Euler(-90, 0, 90);
+
         var earthSlam = ObjectPooler.Instance.Spawn("EarthSlam", transform.position, Quaternion.identity);
         earthSlam.transform.localScale = new Vector3(attackRange / attackRangeScalingFactor, attackRange / attackRangeScalingFactor, attackRange / attackRangeScalingFactor);
 

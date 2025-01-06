@@ -72,7 +72,7 @@ public abstract class Turret : NetworkBehaviour, IDamageable
     Enemy FindClosestEnemy()
     {
         Enemy closestEnemy = null;
-        float closestDistance = 30;
+        float closestDistance = 20;
 
         foreach (var enemy in GameManager.Instance.SpawnedEnemies)
         {
