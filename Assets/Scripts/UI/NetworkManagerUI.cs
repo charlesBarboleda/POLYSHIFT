@@ -26,8 +26,9 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] TMP_Text _wrongCodeText;
     [SerializeField] TMP_Text _joinCodeText;
     [SerializeField] TMP_InputField _inputCodeText;
-    [SerializeField] Button _joinButton;
-    [SerializeField] Button _joinLobbyBackButton;
+
+    [Header("Script References")]
+    [SerializeField] TitleScreenUIManager _titleScreenUIManager;
 
     string _playerID;
     bool _clientAuthenticated = false;
@@ -151,21 +152,8 @@ public class NetworkManagerUI : MonoBehaviour
             yield break;
         }
 
-        _inputCodeText.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
-        {
-            _inputCodeText.gameObject.SetActive(false);
-        });
 
-        _joinButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
-        {
-            _joinButton.gameObject.SetActive(false);
-        });
-
-        _joinLobbyBackButton.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
-        {
-            _joinLobbyBackButton.gameObject.SetActive(false);
-        });
-
+        _titleScreenUIManager.DisableAllUIElements();
 
         var relayServerData = joinAllocationFromCode.Result;
 

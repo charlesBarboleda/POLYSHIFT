@@ -22,10 +22,15 @@ public class TitleScreenUIManager : MonoBehaviour
     [Header("Join Screen")]
     [SerializeField] GameObject _joinScreen;
 
+    [Header("Settings Screen")]
+    [SerializeField] GameObject _settingsScreen;
+
     [Header("Cameras")]
     [SerializeField] CinemachineCamera titleScreenCamera;
     [SerializeField] CinemachineCamera playScreenCamera;
-
+    [SerializeField] CinemachineCamera joinScreenCamera;
+    [SerializeField] CinemachineCamera instructionsScreenCamera;
+    [SerializeField] CinemachineCamera settingsScreenCamera;
     [Header("Audio UI Elements")]
     AudioSource audioSource;
     [SerializeField] AudioClip buttonClickSound;
@@ -57,6 +62,32 @@ public class TitleScreenUIManager : MonoBehaviour
         titleScreenCamera.Priority = 0;
         playScreenCamera.Priority = 1;
     }
+
+    public void JoinButton()
+    {
+        playScreenCamera.Priority = 0;
+        joinScreenCamera.Priority = 1;
+    }
+    public void SettingsButton()
+    {
+        playScreenCamera.Priority = 0;
+        settingsScreenCamera.Priority = 1;
+        StartCoroutine(EnableSettingsScreen());
+    }
+
+    public void SettingsBackButton()
+    {
+        settingsScreenCamera.Priority = 0;
+        playScreenCamera.Priority = 1;
+        _settingsScreen.SetActive(false);
+    }
+
+    IEnumerator EnableSettingsScreen()
+    {
+        yield return new WaitForSeconds(1f);
+        _settingsScreen.SetActive(true);
+        _settingsScreen.GetComponentInChildren<CanvasGroup>().DOFade(1, 1f);
+    }
     public void PlayBackButton()
     {
         _titleScreen.SetActive(true);
@@ -72,13 +103,40 @@ public class TitleScreenUIManager : MonoBehaviour
     public void HostButton()
     {
         DisableAllUIElements();
-        _startGameButton.gameObject.SetActive(true);
+        StartCoroutine(EnableStartGameButton());
     }
 
-    void DisableAllUIElements()
+    public void InstructionsButton()
+    {
+        playScreenCamera.Priority = 0;
+        instructionsScreenCamera.Priority = 1;
+    }
+
+    public void InstructionsBackButton()
+    {
+        instructionsScreenCamera.Priority = 0;
+        playScreenCamera.Priority = 1;
+    }
+
+    IEnumerator EnableStartGameButton()
+    {
+        yield return new WaitForSeconds(3f);
+        _startGameButton.gameObject.SetActive(true);
+        _startGameButton.GetComponent<CanvasGroup>().DOFade(1, 1f);
+    }
+
+    public void JoinBackButton()
+    {
+        joinScreenCamera.Priority = 0;
+        playScreenCamera.Priority = 1;
+    }
+
+    public void DisableAllUIElements()
     {
         _playScreen.SetActive(false);
         _titleScreen.SetActive(false);
+        _joinScreen.SetActive(false);
+        _settingsScreen.SetActive(false);
 
     }
 
