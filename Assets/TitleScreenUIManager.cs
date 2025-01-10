@@ -58,9 +58,12 @@ public class TitleScreenUIManager : MonoBehaviour
 
     public void PlayButton()
     {
-        _titleScreen.SetActive(false);
-        titleScreenCamera.Priority = 0;
-        playScreenCamera.Priority = 1;
+        _titleScreen.GetComponent<CanvasGroup>().DOFade(0, 0.25f).OnComplete(() =>
+        {
+            _titleScreen.SetActive(false);
+            titleScreenCamera.Priority = 0;
+            playScreenCamera.Priority = 1;
+        });
     }
 
     public void JoinButton()
@@ -90,9 +93,16 @@ public class TitleScreenUIManager : MonoBehaviour
     }
     public void PlayBackButton()
     {
-        _titleScreen.SetActive(true);
+        StartCoroutine(TitleScreenAnimations());
         titleScreenCamera.Priority = 1;
         playScreenCamera.Priority = 0;
+    }
+
+    IEnumerator TitleScreenAnimations()
+    {
+        yield return new WaitForSeconds(1f);
+        _titleScreen.SetActive(true);
+        _titleScreen.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
     }
 
     public void ExitButton()
