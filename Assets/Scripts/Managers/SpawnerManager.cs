@@ -63,7 +63,12 @@ public class SpawnerManager : NetworkBehaviour
             EnemySpawningCheckLogic();
 
             BossSpawningLogic();
+
+
+
         }
+        Debug.Log($"Enemies to spawn: {EnemiesToSpawn}");
+        Debug.Log($"Spawned enemies: {GameManager.Instance.SpawnedEnemies.Count}");
     }
 
     void EnemySpawningCheckLogic()
@@ -79,7 +84,7 @@ public class SpawnerManager : NetworkBehaviour
 
     void BossSpawningLogic()
     {
-        if (GameManager.Instance.GameLevel.Value % 10 == 0 &&
+        if (GameManager.Instance.GameLevel.Value % 1 == 0 &&
             GameManager.Instance.CurrentBoss == null &&
             GameManager.Instance.SpawnedEnemies.Count < 10 &&
             EnemiesToSpawn == 0 && !hasBossSpawned)
@@ -159,9 +164,9 @@ public class SpawnerManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            if (GameManager.Instance.GameLevel.Value == 10)
+            if (GameManager.Instance.GameLevel.Value == 1)
             {
-                SpawnBoss("BossMelee", 60000);
+                SpawnBoss("BossMelee", 250);
                 GameManager.Instance.PlayMeleeBossMusic();
             }
             else if (GameManager.Instance.GameLevel.Value == 20)

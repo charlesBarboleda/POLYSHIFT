@@ -66,7 +66,8 @@ public abstract class Enemy : NetworkBehaviour
         {
             isAttacking = false;
             canAttack = true;
-            GameManager.Instance.SpawnedEnemies.Add(this);
+            if (!GameManager.Instance.SpawnedEnemies.Contains(this))
+                GameManager.Instance.SpawnedEnemies.Add(this);
         }
 
         InvokeRepeating("PlayRandomMovementSound", 0f, 5f);
