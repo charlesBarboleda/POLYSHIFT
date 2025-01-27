@@ -35,6 +35,8 @@ public class TitleScreenUIManager : MonoBehaviour
     AudioSource audioSource;
     [SerializeField] AudioClip buttonClickSound;
     [SerializeField] AudioClip buttonHoverSound;
+    [Header("ETC")]
+    [SerializeField] GameObject _loadingScreen;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -147,9 +149,10 @@ public class TitleScreenUIManager : MonoBehaviour
         _titleScreen.SetActive(false);
         _joinScreen.SetActive(false);
         _settingsScreen.SetActive(false);
+        _instructionsScreen.SetActive(false);
+
 
     }
-
 
 
 }

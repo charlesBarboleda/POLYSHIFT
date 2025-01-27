@@ -35,19 +35,7 @@ public class MainMenuManager : NetworkBehaviour
                 player.PlayerObject.GetComponent<NetworkObject>().Despawn(true);
             }
 
-            // Handle all other objects
-            var spawnedObjects = new List<NetworkObject>(NetworkManager.Singleton.SpawnManager.SpawnedObjectsList);
-            foreach (var networkObject in spawnedObjects)
-            {
-                if (networkObject != null && !networkObject.gameObject == NetworkManager.Singleton.gameObject)
-                {
-                    Debug.Log($"Despawning NetworkObject: {networkObject.name}");
-                    networkObject.Despawn(true);
-                }
-            }
 
-            Debug.Log("Despawned all objects");
-            Debug.Log("Loading MainGame scene");
             // Wait a frame to ensure all objects are despawned
             StartCoroutine(DelayedSceneTransition());
         }

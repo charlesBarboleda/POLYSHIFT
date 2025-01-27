@@ -30,6 +30,9 @@ public class NetworkManagerUI : MonoBehaviour
     [Header("Script References")]
     [SerializeField] TitleScreenUIManager _titleScreenUIManager;
 
+    [Header("ETC")]
+    [SerializeField] Image _loadingScreen;
+
     string _playerID;
     bool _clientAuthenticated = false;
     string _joinCode;
@@ -85,6 +88,18 @@ public class NetworkManagerUI : MonoBehaviour
 
     IEnumerator ConfigureGetCodeAndJoinHost()
     {
+        Debug.Log("Enabling loading screen...");
+        // Handle Loading Screen
+        _loadingScreen.gameObject.SetActive(true);
+
+        Debug.Log("Fading in loading screen...");
+
+        _loadingScreen.DOFade(1, 0.5f);
+
+        Debug.Log("Loading screen faded in. Allocating relay server and getting join code...");
+
+
+        // Handle Relay Server Allocation
         var allocateAndGetCode = AllocateRelayServerAndGetCode(_maxConnections);
 
         while (!allocateAndGetCode.IsCompleted)
@@ -103,8 +118,18 @@ public class NetworkManagerUI : MonoBehaviour
 
         var relayServerData = allocateAndGetCode.Result;
 
+
+        // Handle NetworkManager setup 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
         NetworkManager.Singleton.StartHost();
+
+
+        // Handle 2nd half of Loading Screen
+        yield return new WaitForSeconds(1f);
+        _loadingScreen.DOFade(0, 0.5f).OnComplete(() =>
+        {
+            _loadingScreen.gameObject.SetActive(false);
+        });
 
         _joinCodeText.gameObject.SetActive(true);
         _joinCodeText.text = _joinCode;
@@ -130,6 +155,9 @@ public class NetworkManagerUI : MonoBehaviour
 
     IEnumerator ConfigureUseCodeJoinClient(string joinCode)
     {
+        _loadingScreen.gameObject.SetActive(true);
+        _loadingScreen.DOFade(1, 0.5f);
+
         var joinAllocationFromCode = JoinRelayServerWithCode(joinCode);
 
         while (!joinAllocationFromCode.IsCompleted)
@@ -162,6 +190,13 @@ public class NetworkManagerUI : MonoBehaviour
 
         NetworkManager.Singleton.StartClient();
 
+        yield return new WaitForSeconds(1f);
+
+        _loadingScreen.DOFade(0, 0.5f).OnComplete(() =>
+        {
+            _loadingScreen.gameObject.SetActive(false);
+        });
+
     }
 
 
@@ -173,7 +208,6 @@ public class NetworkManagerUI : MonoBehaviour
             Debug.LogError("Client not authenticated.");
             return;
         }
-
         StartCoroutine(ConfigureGetCodeAndJoinHost());
         Debug.Log("Hosting lobby...");
 
