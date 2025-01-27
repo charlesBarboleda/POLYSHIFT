@@ -40,6 +40,7 @@ public abstract class Turret : NetworkBehaviour, IDamageable
 
         if (IsServer)
         {
+            NetworkObject.DestroyWithScene = true;
             CurrentHealth.Value = MaxHealth.Value;
             CurrentHealth.OnValueChanged += OnHealthChanged;
             GameManager.Instance.SpawnedAllies.Add(gameObject);

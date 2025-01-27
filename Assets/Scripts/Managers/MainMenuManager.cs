@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class MainMenuManager : NetworkBehaviour
 {
@@ -28,29 +29,34 @@ public class MainMenuManager : NetworkBehaviour
     {
         if (IsServer)
         {
-
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            // Handle despawning all objects
+            foreach (var player in NetworkManager.Singleton.ConnectedClientsList)
             {
-                var playerObject = client.PlayerObject;
-                if (playerObject != null)
+                player.PlayerObject.GetComponent<NetworkObject>().Despawn(true);
+            }
+
+            // Handle all other objects
+            var spawnedObjects = new List<NetworkObject>(NetworkManager.Singleton.SpawnManager.SpawnedObjectsList);
+            foreach (var networkObject in spawnedObjects)
+            {
+                if (networkObject != null && !networkObject.gameObject == NetworkManager.Singleton.gameObject)
                 {
-                    var networkObject = playerObject.GetComponent<NetworkObject>();
-                    if (networkObject != null)
-                    {
-                        Debug.Log($"Despawning NetworkObject: {networkObject.name}");
-                        networkObject.Despawn(true);
-                    }
+                    Debug.Log($"Despawning NetworkObject: {networkObject.name}");
+                    networkObject.Despawn(true);
                 }
             }
 
+            Debug.Log("Despawned all objects");
+            Debug.Log("Loading MainGame scene");
             // Wait a frame to ensure all objects are despawned
             StartCoroutine(DelayedSceneTransition());
         }
     }
-
     IEnumerator DelayedSceneTransition()
     {
-        yield return null; // Wait for the current frame to complete
+        Debug.Log("Waiting for 1 second before loading MainGame scene");
+        yield return new WaitForSeconds(1f); // Wait for the current frame to complete)
+        Debug.Log("Loading MainGame scene final");
         NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
     }
 

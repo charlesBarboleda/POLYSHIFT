@@ -807,14 +807,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1785123921
+  GlobalObjectIdHash: 4063727335
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
@@ -1214,6 +1214,8 @@ MonoBehaviour:
   turretMuzzlePosition: {fileID: 8852043685850752193}
   turretMuzzlePosition2: {fileID: 7054387972860523911}
   healthbarFill: {fileID: 3174574950039833331}
+  muzzleFlash: {fileID: 0}
+  muzzleFlash2: {fileID: 0}
 --- !u!1 &9014082271611759061
 GameObject:
   m_ObjectHideFlags: 0

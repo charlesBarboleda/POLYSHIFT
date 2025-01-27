@@ -49,7 +49,7 @@ public abstract class Golem : NetworkBehaviour, IDamageable
         // Only run server-specific setup
         if (IsServer)
         {
-
+            NetworkObject.DestroyWithScene = true;
             // Server-only setup
             CurrentHealth.Value = MaxHealth.Value;
             Agent.maxSpeed = MovementSpeed;
@@ -63,80 +63,65 @@ public abstract class Golem : NetworkBehaviour, IDamageable
     protected virtual void Update()
     {
         if (IsDead) return;
-        if (IsServer) // Only run on server
-        {
 
-            // Regenerate health
-            if (CurrentHealth.Value < MaxHealth.Value)
+        if (IsServer)
+        {
+            // Regenerate health if not in combat
+            if (ClosestTarget == null && CurrentHealth.Value < MaxHealth.Value)
             {
                 CurrentHealth.Value += HealthRegenRate * Time.deltaTime;
             }
 
+            // Update animations
             if (Animator != null)
-                Animator.SetBool("IsMoving", Agent.velocity.magnitude > 0.2f);
-
-
-            // Follow owner or move randomly around them if far away
-            float distanceToOwner = Vector3.Distance(transform.position, Owner.transform.position);
-            if (distanceToOwner > 15f)
             {
+                Animator.SetBool("IsMoving", Agent.velocity.magnitude > 0.2f);
+            }
 
-                if (Agent != null)
-                    Agent.destination = Owner.transform.position + -transform.forward * 8f;
-
-                if (distanceToOwner > 30f)
-                {
-                    transform.position = Owner.transform.position + -transform.forward * 8f; // Teleport to owner if too far
-                }
+            // Follow owner or move randomly if no target is found
+            float distanceToOwner = Vector3.Distance(transform.position, Owner.transform.position);
+            if (distanceToOwner > 30f)
+            {
+                // Smooth teleport if too far
+                transform.DOMove(Owner.transform.position + -transform.forward * 8f, 0.5f);
+            }
+            else if (distanceToOwner > 15f)
+            {
+                Agent.destination = Owner.transform.position + -transform.forward * 8f;
             }
             else
             {
-                // Find and approach the closest target
                 ClosestTarget = FindClosestEnemyWithinRange();
+
                 if (ClosestTarget != null)
                 {
-                    if (Agent != null)
-                        Agent.destination = ClosestTarget.transform.position;
-
-                    // Check if within attack range
                     float distanceToTarget = Vector3.Distance(transform.position, ClosestTarget.transform.position);
-                    if (distanceToTarget <= AttackRange)
+                    Agent.destination = ClosestTarget.transform.position;
+
+                    if (distanceToTarget <= AttackRange && elapsedCooldown <= 0f && CanAttack)
                     {
-                        if (elapsedCooldown <= 0 && CanAttack)
-                        {
-                            // Stop and attack
-                            FaceTarget();
-                            Agent.isStopped = true;
-                            Attack();
-                            elapsedCooldown = AttackCooldown;
-                        }
-                        else
-                        {
-                            Agent.isStopped = true; // Stop agent while within attack range
-                        }
+                        FaceTarget();
+                        Agent.isStopped = true;
+                        Attack();
+                        elapsedCooldown = AttackCooldown;
                     }
                     else
                     {
-                        // Resume movement if not within range
-                        Agent.isStopped = false;
+                        Agent.isStopped = distanceToTarget <= AttackRange;
                     }
                 }
                 else
                 {
-                    // Move randomly around the owner if no target is found
-
-                    if (Agent != null)
-                        Agent.destination = Owner.transform.position + transform.forward * 10f;
+                    // No target; move around the owner
+                    Agent.destination = Owner.transform.position + transform.forward * 10f;
                 }
             }
 
-            // Update cooldown timer
-            if (elapsedCooldown > 0)
-            {
-                elapsedCooldown -= Time.deltaTime;
-            }
+            // Cooldown timer
+            elapsedCooldown = Mathf.Max(elapsedCooldown - Time.deltaTime, 0f);
         }
     }
+
 
 
     [ServerRpc(RequireOwnership = false)]
