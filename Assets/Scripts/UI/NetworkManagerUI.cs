@@ -32,6 +32,8 @@ public class NetworkManagerUI : MonoBehaviour
 
     [Header("ETC")]
     [SerializeField] Image _loadingScreen;
+    [SerializeField] Slider _loadingSlider;
+
 
     string _playerID;
     bool _clientAuthenticated = false;
@@ -94,7 +96,10 @@ public class NetworkManagerUI : MonoBehaviour
 
         Debug.Log("Fading in loading screen...");
 
-        _loadingScreen.DOFade(1, 0.5f);
+        _loadingScreen.GetComponent<CanvasGroup>().DOFade(1, 0.25f).OnComplete(() =>
+        {
+            _loadingSlider.DOValue(1f, 1f);
+        });
 
         Debug.Log("Loading screen faded in. Allocating relay server and getting join code...");
 
@@ -126,7 +131,7 @@ public class NetworkManagerUI : MonoBehaviour
 
         // Handle 2nd half of Loading Screen
         yield return new WaitForSeconds(1f);
-        _loadingScreen.DOFade(0, 0.5f).OnComplete(() =>
+        _loadingScreen.GetComponent<CanvasGroup>().DOFade(0, 0.25f).OnComplete(() =>
         {
             _loadingScreen.gameObject.SetActive(false);
         });
@@ -156,7 +161,10 @@ public class NetworkManagerUI : MonoBehaviour
     IEnumerator ConfigureUseCodeJoinClient(string joinCode)
     {
         _loadingScreen.gameObject.SetActive(true);
-        _loadingScreen.DOFade(1, 0.5f);
+        _loadingScreen.GetComponent<CanvasGroup>().DOFade(1, 0.25f).OnComplete(() =>
+        {
+            _loadingSlider.DOValue(1f, 2f);
+        });
 
         var joinAllocationFromCode = JoinRelayServerWithCode(joinCode);
 
@@ -190,9 +198,9 @@ public class NetworkManagerUI : MonoBehaviour
 
         NetworkManager.Singleton.StartClient();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(4f);
 
-        _loadingScreen.DOFade(0, 0.5f).OnComplete(() =>
+        _loadingScreen.GetComponent<CanvasGroup>().DOFade(0, 0.25f).OnComplete(() =>
         {
             _loadingScreen.gameObject.SetActive(false);
         });

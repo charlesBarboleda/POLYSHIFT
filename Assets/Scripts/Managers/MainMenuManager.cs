@@ -4,12 +4,21 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class MainMenuManager : NetworkBehaviour
 {
     public static MainMenuManager Instance { get; private set; }
-    [SerializeField] TMPro.TMP_InputField _playerNameInput;
-    private Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>();
+
+    [SerializeField] private TMPro.TMP_InputField _playerNameInput; // Input field for player names
+    [SerializeField] private GameObject _loadingScreen; // Fullscreen loading screen UI
+    [SerializeField] private Slider _loadingSlider; // Universal progress bar
+
+    private bool _sceneLoaded = false; // Tracks whether the scene has finished loading
+    private Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>(); // Tracks player names
+    private Dictionary<ulong, bool> _clientLoadStatus = new Dictionary<ulong, bool>(); // Tracks whether each client has finished loading
+    private bool _isLoading = false; // Prevents reloading scenes accidentally
 
     void Awake()
     {
@@ -24,56 +33,155 @@ public class MainMenuManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    /// <summary>
+    /// Called by the host to start the game and transition to the next scene.
+    /// </summary>
+    [ServerRpc(RequireOwnership = false)]
     public void StartGameServerRpc()
     {
-        if (IsServer)
+        if (!IsServer) return;
+
+        _clientLoadStatus.Clear();
+        ShowLoadingScreenClientRpc(0f); // Notify all clients to show the loading screen
+
+        // Despawn all networked objects before transitioning
+        foreach (var player in NetworkManager.Singleton.ConnectedClientsList)
         {
-            // Handle despawning all objects
-            foreach (var player in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                player.PlayerObject.GetComponent<NetworkObject>().Despawn(true);
-            }
+            player.PlayerObject.GetComponent<NetworkObject>().Despawn(true);
+        }
 
+        // Register for scene event notifications
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
 
-            // Wait a frame to ensure all objects are despawned
-            StartCoroutine(DelayedSceneTransition());
+        // Start loading the scene
+        Debug.Log("Loading MainGame scene...");
+        var status = NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
+        if (status != SceneEventProgressStatus.Started)
+        {
+            Debug.LogError($"Failed to start loading scene: {status}");
         }
     }
-    IEnumerator DelayedSceneTransition()
+
+    /// <summary>
+    /// Handles scene events, such as clients finishing their loading.
+    /// </summary>
+    private void OnSceneEvent(SceneEvent sceneEvent)
     {
-        Debug.Log("Waiting for 1 second before loading MainGame scene");
-        yield return new WaitForSeconds(1f); // Wait for the current frame to complete)
-        Debug.Log("Loading MainGame scene final");
-        NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
+        switch (sceneEvent.SceneEventType)
+        {
+            case SceneEventType.LoadComplete:
+                if (sceneEvent.ClientId != NetworkManager.ServerClientId) // Ignore the server
+                {
+                    _clientLoadStatus[sceneEvent.ClientId] = true;
+                    Debug.Log($"Client {sceneEvent.ClientId} finished loading.");
+                }
+                break;
+
+            case SceneEventType.LoadEventCompleted:
+                Debug.Log("All clients have finished loading the scene.");
+                _sceneLoaded = true;
+                StartCoroutine(CompleteLoading());
+                NetworkManager.Singleton.SceneManager.OnSceneEvent -= OnSceneEvent;
+                break;
+        }
     }
 
-
-    // Called to set the player's name from the input field
-    public void SetLocalPlayerName()
+    /// <summary>
+    /// Smoothly fills progress bar until 100% and adds a delay before hiding the loading screen.
+    /// </summary>
+    private IEnumerator CompleteLoading()
     {
-        ulong clientId = NetworkManager.Singleton.LocalClientId;
-        string playerName = (_playerNameInput != null && _playerNameInput.text.Length > 0)
-            ? _playerNameInput.text
-            : $"Player {clientId}";
+        float progress = _loadingSlider.value;
 
-        // Save the name in the dictionary
-        if (_playerNames.ContainsKey(clientId))
+        // Ensure the bar smoothly reaches 100%
+        while (progress < 1f)
         {
-            _playerNames[clientId] = playerName;
-        }
-        else
-        {
-            _playerNames.Add(clientId, playerName);
+            progress += Time.deltaTime * 2f; // Smooth transition speed
+            _loadingSlider.value = Mathf.Clamp01(progress);
+            yield return null;
         }
 
-        Debug.Log($"SetLocalPlayerName: Client {clientId} set name to {playerName}");
+        Debug.Log("Progress bar reached 100%. Waiting before hiding...");
+        yield return new WaitForSeconds(1.5f); // Add a delay before fading out
+
+        NotifyClientsSceneReadyClientRpc();
+    }
+
+    /// <summary>
+    /// Simulates smooth progress to avoid sudden jumps.
+    /// </summary>
+    private IEnumerator SimulateProgress()
+    {
+        float progress = 0f;
+
+        while (!_sceneLoaded)
+        {
+            progress += Random.Range(0.05f, 0.1f);
+            progress = Mathf.Clamp(progress, 0f, 0.95f);
+
+            _loadingSlider.value = progress;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        _loadingSlider.value = 1f; // Ensure full completion
+        yield return new WaitForSeconds(1.5f); // Small delay for smooth transition
+    }
+    /// <summary>
+    /// Notifies all clients that the scene is ready and hides the loading screen.
+    /// </summary>
+    [ClientRpc]
+    private void NotifyClientsSceneReadyClientRpc()
+    {
+        Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Received scene ready notification.");
+
+        _isLoading = true;
+        _loadingSlider.value = 1f; // Force progress bar to 100%
+
+        _loadingScreen.GetComponent<CanvasGroup>().DOFade(0, 0.25f).OnComplete(() =>
+        {
+            _loadingScreen.SetActive(false);
+            Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Loading screen hidden.");
+        });
+    }
+
+    /// <summary>
+    /// Shows the loading screen on all clients with an initial progress value.
+    /// </summary>
+    [ClientRpc]
+    private void ShowLoadingScreenClientRpc(float initialProgress)
+    {
+        _loadingScreen.SetActive(true);
+        _loadingScreen.GetComponent<CanvasGroup>().DOFade(1, 0.25f);
+        _loadingSlider.value = initialProgress;
+
+        Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Showed loading screen.");
+
+        // Start simulating progress locally
+        if (!_isLoading)
+        {
+            StartCoroutine(SimulateProgress());
+        }
     }
 
     // Retrieve a player's name by clientId
     public string GetPlayerName(ulong clientId)
     {
         return _playerNames.ContainsKey(clientId) ? _playerNames[clientId] : "Player";
+    }
+
+    // Set a player's name by clientId
+    public void SetLocalPlayerName()
+    {
+        if (_playerNameInput != null)
+        {
+            string playerName = _playerNameInput.text;
+            if (string.IsNullOrEmpty(playerName))
+            {
+                playerName = "Player";
+            }
+
+            _playerNames[NetworkManager.Singleton.LocalClientId] = playerName;
+        }
     }
 }
 
