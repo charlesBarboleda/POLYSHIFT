@@ -22,11 +22,15 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance { get; private set; }
     public NetworkVariable<int> GameLevel = new NetworkVariable<int>(0);
     public NetworkVariable<float> GameCountdown = new NetworkVariable<float>(30f);
+    public NetworkVariable<bool> AllPlayersReady = new NetworkVariable<bool>(false); // NEW: Tracks if the game can start
+
     public List<Enemy> SpawnedEnemies = new List<Enemy>();
     public List<GameObject> SpawnedAllies = new List<GameObject>();
     public List<GameObject> AlivePlayers = new List<GameObject>();
     public GameState CurrentGameState = GameState.OutLevel;
     public List<Transform> _spawnPoints = new List<Transform>();
+    HashSet<ulong> _playersReady = new HashSet<ulong>(); // NEW: Tracks which clients are ready
+    bool _gameStarted = false; // Prevents multiple starts
     [SerializeField] GameObject playerPrefab;
     [SerializeField] Image bossHealthbar;
     [SerializeField] Image bossStaggerbar;
@@ -53,46 +57,83 @@ public class GameManager : NetworkBehaviour
 
         if (IsServer)
         {
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                ulong clientId = client.ClientId;
-
-                // Spawn the player prefab
-                GameObject newPlayer = Instantiate(playerPrefab);
-                NetworkObject networkObject = newPlayer.GetComponent<NetworkObject>();
-                networkObject.SpawnAsPlayerObject(clientId);
-                AlivePlayers.Add(newPlayer);
-                SpawnedAllies.Add(newPlayer);
-
-                // Assign the name to the player
-                string playerName = MainMenuManager.Instance.GetPlayerName(clientId);
-                PlayerInfo playerInfo = newPlayer.GetComponent<PlayerInfo>();
-                if (playerInfo != null)
-                {
-                    playerInfo.SetName(playerName);
-                    Debug.Log($"GameManager: Assigned name '{playerName}' to Client {clientId}");
-                }
-            }
-
 
             GameLevel.Value = 0;
-
 
             EventManager.Instance.OnEnemySpawned.AddListener(OnBossSpawned);
             EventManager.Instance.OnEnemyDespawned.AddListener(OnBossDespawned);
             EventManager.Instance.OnPlayerDeath.AddListener(HandleGameOver);
-            StartCoroutine(DelayedGameStart());
         }
 
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void StartGameServerRpc()
+    {
+        if (IsServer)
+        {
+            Debug.Log("[SERVER] All clients are ready. Starting game!");
+            StartCoroutine(DelayedGameStart());
+        }
+    }
+
     IEnumerator DelayedGameStart()
     {
-        yield return new WaitForSeconds(10f);
+        Debug.Log("[SERVER] Game start in 3 seconds...");
+        yield return new WaitForSeconds(3f);
+
         SetCurrentGameState(GameState.OutLevel);
         EnableCountdownTextRpc();
         EnableGameLevelTextRpc();
+    }
 
+    public void DestroyPlayerObject(ulong clientId)
+    {
+        if (!IsServer) return;
+
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
+        {
+            NetworkObject playerObject = client.PlayerObject;
+            if (playerObject != null)
+            {
+                // Despawn the network object, ensuring cleanup across the network.
+                playerObject.Despawn();
+            }
+        }
+    }
+
+    public void CreatePlayerObject(ulong clientId)
+    {
+        if (!IsServer) return;
+
+        // Spawn the player prefab
+        GameObject newPlayer = Instantiate(playerPrefab);
+        NetworkObject networkObject = newPlayer.GetComponent<NetworkObject>();
+        networkObject.SpawnAsPlayerObject(clientId);
+        AlivePlayers.Add(newPlayer);
+        SpawnedAllies.Add(newPlayer);
+        ConfirmPlayerReadyServerRpc(clientId);
+
+        // Assign the name to the player
+        string playerName = MainMenuManager.Instance.GetPlayerName(clientId);
+        PlayerInfo playerInfo = newPlayer.GetComponent<PlayerInfo>();
+        if (playerInfo != null)
+        {
+            playerInfo.SetName(playerName);
+            Debug.Log($"GameManager: Assigned name '{playerName}' to Client {clientId}");
+        }
+
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ConfirmPlayerReadyServerRpc(ulong clientId)
+    {
+        if (!_playersReady.Contains(clientId))
+        {
+            _playersReady.Add(clientId);
+            Debug.Log($"[SERVER] Player {clientId} is ready ({_playersReady.Count}/{NetworkManager.Singleton.ConnectedClients.Count}).");
+        }
     }
 
     private void AssignPlayerName(GameObject playerObject, ulong clientId)

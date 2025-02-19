@@ -6,6 +6,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEditor.PackageManager;
 
 public class MainMenuManager : NetworkBehaviour
 {
@@ -15,10 +16,11 @@ public class MainMenuManager : NetworkBehaviour
     [SerializeField] private GameObject _loadingScreen; // Fullscreen loading screen UI
     [SerializeField] private Slider _loadingSlider; // Universal progress bar
 
-    private bool _sceneLoaded = false; // Tracks whether the scene has finished loading
-    private Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>(); // Tracks player names
-    private Dictionary<ulong, bool> _clientLoadStatus = new Dictionary<ulong, bool>(); // Tracks whether each client has finished loading
-    private bool _isLoading = false; // Prevents reloading scenes accidentally
+    private Dictionary<ulong, string> _playerNames = new Dictionary<ulong, string>();
+    // Tracks which clients have fully loaded the scene
+    private Dictionary<ulong, bool> _clientLoadStatus = new Dictionary<ulong, bool>();
+    // Tracks which clients have hidden their loading screens and confirmed readiness
+    private HashSet<ulong> _clientsConfirmedReady = new HashSet<ulong>();
 
     void Awake()
     {
@@ -33,134 +35,129 @@ public class MainMenuManager : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Called by the host to start the game and transition to the next scene.
-    /// </summary>
-    [ServerRpc(RequireOwnership = false)]
-    public void StartGameServerRpc()
+    [Rpc(SendTo.Server)]
+    public void StartGameRpc()
     {
         if (!IsServer) return;
 
+        // Reset tracking
         _clientLoadStatus.Clear();
-        ShowLoadingScreenClientRpc(0f); // Notify all clients to show the loading screen
+        _clientsConfirmedReady.Clear();
 
-        // Despawn all networked objects before transitioning
-        foreach (var player in NetworkManager.Singleton.ConnectedClientsList)
+        // Track all currently connected clients as "not loaded"
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
-            player.PlayerObject.GetComponent<NetworkObject>().Despawn(true);
+            _clientLoadStatus[client.ClientId] = false;
         }
 
-        // Register for scene event notifications
+        // Show loading screen for all
+        ShowLoadingScreenRpc(0f);
+
+        // Listen for scene events (LoadComplete, etc.)
         NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
 
-        // Start loading the scene
-        Debug.Log("Loading MainGame scene...");
+        Debug.Log("[SERVER] Loading MainGame scene...");
         var status = NetworkManager.Singleton.SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
         if (status != SceneEventProgressStatus.Started)
         {
-            Debug.LogError($"Failed to start loading scene: {status}");
+            Debug.LogError($"[SERVER] Failed to start loading scene: {status}");
         }
     }
 
-    /// <summary>
-    /// Handles scene events, such as clients finishing their loading.
-    /// </summary>
     private void OnSceneEvent(SceneEvent sceneEvent)
     {
         switch (sceneEvent.SceneEventType)
         {
             case SceneEventType.LoadComplete:
-                if (sceneEvent.ClientId != NetworkManager.ServerClientId) // Ignore the server
+                // This means one client has finished loading the scene
+                Debug.Log($"[SERVER] Client {sceneEvent.ClientId} finished loading.");
+                _clientLoadStatus[sceneEvent.ClientId] = true;
+
+                // Destroy the player object for the client
+                GameManager.Instance.DestroyPlayerObject(sceneEvent.ClientId);
+
+                // Create the player object for the client
+                GameManager.Instance.CreatePlayerObject(sceneEvent.ClientId);
+
+                // Check if all clients have loaded
+                if (AllClientsLoaded())
                 {
-                    _clientLoadStatus[sceneEvent.ClientId] = true;
-                    Debug.Log($"Client {sceneEvent.ClientId} finished loading.");
+                    Debug.Log("[SERVER] All clients have loaded. Instructing them to hide loading screens...");
+                    var clientIds = new List<ulong>(NetworkManager.Singleton.ConnectedClients.Keys);
+                    Debug.Log("[SERVER] Sending HideLoadingScreensClientRpc to client IDs: " + string.Join(", ", clientIds));
+
+                    // Now call the RPC
+                    HideLoadingScreensClientRpc(new ClientRpcParams
+                    {
+                        Send = new ClientRpcSendParams { TargetClientIds = clientIds }
+                    });
                 }
                 break;
-
-            case SceneEventType.LoadEventCompleted:
-                Debug.Log("All clients have finished loading the scene.");
-                _sceneLoaded = true;
-                StartCoroutine(CompleteLoading());
-                NetworkManager.Singleton.SceneManager.OnSceneEvent -= OnSceneEvent;
-                break;
         }
     }
 
-    /// <summary>
-    /// Smoothly fills progress bar until 100% and adds a delay before hiding the loading screen.
-    /// </summary>
-    private IEnumerator CompleteLoading()
+    private bool AllClientsLoaded()
     {
-        float progress = _loadingSlider.value;
-
-        // Ensure the bar smoothly reaches 100%
-        while (progress < 1f)
+        // If ANY client is still false => not all loaded
+        foreach (var kvp in _clientLoadStatus)
         {
-            progress += Time.deltaTime * 2f; // Smooth transition speed
-            _loadingSlider.value = Mathf.Clamp01(progress);
-            yield return null;
+            if (!kvp.Value) return false;
         }
-
-        Debug.Log("Progress bar reached 100%. Waiting before hiding...");
-        yield return new WaitForSeconds(1.5f); // Add a delay before fading out
-
-        NotifyClientsSceneReadyClientRpc();
+        return true;
     }
 
     /// <summary>
-    /// Simulates smooth progress to avoid sudden jumps.
-    /// </summary>
-    private IEnumerator SimulateProgress()
-    {
-        float progress = 0f;
-
-        while (!_sceneLoaded)
-        {
-            progress += Random.Range(0.05f, 0.1f);
-            progress = Mathf.Clamp(progress, 0f, 0.95f);
-
-            _loadingSlider.value = progress;
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        _loadingSlider.value = 1f; // Ensure full completion
-        yield return new WaitForSeconds(1.5f); // Small delay for smooth transition
-    }
-    /// <summary>
-    /// Notifies all clients that the scene is ready and hides the loading screen.
+    /// Step 1: Server calls this when everyone is loaded, telling all clients to hide screens.
     /// </summary>
     [ClientRpc]
-    private void NotifyClientsSceneReadyClientRpc()
+    private void HideLoadingScreensClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Received scene ready notification.");
+        Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] **Hiding loading screen** at server's instruction...");
 
-        _isLoading = true;
-        _loadingSlider.value = 1f; // Force progress bar to 100%
-
-        _loadingScreen.GetComponent<CanvasGroup>().DOFade(0, 0.25f).OnComplete(() =>
+        // Force progress bar to 100% for visuals
+        _loadingSlider.DOValue(1, 1f).OnComplete(() =>
         {
-            _loadingScreen.SetActive(false);
-            Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Loading screen hidden.");
+            _loadingScreen.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+         {
+             _loadingScreen.SetActive(false);
+             Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Loading screen hidden. Confirming ready to server...");
+
+             // Step 2: Now the client confirms readiness to the server
+             ConfirmSceneReadyServerRpc();
+         });
         });
     }
 
     /// <summary>
-    /// Shows the loading screen on all clients with an initial progress value.
+    /// Step 2: Client calls this once they've hidden their loading screen.
     /// </summary>
-    [ClientRpc]
-    private void ShowLoadingScreenClientRpc(float initialProgress)
+    [ServerRpc(RequireOwnership = false)]
+    public void ConfirmSceneReadyServerRpc(ServerRpcParams rpcParams = default)
+    {
+        ulong senderClientId = rpcParams.Receive.SenderClientId;
+        Debug.Log($"[SERVER] Client {senderClientId} has confirmed scene ready.");
+
+        // Mark this client as ready
+        _clientsConfirmedReady.Add(senderClientId);
+
+        Debug.Log($"[SERVER] Clients confirmed ready: {_clientsConfirmedReady.Count}/{_clientLoadStatus.Count}");
+
+        // If all clients have confirmed => start the game
+        if (_clientsConfirmedReady.Count == _clientLoadStatus.Count)
+        {
+            Debug.Log("[SERVER] All clients confirmed readiness! Starting the game...");
+            GameManager.Instance.StartGameServerRpc();
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ShowLoadingScreenRpc(float initialProgress)
     {
         _loadingScreen.SetActive(true);
-        _loadingScreen.GetComponent<CanvasGroup>().DOFade(1, 0.25f);
+        _loadingScreen.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
         _loadingSlider.value = initialProgress;
 
-        Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Showed loading screen.");
-
-        // Start simulating progress locally
-        if (!_isLoading)
-        {
-            StartCoroutine(SimulateProgress());
-        }
+        Debug.Log($"[CLIENT {NetworkManager.Singleton.LocalClientId}] Showed Loading Screen.");
     }
 
     // Retrieve a player's name by clientId
@@ -184,4 +181,3 @@ public class MainMenuManager : NetworkBehaviour
         }
     }
 }
-

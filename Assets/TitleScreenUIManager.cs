@@ -42,7 +42,7 @@ public class TitleScreenUIManager : MonoBehaviour
     {
 
         audioSource = GetComponent<AudioSource>();
-        _startGameButton.onClick.AddListener(MainMenuManager.Instance.StartGameServerRpc);
+        _startGameButton.onClick.AddListener(MainMenuManager.Instance.StartGameRpc);
     }
 
 
